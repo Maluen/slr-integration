@@ -1,0 +1,148 @@
+<service>
+    <endpoint> <!-- Specifies how to retrieve/access service -->
+        <url>
+            http://ieeexplore.ieee.org/search/searchresult.jsp?newsearch=true&amp;queryText={{queryText}}&amp;pageNumber={{pageNumber}}
+        </url>
+        <method>GET</method> <!-- HTTP Method: GET, POST, etc. -->
+        <contentType>text/html</contentType>
+        <parameters> <!-- POST parameters -->
+            <param>
+                <name>apikey</name>
+                <value>bar</value>
+            </param>
+            <param>
+                <name>queryText</name>
+                <value>{{queryText}}</value>
+            </param>
+        </parameters>
+    </endpoint>
+    <content>
+
+        <meta>
+            <!-- number of results -->
+            <count el=".results-returned" mode="script">
+                <!-- e.g. extract 2349 from "2349 Results returned" -->
+                el.text().match(/\d+/)[0]
+            </count>
+
+            <!-- CONTENT TYPE -->
+            <categories el="#Content_Type-refinements > li" mode="list"> <!-- with mode="list" we keep all the selected elements (they are supposed to be 'equal') instead that taking only the first -->
+                <item> <!-- Special semantics: a generic element of the list -->
+                    <id mode="script">el.attr('id')</id> <!-- no 'el' defaults to ancestor el -->
+                    <!-- here the script could be removed by setting mode="text" (see below) -->
+                    <name el="span.refinement" mode="script">el.text().trim()</name>
+                </item>
+            </categories>
+
+            <!-- PUBLICATION YEARS -->
+            <years> <!-- an XML element without any spec does nothing, is just a way of defining the content structure to navigate -->
+                <!-- in this case el is an input -->
+                <!-- with mode="text" we extract text from the el, thus removing the need for a script and normalizing differences between elements (e.g. el.val() for input, el.text() for others).
+                Text is also trimmed by default -->
+                <first el="#text_startyear" mode="text" />
+                <last el="#text_endyear" mode="text" />
+            </years>
+
+            <authors el="#Author-refinements > li" mode="list">
+                <item>
+                    <id mode="script">el.attr('id')</id>
+                    <name el="span.refinement" mode="script">
+                        <!-- get text from first text node -->
+                        el.textNodes().get(0).text().trim()
+                    </name>
+                    <!-- Number of found articles published by this author -->
+                    <count el=".refinement-count" mode="script"> 
+                        <!-- e.g. extract '2' from (2) -->
+                        el.text().match(/\d+/)[0]
+                    </count>
+                </item>
+            </authors>
+
+            <affiliations el="#Affiliation-refinements > li" mode="list">
+                <item>
+                    <id mode="script">el.attr('id')</id>
+                    <name el="span.refinement" mode="script">
+                        <!-- get text from first text node -->
+                        el.textNodes().get(0).text().trim()
+                    </name>
+                    <!-- Number of found articles published by this author -->
+                    <count el=".refinement-count" mode="script"> 
+                        <!-- e.g. extract '2' from (2) -->
+                        el.text().match(/\d+/)[0]
+                    </count>
+                </item>
+            </affiliations>
+
+            <!-- PUBLICATION TITLES -->
+            <publications el="#Publication_Title-refinements > li" mode="list">
+                <item>
+                    <id mode="script">el.attr('id')</id>
+                    <name el="span.refinement" mode="script">
+                        <!-- get text from first text node -->
+                        el.textNodes().get(0).text().trim()
+                    </name>
+                    <!-- Number of found articles published by this author -->
+                    <count el=".refinement-count" mode="script"> 
+                        <!-- e.g. extract '2' from (2) -->
+                        el.text().match(/\d+/)[0]
+                    </count>
+                </item>
+            </publications>
+
+            <conferenceLocations el="#Conference_Location-refinements > li" mode="list">
+                <item>
+                    <id mode="script">el.attr('id')</id>
+                    <name el="span.refinement" mode="script">
+                        <!-- get text from first text node -->
+                        el.textNodes().get(0).text().trim()
+                    </name>
+                    <!-- Number of found articles published by this author -->
+                    <count el=".refinement-count" mode="script"> 
+                        <!-- e.g. extract '2' from (2) -->
+                        el.text().match(/\d+/)[0]
+                    </count>
+                </item>
+            </conferenceLocations>
+        </meta>
+
+        <articles el="#search_results_form ul.Results > li" mode="list">
+            <item>
+                <title el=".select input" mode="script">
+                    <!-- input text has the format 'Select this article: article title' -->
+                    var text = el.attr('title');
+                    var start = text.indexOf(': ');
+                    if (start !== -1) text.substr(start.length + 2);
+                </title>
+
+                <authors el="#preferredName" mode="script">el.attr('class')</authors>
+
+                <publication el="a" expand="true">
+                    <!-- when expand is true we can set further options on the parent element, such as condition (xml characteristic: we can't set them as attributes if their structure is 'complex') -->
+                    <condition mode="script">
+                        <!-- must evaluate to true to pass -->
+                        el.attr('href').indexOf('RecentIssue.jsp') != -1
+                    </condition>
+                    <value mode="text" />
+                </publication>
+
+                <doi el="a" expand="true">
+                    <condition mode="script">
+                        el.attr('href').indexOf('doi.org') != -1
+                    </condition>
+                    <value mode="text" />
+                </doi>
+
+                <year mode="script">
+                    <!-- get child text node containing "Publication Year:" -->
+                    <!-- TODO: check ambiguity in case the above string is also used in other places -->
+                </year>
+
+                <pagesRange>
+                    <!-- get child text node containing "Page(s):" -->
+                    <!-- TODO: check ambiguity in case the above string is also used in other places -->
+                </pagesRange>
+            </item>
+        </articles>
+
+    </content>
+</service>

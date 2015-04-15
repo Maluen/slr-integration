@@ -1,0 +1,725 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<content>
+    <meta>
+        <count>29</count>
+        <categories>
+            <item>
+                <id>4291944822</id>
+                <name>Conference Publications (27)</name>
+            </item>
+            <item>
+                <id>4291944246</id>
+                <name>Journals &amp; Magazines (2)</name>
+            </item>
+        </categories>
+        <years>
+            <first>2007</first>
+            <last>2015</last>
+        </years>
+        <authors>
+            <item>
+                <id>4260337993</id>
+                <name>Borne, Isabelle</name>
+                <count>2</count>
+            </item>
+            <item>
+                <id>4256909144</id>
+                <name>Meslati, Djamel</name>
+                <count>2</count>
+            </item>
+            <item>
+                <id>4256609956</id>
+                <name>Holmes, Ta'id</name>
+                <count>2</count>
+            </item>
+            <item>
+                <id>4256499105</id>
+                <name>Kusel, A.</name>
+                <count>2</count>
+            </item>
+            <item>
+                <id>4254204167</id>
+                <name>Schonbock, J.</name>
+                <count>2</count>
+            </item>
+            <item>
+                <id>4249669137</id>
+                <name>Jouault, Frédéric</name>
+                <count>2</count>
+            </item>
+            <item>
+                <id>4247460456</id>
+                <name>Gherbi, Tahar</name>
+                <count>2</count>
+            </item>
+            <item>
+                <id>4261412338</id>
+                <name>De Schutter, Joris</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4261242972</id>
+                <name>Milosevic, Vojislav</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4261169605</id>
+                <name>Bryant, Barrett R.</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4261075040</id>
+                <name>Sanchez, P.</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4260891922</id>
+                <name>Kappel, Gerti</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4260880171</id>
+                <name>Van De Geijn, Robert</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4260825225</id>
+                <name>Wagner, Michael</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4260759023</id>
+                <name>Bruyninckx, Herman</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4260685802</id>
+                <name>Polack, Fiona A C</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4260529354</id>
+                <name>Jimenez, M.</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4260369761</id>
+                <name>Hein, Christian</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4260279035</id>
+                <name>MARQUET, Philippe</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4260149162</id>
+                <name>Jézéquel, Jean-Marc Marc</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4260137010</id>
+                <name>Batory, Don</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4260099174</id>
+                <name>Mernik, Marjan</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4260068028</id>
+                <name>Steimann, Friedrich</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4259909302</id>
+                <name>Retschitzegger, Werner</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4259808017</id>
+                <name>Meira, Silvio Lemos</name>
+                <count>1</count>
+            </item>
+        </authors>
+        <affiliations>
+            <item>
+                <id>4247460455</id>
+                <name>Comput. Sci. Dept., Univ. of Tebessa, Tebessa</name>
+                <count>2</count>
+            </item>
+            <item>
+                <id>4261466091</id>
+                <name>Chalmers Univ. of Technol., Gothenburg, Sweden</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4261318369</id>
+                <name>INRIA, Rennes, France</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4258802604</id>
+                <name>Inst. for Pervasive Comput., ETH Zurich, Zurich, Switzerland</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4258712427</id>
+                <name>Dept. of Comput. &amp; Inf. Sci., Univ. of Alabama at Birmingham, Birmingham, AL, USA</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4258653545</id>
+                <name>Univ. of Antwerp, Antwerp, Belgium</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4258641871</id>
+                <name>Vienna Univ. of Technol., Vienna, Austria</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4258635213</id>
+                <name>Univ. of Texas, Austin, TX, USA</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4258405573</id>
+                <name>Dept. of Mech. Eng., Katholieke Univ. Leuven, Leuven, Belgium</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4257985370</id>
+                <name>Virtual Univ. Inst., Fed. Univ. of Ceara, Fortaleza, Brazil</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4257374365</id>
+                <name>Comput. Dept., Fed. Univ. of Sao Carlos, São Carlos, Brazil</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4256850403</id>
+                <name>Syst. &amp; Comput. Eng. Dept., Univ. of Los Andes, Bogota, Colombia</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4255873945</id>
+                <name>MDE Syst. Inc., Yonkers, NY, USA</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4255862656</id>
+                <name>Lehrgebiet Programmiersysteme, FernUniv. in Hagen, Hagen, Germany</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4255744995</id>
+                <name>Fac. of Electr. Eng., Univ. of East Sarajevo, East Sarajevo, Bosnia-Herzegovina</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4254579302</id>
+                <name>Software Eng. &amp; Tools, SAP Res., Darmstadt, Germany</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4253519176</id>
+                <name>ICMC Inst., USP - Univ. of Sao Paulo, Brazil</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4253074017</id>
+                <name>Dunip Technol., OH, USA</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4252464011</id>
+                <name>Fraunhofer Inst. for Open Commun. Syst. FOKUS, Berlin, Germany</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4252067081</id>
+                <name>Products &amp; Innovation, Deutsche Telekom AG, Darmstadt, Germany</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4251956858</id>
+                <name>CEA, LIST, Laboratory of Model Driven Engineering for Embedded Systems, P.C. 174, Gif-sur-Yvette, 91191, France</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4248827753</id>
+                <name>Dept. of Comput. Sci., Univ. of York, York</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4248776358</id>
+                <name>ATLAS Group, Nantes Univ.</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4248539632</id>
+                <name>State Key Lab. for Novel Software Technol., Nanjing Univ., Nanjing</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4248050689</id>
+                <name>INRIA FUTURS - LIFL - University of Lille, France</name>
+                <count>1</count>
+            </item>
+        </affiliations>
+        <publications>
+            <item>
+                <id>4293029717</id>
+                <name>Computer Modelling and Simulation, 2009. UKSIM '09. 11th International Conference on</name>
+                <count>2</count>
+            </item>
+            <item>
+                <id>4261974990</id>
+                <name>Model-Driven Engineering and Software Development (MODELSWARD), 2014 2nd International Conference on</name>
+                <count>2</count>
+            </item>
+            <item>
+                <id>4294951614</id>
+                <name>Software, IEEE</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4294947867</id>
+                <name>Software Engineering, IEEE Transactions on</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4293489867</id>
+                <name>Model-Based Methodologies for Pervasive and Embedded Software, 2007. MOMPES '07. Fourth International Workshop on</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4293247444</id>
+                <name>SOC Conference, 2007 IEEE International</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4293242379</id>
+                <name>Theoretical Aspects of Software Engineering, 2008. TASE '08. 2nd IFIP/IEEE International Symposium on</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4293122323</id>
+                <name>Software Engineering Conference, 2008. APSEC '08. 15th Asia-Pacific</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4292677659</id>
+                <name>Engineering of Complex Computer Systems, 2009 14th IEEE International Conference on</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4292265017</id>
+                <name>Advanced Learning Technologies (ICALT), 2010 IEEE 10th International Conference on</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4292217313</id>
+                <name>Software Components, Architectures and Reuse (SBCARS), 2010 Fourth Brazilian Symposium on</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4292180626</id>
+                <name>Computer Software and Applications Conference (COMPSAC), 2010 IEEE 34th Annual</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4284203032</id>
+                <name>Computing Congress (CCC), 2011 6th Colombian</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4283855105</id>
+                <name>Software Product Line Conference (SPLC), 2011 15th International</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4283763510</id>
+                <name>Software Engineering, 2010 ACM/IEEE 32nd International Conference on</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4283704530</id>
+                <name>Intelligent Robots and Systems (IROS), 2011 IEEE/RSJ International Conference on</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4282404564</id>
+                <name>Enterprise Distributed Object Computing Conference (EDOC), 2012 IEEE 16th International</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4281888716</id>
+                <name>Software Engineering Conference (APSEC), 2012 19th Asia-Pacific</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4278935301</id>
+                <name>Software Engineering for Computational Science and Engineering (SE-CSE), 2013 5th International Workshop on</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4278181215</id>
+                <name>Computing Conference (CLEI), 2013 XXXIX Latin American</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4278004778</id>
+                <name>P2P, Parallel, Grid, Cloud and Internet Computing (3PGCIC), 2013 Eighth International Conference on</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4277980568</id>
+                <name>Automated Software Engineering (ASE), 2013 IEEE/ACM 28th International Conference on</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4277925509</id>
+                <name>Simulation Conference (WSC), 2013 Winter</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4277321251</id>
+                <name>Applied Computational Intelligence and Informatics (SACI), 2014 IEEE 9th International Symposium on</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4262537021</id>
+                <name>Computer Software and Applications Conference Workshops (COMPSACW), 2014 IEEE 38th International</name>
+                <count>1</count>
+            </item>
+        </publications>
+        <conferenceLocations>
+            <item>
+                <id>4294967251</id>
+                <name>San Francisco, CA</name>
+                <count>2</count>
+            </item>
+            <item>
+                <id>4294919688</id>
+                <name>Beijing</name>
+                <count>2</count>
+            </item>
+            <item>
+                <id>4294912070</id>
+                <name>Cambridge</name>
+                <count>2</count>
+            </item>
+            <item>
+                <id>4294947900</id>
+                <name>Washington, DC</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4294937455</id>
+                <name>Lisbon</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4294718415</id>
+                <name>Cape Town</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4294718235</id>
+                <name>Munich</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4294624358</id>
+                <name>Ulm</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4294528458</id>
+                <name>Braga</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4294515077</id>
+                <name>Seoul</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4294410921</id>
+                <name>Hong Kong</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4294406561</id>
+                <name>Vasteras</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4294324728</id>
+                <name>Nanjing</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4294223096</id>
+                <name>Potsdam</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4293813681</id>
+                <name>Lisbon, Portugal</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4293653741</id>
+                <name>Silicon Valley, CA</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4293608988</id>
+                <name>Timisoara</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4293425541</id>
+                <name>Bahia</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4293310476</id>
+                <name>Sousse</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4293247439</id>
+                <name>Hsin Chu, Taiwan</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4284203020</id>
+                <name>Manizales</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4278018928</id>
+                <name>Naiguata</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4277904716</id>
+                <name>Compiegne</name>
+                <count>1</count>
+            </item>
+            <item>
+                <id>4246383367</id>
+                <name>HI, USA</name>
+                <count>1</count>
+            </item>
+        </conferenceLocations>
+    </meta>
+    <articles>
+        <item>
+            <title>Select this article: Leveraging Model Driven Engineering in Software Product Line Architectures</title>
+            <authors>Trask, B.</authors>
+            <publication>Software Product Line Conference (SPLC), 2011 15th International</publication>
+            <doi>10.1109/SPLC.2011.63</doi>
+            <year/>
+            <pagesRange/>
+        </item>
+        <item>
+            <title>Select this article: The Design of a Conceptual Framework and Technical Infrastructure for Model Management Language Engineering</title>
+            <authors>Paige, R.F.</authors>
+            <publication>Engineering of Complex Computer Systems, 2009 14th IEEE International Conference on</publication>
+            <doi>10.1109/ICECCS.2009.14</doi>
+            <year/>
+            <pagesRange/>
+        </item>
+        <item>
+            <title>Select this article: A Model-Based Approach to Families of Embedded Domain-Specific Languages</title>
+            <authors>Cuadrado, J.S.</authors>
+            <publication>Software Engineering, IEEE Transactions on</publication>
+            <doi>10.1109/TSE.2009.14</doi>
+            <year/>
+            <pagesRange/>
+        </item>
+        <item>
+            <title>Select this article: From Business Application Execution to Design Through Model-Based Reporting</title>
+            <authors>Holmes, T.</authors>
+            <publication>Enterprise Distributed Object Computing Conference (EDOC), 2012 IEEE 16th International</publication>
+            <doi>10.1109/EDOC.2012.25</doi>
+            <year/>
+            <pagesRange/>
+        </item>
+        <item>
+            <title>Select this article: Habitation: A Domain-Specific Language for Home Automation</title>
+            <authors>Jimenez, M.</authors>
+            <publication>Software, IEEE</publication>
+            <doi>10.1109/MS.2009.93</doi>
+            <year/>
+            <pagesRange/>
+        </item>
+        <item>
+            <title>Select this article: Reusable hybrid force-velocity controlled motion specifications with executable Domain Specific Languages</title>
+            <authors>Klotzbucher, M.</authors>
+            <publication>Intelligent Robots and Systems (IROS), 2011 IEEE/RSJ International Conference on</publication>
+            <doi>10.1109/IROS.2011.6094782</doi>
+            <year/>
+            <pagesRange/>
+        </item>
+        <item>
+            <title>Select this article: Facilitating Development and Provisioning of Service Topologies through Domain-Specific Languages</title>
+            <authors>Holmes, T.</authors>
+            <publication>Enterprise Distributed Object Computing Conference Workshops and Demonstrations (EDOCW), 2014 IEEE 18th International</publication>
+            <doi>10.1109/EDOCW.2014.72</doi>
+            <year/>
+            <pagesRange/>
+        </item>
+        <item>
+            <title>Select this article: Metamodel Recovery from Multi-tiered Domains Using Extended MARS</title>
+            <authors>Qichao Liu</authors>
+            <publication>Computer Software and Applications Conference (COMPSAC), 2010 IEEE 34th Annual</publication>
+            <doi>10.1109/COMPSAC.2010.35</doi>
+            <year/>
+            <pagesRange/>
+        </item>
+        <item>
+            <title>Select this article: Towards a systematic, tool-independent methodology for defining the execution semantics of UML profiles with fUML</title>
+            <authors>Tatibouet, Jeremie</authors>
+            <publication>Model-Driven Engineering and Software Development (MODELSWARD), 2014 2nd International Conference on</publication>
+            <doi/>
+            <year/>
+            <pagesRange/>
+        </item>
+        <item>
+            <title>Select this article: A Graphical Editor for RESTful Sensor Web networks modeling</title>
+            <authors>Vujovic, V.</authors>
+            <publication>Applied Computational Intelligence and Informatics (SACI), 2014 IEEE 9th International Symposium on</publication>
+            <doi>10.1109/SACI.2014.6840036</doi>
+            <year/>
+            <pagesRange/>
+        </item>
+        <item>
+            <title>Select this article: SimPL A Simple Software Production Line for End User Development</title>
+            <authors>Malaer, A.</authors>
+            <publication>Software Engineering Conference, 2008. APSEC '08. 15th Asia-Pacific</publication>
+            <doi>10.1109/APSEC.2008.29</doi>
+            <year/>
+            <pagesRange/>
+        </item>
+        <item>
+            <title>Select this article: &lt;span class='snippet'&gt;MDE&lt;/span&gt; and Mobile Agents: Another Reflection on the Agent Migration</title>
+            <authors>Gherbi, T.</authors>
+            <publication>Computer Modelling and Simulation, 2009. UKSIM '09. 11th International Conference on</publication>
+            <doi>10.1109/UKSIM.2009.99</doi>
+            <year/>
+            <pagesRange/>
+        </item>
+        <item>
+            <title>Select this article: &lt;span class='snippet'&gt;MDE&lt;/span&gt; between Promises and Challenges</title>
+            <authors>Gherbi, T.</authors>
+            <publication>Computer Modelling and Simulation, 2009. UKSIM '09. 11th International Conference on</publication>
+            <doi>10.1109/UKSIM.2009.13</doi>
+            <year/>
+            <pagesRange/>
+        </item>
+        <item>
+            <title>Select this article: Debugging Model-to-Model Transformations</title>
+            <authors>Schonbock, J.</authors>
+            <publication>Software Engineering Conference (APSEC), 2012 19th Asia-Pacific</publication>
+            <doi>10.1109/APSEC.2012.56</doi>
+            <year/>
+            <pagesRange/>
+        </item>
+        <item>
+            <title>Select this article: Designing Domain Architectures for Model-Driven Engineering</title>
+            <authors>Lucredio, D.</authors>
+            <publication>Software Components, Architectures and Reuse (SBCARS), 2010 Fourth Brazilian Symposium on</publication>
+            <doi>10.1109/SBCARS.2010.20</doi>
+            <year/>
+            <pagesRange/>
+        </item>
+        <item>
+            <title>Select this article: On the Applicability Scope of Model Driven Engineering</title>
+            <authors>Bezivin, J.</authors>
+            <publication>Model-Based Methodologies for Pervasive and Embedded Software, 2007. MOMPES '07. Fourth International Workshop on</publication>
+            <doi>10.1109/MOMPES.2007.16</doi>
+            <year/>
+            <pagesRange/>
+        </item>
+        <item>
+            <title>Select this article: Towards a model-driven approach for promoting cloud PaaS portability</title>
+            <authors>Nogueira da Silva, E.A.</authors>
+            <publication>Computing Conference (CLEI), 2013 XXXIX Latin American</publication>
+            <doi>10.1109/CLEI.2013.6670667</doi>
+            <year/>
+            <pagesRange/>
+        </item>
+        <item>
+            <title>Select this article: Service oriented architecture: A model driven governance maturity classifier</title>
+            <authors>Diaz, A.</authors>
+            <publication>Computing Congress (CCC), 2011 6th Colombian</publication>
+            <doi>10.1109/COLOMCC.2011.5936296</doi>
+            <year/>
+            <pagesRange/>
+        </item>
+        <item>
+            <title>Select this article: Model-Driven Development in the Production of Customizable Learning Objects</title>
+            <authors>de Souza, Mde.F.C.</authors>
+            <publication>Advanced Learning Technologies (ICALT), 2010 IEEE 10th International Conference on</publication>
+            <doi>10.1109/ICALT.2010.198</doi>
+            <year/>
+            <pagesRange/>
+        </item>
+        <item>
+            <title>Select this article: DSLs, DLA, DxT, and &lt;span class='snippet'&gt;MDE&lt;/span&gt; in CSE</title>
+            <authors>Marker, B.</authors>
+            <publication>Software Engineering for Computational Science and Engineering (SE-CSE), 2013 5th International Workshop on</publication>
+            <doi>10.1109/SECSE.2013.6615103</doi>
+            <year/>
+            <pagesRange/>
+        </item>
+        <item>
+            <title>Select this article: An industrial case study on using language workbench technology for realizing Model-Driven Engineering</title>
+            <authors>Xi Zhu</authors>
+            <publication>Model-Driven Engineering and Software Development (MODELSWARD), 2014 2nd International Conference on</publication>
+            <doi/>
+            <year/>
+            <pagesRange/>
+        </item>
+        <item>
+            <title>Select this article: Model Driven Engineering for Building Automation, a Research Agenda</title>
+            <authors>Luyckx, P.</authors>
+            <publication>P2P, Parallel, Grid, Cloud and Internet Computing (3PGCIC), 2013 Eighth International Conference on</publication>
+            <doi>10.1109/3PGCIC.2013.83</doi>
+            <year/>
+            <pagesRange/>
+        </item>
+        <item>
+            <title>Select this article: A &lt;span class='snippet'&gt;MDE&lt;/span&gt; Based Approach for Bridging Formal Models</title>
+            <authors>Tian Zhang</authors>
+            <publication>Theoretical Aspects of Software Engineering, 2008. TASE '08. 2nd IFIP/IEEE International Symposium on</publication>
+            <doi>10.1109/TASE.2008.21</doi>
+            <year/>
+            <pagesRange/>
+        </item>
+        <item>
+            <title>Select this article: Integrating the Modelica &lt;span class='snippet'&gt;DSL&lt;/span&gt; into a Platform for Model-Based Tool Interoperability</title>
+            <authors>Tcholtchev, N.</authors>
+            <publication>Computer Software and Applications Conference Workshops (COMPSACW), 2014 IEEE 38th International</publication>
+            <doi>10.1109/COMPSACW.2014.88</doi>
+            <year/>
+            <pagesRange/>
+        </item>
+        <item>
+            <title>Select this article: Multilevel MPSOC simulation using an &lt;span class='snippet'&gt;MDE&lt;/span&gt; approach</title>
+            <authors>Ben Atitallah, R.</authors>
+            <publication>SOC Conference, 2007 IEEE International</publication>
+            <doi>10.1109/SOCC.2007.4545457</doi>
+            <year/>
+            <pagesRange/>
+        </item>
+    </articles>
+</content>
