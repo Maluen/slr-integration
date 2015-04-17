@@ -1,0 +1,17 @@
+<service>
+    <request> <!-- Specifies how to retrieve/access service -->
+        <url>
+            http://dl.acm.org/results.cfm?coll=DL&amp;dl=GUIDE&amp;CFID={{{cfid}}}&amp;CFTOKEN={{{cftoken}}}
+        </url>
+        <method>POST</method> <!-- HTTP Method: GET, POST, etc. -->
+        <body contentType="application/x-www-form-urlencoded"> <!-- POST parameters -->
+            <item>
+                <name>query</name>
+                <value>{{query}}</value>
+            </item>
+        </body>
+    </request>
+    <response contentType="text/html">
+
+    </response>
+</service>

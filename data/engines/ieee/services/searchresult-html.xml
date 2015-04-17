@@ -1,22 +1,11 @@
 <service>
-    <endpoint> <!-- Specifies how to retrieve/access service -->
+    <request> <!-- Specifies how to retrieve/access service -->
         <url>
-            http://ieeexplore.ieee.org/search/searchresult.jsp?newsearch=true&amp;queryText={{queryText}}&amp;pageNumber={{pageNumber}}
+            http://ieeexplore.ieee.org/search/searchresult.jsp?newsearch=true&amp;queryText={{{queryText}}}&amp;pageNumber={{{pageNumber}}}
         </url>
         <method>GET</method> <!-- HTTP Method: GET, POST, etc. -->
-        <contentType>text/html</contentType>
-        <parameters> <!-- POST parameters -->
-            <param>
-                <name>apikey</name>
-                <value>bar</value>
-            </param>
-            <param>
-                <name>queryText</name>
-                <value>{{queryText}}</value>
-            </param>
-        </parameters>
-    </endpoint>
-    <content>
+    </request>
+    <response contentType="text/html">
 
         <meta>
             <!-- number of results -->
@@ -110,11 +99,18 @@
                 <title el=".select input" mode="script">
                     <!-- input text has the format 'Select this article: article title' -->
                     var text = el.attr('title');
-                    var start = text.indexOf(': ');
-                    if (start !== -1) text.substr(start.length + 2);
+                    var search = ': ';
+                    var start = text.indexOf(search);
+                    if (start !== -1) text.substr(start + search.length);
                 </title>
 
                 <authors el="#preferredName" mode="script">el.attr('class')</authors>
+
+                <!-- TODO -->
+                <abstract></abstract>
+
+                <!-- TODO -->
+                <affiliations></affiliations>
 
                 <publication el="a" expand="true">
                     <!-- when expand is true we can set further options on the parent element, such as condition (xml characteristic: we can't set them as attributes if their structure is 'complex') -->
@@ -132,11 +128,13 @@
                     <value mode="text" />
                 </doi>
 
+                <!-- TODO -->
                 <year mode="script">
                     <!-- get child text node containing "Publication Year:" -->
                     <!-- TODO: check ambiguity in case the above string is also used in other places -->
                 </year>
 
+                <!-- TODO -->
                 <pagesRange>
                     <!-- get child text node containing "Page(s):" -->
                     <!-- TODO: check ambiguity in case the above string is also used in other places -->
@@ -144,5 +142,5 @@
             </item>
         </articles>
 
-    </content>
+    </response>
 </service>

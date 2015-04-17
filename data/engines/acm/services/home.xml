@@ -1,0 +1,31 @@
+<service>
+    <request> <!-- Specifies how to retrieve/access service -->
+        <url>http://dl.acm.org/</url>
+        <method>GET</method> <!-- HTTP Method: GET, POST, etc. -->
+    </request>
+    <response contentType="text/html">
+        <!-- from="cookie" searches in returned cookies; mode="text" in that case means cookie value. -->
+        <cfid from="cookie" el="CFID" mode="text" />
+        <cftoken from="cookie" el="CFTOKEN" mode="text" />
+    </response>
+
+    <!--
+    <request>
+        <url>http://dl.acm.org/</url>
+        <method>GET</method>
+        <cookies />
+        <headers />
+        <body contentType="application/x-www-form-urlencoded">
+        </body>
+    </request>
+
+    <response>
+        <cookies />
+        <headers />
+        <body contentType="text/html">
+
+        </body>
+    </response>
+    -->
+
+</service>

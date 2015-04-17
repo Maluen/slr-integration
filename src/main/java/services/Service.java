@@ -1,7 +1,6 @@
 package services;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -16,29 +15,30 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import parsers.xml.XMLParser;
-import services.extractors.Extractor;
-import services.extractors.ExtractorsFactory;
+import converters.ConvertersFactory;
+import converters.DocumentToForm;
+import converters.DocumentToText;
+import converters.TextToDocument;
 
 public class Service {
 
 	private XMLParser xmlParser;
 	private HTTPClient httpClient;
 	
-	private Map<String, String> data;
+	private Data<String> data;
 	
 	private String url;
 	private String method;
 	private String contentType;
-	private Map<String, String> postParameters;
+	private String body;
+	private Document bodyDocument;
 	private Document template;
 	
 	public Service() {
 		this.xmlParser = new XMLParser();
 		this.httpClient = new HTTPClient();
 		
-		this.data = new HashMap<String, String>();
-		
-		this.postParameters = new HashMap<String, String>();
+		this.data = new Data<String>();
 	}
 	
 	public void loadFromFile(File file) {
@@ -46,39 +46,49 @@ public class Service {
 			String fileContent = Utils.getFileContent(file);
 			Document document = this.xmlParser.parse(fileContent);
 			
-			// get endpoint information
+			// request
 			
 			Element rootEl = document.getDocumentElement();
-			Element endpointEl = (Element) rootEl.getElementsByTagName("endpoint").item(0);
+			Element requestEl = (Element) rootEl.getElementsByTagName("request").item(0);
 			
-			Element urlEl = (Element) endpointEl.getElementsByTagName("url").item(0);
-			String url = urlEl.getTextContent().trim();
+			String url = "";
+			if (requestEl != null) {
+				Element urlEl = (Element) requestEl.getElementsByTagName("url").item(0);
+				if (urlEl != null) url = urlEl.getTextContent().trim();
+			}
 			this.setUrl(url);
 			
-			Element methodEl = (Element) endpointEl.getElementsByTagName("method").item(0);
-			String method = methodEl.getTextContent().trim();
+			String method = "";
+			if (requestEl != null) {
+				Element methodEl = (Element) requestEl.getElementsByTagName("method").item(0);
+				if (methodEl != null) method = methodEl.getTextContent().trim();
+			}
 			this.setMethod(method);
+
+			// body
 			
-			Element contentTypeEl = (Element) endpointEl.getElementsByTagName("contentType").item(0);
-			String contentType = contentTypeEl.getTextContent().trim();
+			Element bodyEl = null;
+			if (requestEl != null) bodyEl = (Element) requestEl.getElementsByTagName("body").item(0);
+			
+			Document bodyDocument = null;
+			if (bodyEl != null) bodyDocument = xmlParser.createDocumentFromElement(bodyEl);
+			this.setBodyDocument(bodyDocument);
+			
+			// TODO: add body as string instead that as document
+			// if bodyEl content is a string/cdata
+			this.setBody(""); // reset
+			
+			String contentType = "";
+			if (bodyEl != null) contentType = bodyEl.getAttribute("contentType");
 			this.setContentType(contentType);
 			
-			// get postParameters
-			Element parametersEl = (Element) endpointEl.getElementsByTagName("parameters").item(0);
-			List<Element> paramElList = XMLParser.getChildElements(parametersEl);
-			for (Element paramEl : paramElList) {
-				Element nameEl = (Element) paramEl.getElementsByTagName("name").item(0);
-				String name = nameEl.getTextContent().trim();
-				
-				Element valueEl = (Element) paramEl.getElementsByTagName("value").item(0);
-				String value = valueEl.getTextContent().trim();
-				
-				this.addPostParameter(name, value);
-			}
+			// template
 			
-			// get template
-			Element templateEl = (Element) rootEl.getElementsByTagName("content").item(0);
-			Document template = xmlParser.createDocumentFromElement(templateEl);
+			Document template = null;
+			if (rootEl != null) {
+				Element templateEl = (Element) rootEl.getElementsByTagName("response").item(0);
+				if (templateEl != null) template = xmlParser.createDocumentFromElement(templateEl);
+			}
 			this.setTemplate(template);
 			
 		} catch (IOException e) {
@@ -86,53 +96,12 @@ public class Service {
 			e.printStackTrace();
 		}
 	}
-	
-	private String applyData(String target) {
-		
-	    for (Map.Entry<String, String> entry : this.data.entrySet()) {
-	    	
-	    	String name = entry.getKey();
-	    	String value = entry.getValue();
-	    	
-	    	try {
-	    		// do this first since the other also matches this form
-				target = target.replace("{{{"+name+"}}}", value);
-				
-				target = target.replace("{{"+name+"}}", URLEncoder.encode(value, "UTF-8"));
-				
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	    	
-	    }
-		
-		return target;
-	}
-	
-	private Map<String, String> applyData(Map<String, String> target) {
-		// don't modify original collection
-		Map<String, String> newTarget = new HashMap<String, String>();
-		
-		for (Map.Entry<String, String> entry : target.entrySet()) {
-	    	String name = entry.getKey();
-	    	String value = entry.getValue();
-	    	
-	    	// apply data to name and value
-	    	name = this.applyData(name);
-	    	value = this.applyData(value);
-	    	
-	    	newTarget.put(name, value);
-		}
 
-		return newTarget;
+	public Data<String> getData() {
+		return this.data;
 	}
 
-	public Map<String, String> getData() {
-		return data;
-	}
-
-	public void setData(Map<String, String> data) {
+	public void setData(Data<String> data) {
 		this.data = data;
 	}
 	
@@ -164,16 +133,20 @@ public class Service {
 		this.contentType = contentType;
 	}
 
-	public Map<String, String> getPostParameters() {
-		return postParameters;
+	public String getBody() {
+		return this.body;
 	}
 
-	public void setPostParameters(Map<String, String> postParameters) {
-		this.postParameters = postParameters;
+	public void setBody(String body) {
+		this.body = body;
 	}
-
-	public void addPostParameter(String name, String value) {
-		this.postParameters.put(name, value);
+	
+	public Document getBodyDocument() {
+		return this.bodyDocument;
+	}
+	
+	public void setBodyDocument(Document bodyDocument) {
+		this.bodyDocument = bodyDocument;
 	}
 
 	public Document getTemplate() {
@@ -186,13 +159,32 @@ public class Service {
 	
 	public Document request() {
 		// apply data to parameters
-		String url = this.applyData(this.url);
-		String method = this.applyData(this.method);
-		String contentType = this.applyData(this.contentType);
-		Map<String, String> postParameters = this.applyData(this.postParameters);
+		String url = this.data.apply(this.url);
+		String method = this.data.apply(this.method);
+		
+		// resolve content type
+		String contentType = this.data.apply(this.contentType);
+		if (contentType.isEmpty()) {
+			// default content type
+			contentType = DocumentToForm.getToContentType();
+		}
+		
+		// resolve body
+		String body;
+		if (!this.body.isEmpty()) {
+			// user provided body as string
+			body = this.data.apply(this.body);
+		} else if (this.bodyDocument != null) {
+			// user provided body as document
+			DocumentToText converter = ConvertersFactory.createDocumentToText(contentType);
+			body = converter.convert(this.bodyDocument, this.data);
+		} else {
+			// default: no body
+			body = "";
+		}
 		
 		// call service
-		String response = httpClient.request(url, method, contentType, postParameters);
+		String response = httpClient.request(url, method, contentType, body);
 		
 		// DEBUG: save page
 		/*try {
@@ -217,9 +209,10 @@ public class Service {
 			response = null;
 		}*/
 		
-		// extract data from service
-		Extractor extractor = ExtractorsFactory.create(this.contentType);
-		Document data = extractor.extractFrom(response, this.template);
+		// TODO: extract data from service
+		String responseContentType = this.template.getDocumentElement().getAttribute("contentType");
+		TextToDocument converter = ConvertersFactory.createTextToDocument(responseContentType);
+		Document data = converter.convert(response, this.template);
 		
 		return data;
 	};

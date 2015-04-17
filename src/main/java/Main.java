@@ -95,8 +95,10 @@ public class Main {
 		//Main.json("json/example.json");
 		//Main.http("http://www.google.com/");
 		
+		String queryText = "mde OR dsl";
+		
 		Engine engine = new IEEEEngine();
-		engine.search();
+		engine.search(queryText);
 	}
 
 }

@@ -1,9 +1,8 @@
-package services.extractors;
+package converters;
 
 import java.util.List;
 
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -15,18 +14,13 @@ import org.w3c.dom.Element;
 import parsers.html.HTMLParser;
 import parsers.xml.XMLParser;
 
-public class HTMLExtractor implements Extractor {
+public class HTMLtoDocument extends TextToDocument {
 
-	private HTMLParser htmlParser;
-	private DocumentBuilderFactory docFactory;
-	private DocumentBuilder docBuilder;
-	ScriptEngineManager scriptFactory;
-	
-	private String content;
-	private Document template;
-	private Document document;
+	protected HTMLParser htmlParser;
+	protected DocumentBuilderFactory docFactory;
+	protected DocumentBuilder docBuilder;
 
-	public HTMLExtractor() {
+	public HTMLtoDocument() {
 		this.htmlParser = new HTMLParser();
 		
 		this.docFactory = DocumentBuilderFactory.newInstance();
@@ -36,36 +30,14 @@ public class HTMLExtractor implements Extractor {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-	    // create a script engine manager
-        this.scriptFactory = new ScriptEngineManager();
 	}
 	
-	public String getContent() {
-		return content;
+	public static String getFromContentType() {
+		return "text/html";
 	}
 
-	public void setContent(String content) {
-		this.content = content;
-	}
-
-	public Document getTemplate() {
-		return template;
-	}
-
-	public void setTemplate(Document template) {
-		this.template = template;
-	}
-	
-	public Document getDocument() {
-		return document;
-	}
-
-	public void setDocument(Document document) {
-		this.document = document;
-	}
-
-	public Document extractFrom(String content, Document template) {
+	@Override
+	public Document convert(String content, Document template) {
 		
 		this.setContent(content);
 		this.setTemplate(template);
@@ -103,7 +75,7 @@ public class HTMLExtractor implements Extractor {
 		}
 				
 		// filter base elements pool if needed
-		if (HTMLExtractor.isExpand(templateElement)) {
+		if (HTMLtoDocument.isExpand(templateElement)) {
 			Element conditionElement = (Element) templateElement.getElementsByTagName("condition").item(0);
 			try {
 				htmlElementList = this.filterHtmlElements(htmlElementList, conditionElement);
@@ -122,7 +94,7 @@ public class HTMLExtractor implements Extractor {
 		
 		// get value element (explicit in case of expand)
 		Element valueElement;
-		if (HTMLExtractor.isExpand(templateElement)) {
+		if (HTMLtoDocument.isExpand(templateElement)) {
 			valueElement = (Element) templateElement.getElementsByTagName("value").item(0);
 		} else {
 			// implicit: is the element itself
@@ -204,7 +176,7 @@ public class HTMLExtractor implements Extractor {
 		return docElement;
 	}
 	
-	public org.jsoup.select.Elements filterHtmlElements(org.jsoup.select.Elements htmlElementList, 
+	protected org.jsoup.select.Elements filterHtmlElements(org.jsoup.select.Elements htmlElementList, 
 														Element conditionElement) throws Exception {
 		
 		org.jsoup.select.Elements filteredHtmlElementList = new org.jsoup.select.Elements();
@@ -238,10 +210,6 @@ public class HTMLExtractor implements Extractor {
 		}
 		
 		return filteredHtmlElementList;
-	}
-	
-	public static Boolean isExpand(Element templateElement) {
-		return templateElement.getAttribute("expand").equals("true");
 	}
 	
 }

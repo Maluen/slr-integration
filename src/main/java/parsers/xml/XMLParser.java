@@ -56,18 +56,29 @@ public class XMLParser implements Parser {
 	}
 	
 	public static List<Element> getChildElements(Element parent) {
-		List<Element> childElements = new ArrayList<Element>();
+		List<Element> childElementList = new ArrayList<Element>();
 		
 		NodeList childNodeList = parent.getChildNodes();
         for (int i=0; i<childNodeList.getLength(); i++) {
             Node childNode = childNodeList.item(i);
             if (childNode.getNodeType() == Node.ELEMENT_NODE) {
             	Element childElement = (Element) childNode;
-            	childElements.add(childElement);
+            	childElementList.add(childElement);
             }
         }
 		
-		return childElements;
+		return childElementList;
+	}
+	
+	public static Element getChildElementByTagName(Element parent, String tagName) {
+		List<Element> childElementList = XMLParser.getChildElements(parent);
+		for (Element childElement : childElementList) {
+			if (childElement.getTagName().equals(tagName)) {
+				return childElement;
+			}
+		}
+        
+        return null;
 	}
 	
 }

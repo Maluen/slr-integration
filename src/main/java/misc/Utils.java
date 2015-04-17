@@ -9,6 +9,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -63,7 +64,17 @@ public class Utils {
 	}
 	
 	// http://stackoverflow.com/a/4561785
-	public static void saveDocument(Document document, String path) throws TransformerFactoryConfigurationError, TransformerException {
+	public static void saveDocument(Document document, String path) throws TransformerFactoryConfigurationError, TransformerException, IOException {
+
+		File file = new File(path);
+		
+		// create path to file if it does not exist
+		Path pathToFile = Paths.get(path);
+		Files.createDirectories(pathToFile.getParent());
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+		
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
 		Result output = new StreamResult(new File(path));
 		Source input = new DOMSource(document);

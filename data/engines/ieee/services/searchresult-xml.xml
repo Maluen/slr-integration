@@ -1,0 +1,28 @@
+<service>
+    <request> <!-- Specifies how to retrieve/access service -->
+        <url>
+            http://ieeexplore.ieee.org/gateway/ipsSearch.jsp?querytext={{{queryText}}}&amp;rs={{{startNumber}}}&amp;hc={{{numberOfResults}}}
+        </url>
+        <method>GET</method> <!-- HTTP Method: GET, POST, etc. -->
+    </request>
+    <response contentType="text/xml">
+
+        <meta el="totalfound">
+            <count></count>
+        </meta>
+
+        <articles el="document" mode="list">
+            <item>
+                <title el="title"></title>
+                <authors></authors>
+                <abstract></abstract>
+                <affiliations></affiliations>
+                <publication></publication>
+                <doi></doi>
+                <year></year>
+                <pagesRange></pagesRange>
+            </item>
+        </articles>
+
+    </response>
+</service>

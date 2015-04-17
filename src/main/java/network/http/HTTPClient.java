@@ -17,37 +17,29 @@ public class HTTPClient {
 
 	// Returned string is the response (full or body only? Don't know yet).
 	// NOTE: do not uses cache.
-	public String request(String url, String method, String contentType,
-						Map<String, String> postParameters) {
+	public String request(String url, String method, String contentType, String body) {
 	
 		try {
 			
 			URL urlParsed = new URL(url);
 			
+			String contentLength = Integer.toString(body.getBytes().length);
+			
 			// Create connection
 		    HttpURLConnection connection = (HttpURLConnection) urlParsed.openConnection();
 		    connection.setRequestMethod(method);
-		    connection.setRequestProperty("Content-Type", contentType);
+		    if (!body.isEmpty()) {
+		    	// only set those headers if there is actually something to send
+			    connection.setRequestProperty("Content-Type", contentType);
+			    connection.setRequestProperty("Content-Length", contentLength);
+		    }
 		    connection.setUseCaches(false);
 		    connection.setDoInput(true);
 		    connection.setDoOutput(true);
 		    
-		    // convert post parameters in a "name=value" list (url-encoded)
-		    // to be easily joined by the "&" separator
-		    List<String> requestBodyElements = new ArrayList<String>();
-		    for (Map.Entry<String, String> entry : postParameters.entrySet()) {
-		    	String name = URLEncoder.encode(entry.getKey(), "UTF-8");
-		    	String value = URLEncoder.encode(entry.getValue(), "UTF-8");
-		    	String element = name + "=" + value;
-		    	
-		    	requestBodyElements.add(element);
-		    }
-		    String responseBody = StringUtils.join(requestBodyElements, "&");
-		    
-		    
 		    // Send request
 		    DataOutputStream wr = new DataOutputStream( connection.getOutputStream() );
-		    wr.writeBytes(responseBody);
+		    wr.writeBytes(body);
 		    wr.flush();
 		    wr.close();
 		    
