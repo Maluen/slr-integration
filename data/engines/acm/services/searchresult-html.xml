@@ -10,8 +10,30 @@
                 <value>{{query}}</value>
             </item>
         </body>
+        <cookies>
+            <item>
+                <name>CFID</name>
+                <value>{{cfid}}</value>
+            </item>
+            <item>
+                <name>CFTOKEN</name>
+                <value>{{cftoken}}</value>
+            </item>
+            <item>
+                <name>DEEPCHK</name>
+                <value>1</value>
+            </item>
+        </cookies>
     </request>
     <response contentType="text/html">
+
+        <meta>
+            <count></count>
+        </meta>
+
+        <articles>
+
+        </articles>
 
     </response>
 </service>

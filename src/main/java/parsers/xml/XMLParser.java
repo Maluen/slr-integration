@@ -16,7 +16,7 @@ import org.xml.sax.InputSource;
 
 import parsers.Parser;
 
-public class XMLParser implements Parser {
+public class XMLParser extends Parser {
 
 	DocumentBuilderFactory factory;
 	DocumentBuilder builder;

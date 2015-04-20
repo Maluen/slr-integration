@@ -1,4 +1,4 @@
-package converters;
+package converters.document.from;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -6,24 +6,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import parsers.xml.XMLParser;
-import services.Data;
 
 
 public class DocumentToForm extends DocumentToText {
 
-	public static String getToContentType() {
+	public String getToContentType() {
 		return "application/x-www-form-urlencoded";
 	}
 	
 	@Override
-	public String convert(Document template, Data<String> data) {
+	public String convert() {
 		String formData;
 		
-		Element rootEl = template.getDocumentElement();
+		Element rootEl = this.document.getDocumentElement();
 		List<Element> parameterElList = XMLParser.getChildElements(rootEl);
 		
 	    // convert post parameters in a "name=value" list (url-encoded)
@@ -36,8 +34,8 @@ public class DocumentToForm extends DocumentToText {
 			String name = nameEl.getTextContent().trim();
 			String value = valueEl.getTextContent().trim();
 			
-			name = data.apply(name);
-			value = data.apply(value);
+			name = this.data.apply(name);
+			value = this.data.apply(value);
 			
 	    	try {
 		    	name = URLEncoder.encode(name, "UTF-8");

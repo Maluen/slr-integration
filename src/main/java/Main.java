@@ -20,7 +20,7 @@ import com.mashape.unirest.request.GetRequest;
 import com.owlike.genson.Genson;
 
 import engines.Engine;
-import engines.ieee.IEEEEngine;
+import engines.acm.ACMEngine;
 
 /**
  * 
@@ -97,8 +97,11 @@ public class Main {
 		
 		String queryText = "mde OR dsl";
 		
-		Engine engine = new IEEEEngine();
-		engine.search(queryText);
+		//Engine ieeeEngine = new IEEEEngine();
+		//ieeeEngine.search(queryText);
+		
+		Engine acmEngine = new ACMEngine();
+		acmEngine.search(queryText);
 	}
 
 }

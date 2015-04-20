@@ -1,7 +1,7 @@
 package parsers;
 
-public interface Parser {
+public abstract class Parser {
 
-	public Object parse(String content);
+	public abstract Object parse(String content);
 	
 }

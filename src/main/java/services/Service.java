@@ -2,41 +2,47 @@ package services;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import misc.Utils;
 import network.http.HTTPClient;
+import network.http.HTTPResponse;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import parsers.xml.XMLParser;
-import converters.ConvertersFactory;
-import converters.DocumentToForm;
-import converters.DocumentToText;
-import converters.TextToDocument;
+import converters.document.DocumentConverterFactory;
+import converters.document.from.DocumentToCookies;
+import converters.document.from.DocumentToForm;
+import converters.document.from.DocumentToText;
+import converters.document.to.MixedToDocument;
 
 public class Service {
 
 	private XMLParser xmlParser;
 	private HTTPClient httpClient;
+	private DocumentToForm documentToForm;
 	
 	private Data<String> data;
 	
 	private String url;
 	private String method;
 	private String contentType;
+	
 	private String body;
 	private Document bodyDocument;
+	
+	private String cookies;
+	private Document cookiesDocument;
+	
 	private Document template;
 	
 	public Service() {
 		this.xmlParser = new XMLParser();
 		this.httpClient = new HTTPClient();
+		this.documentToForm = new DocumentToForm();
 		
 		this.data = new Data<String>();
 	}
@@ -81,6 +87,19 @@ public class Service {
 			String contentType = "";
 			if (bodyEl != null) contentType = bodyEl.getAttribute("contentType");
 			this.setContentType(contentType);
+			
+			// body
+			
+			Element cookiesEl = null;
+			if (requestEl != null) cookiesEl = (Element) requestEl.getElementsByTagName("cookies").item(0);
+			
+			Document cookiesDocument = null;
+			if (cookiesEl != null) cookiesDocument = xmlParser.createDocumentFromElement(cookiesEl);
+			this.setCookiesDocument(cookiesDocument);
+			
+			// TODO: add cookies as string instead that as document
+			// if cookiesEl content is a string/cdata
+			this.setCookies(""); // reset			
 			
 			// template
 			
@@ -148,6 +167,22 @@ public class Service {
 	public void setBodyDocument(Document bodyDocument) {
 		this.bodyDocument = bodyDocument;
 	}
+	
+	public String getCookies() {
+		return this.cookies;
+	}
+
+	public void setCookies(String cookies) {
+		this.cookies = cookies;
+	}
+	
+	public Document getCookiesDocument() {
+		return this.cookiesDocument;
+	}
+	
+	public void setCookiesDocument(Document cookiesDocument) {
+		this.cookiesDocument = cookiesDocument;
+	}
 
 	public Document getTemplate() {
 		return template;
@@ -166,7 +201,7 @@ public class Service {
 		String contentType = this.data.apply(this.contentType);
 		if (contentType.isEmpty()) {
 			// default content type
-			contentType = DocumentToForm.getToContentType();
+			contentType = this.documentToForm.getToContentType();
 		}
 		
 		// resolve body
@@ -176,20 +211,43 @@ public class Service {
 			body = this.data.apply(this.body);
 		} else if (this.bodyDocument != null) {
 			// user provided body as document
-			DocumentToText converter = ConvertersFactory.createDocumentToText(contentType);
-			body = converter.convert(this.bodyDocument, this.data);
+			DocumentToText converter = (DocumentToText) DocumentConverterFactory.createFromDocument(contentType);
+			converter.setDocument(this.bodyDocument);
+			converter.setData(this.data);
+			body = converter.convert();
 		} else {
 			// default: no body
 			body = "";
 		}
 		
-		// call service
-		String response = httpClient.request(url, method, contentType, body);
+		// resolve cookies
+		String cookies;
+		if (!this.cookies.isEmpty()) {
+			// user provided cookies as string
+			cookies = this.data.apply(this.cookies);
+		} else if (this.cookiesDocument != null) {
+			// user provided cookies as document
+			DocumentToCookies converter = new DocumentToCookies();
+			converter.setDocument(this.cookiesDocument);
+			converter.setData(this.data);
+			cookies = converter.convert();
+		} else {
+			// default: no cookies
+			cookies = "";
+		}
 		
+		// call service
+		HTTPResponse response = httpClient.request(url, method, contentType, cookies, body);
+		
+		// extract response contents
+		String responseBody = response.getBody();
+		Map<String, List<String>> responseHeaders = response.getHeaders();
+		List<String> responseCookies = responseHeaders.get("Set-Cookie");
+				
 		// DEBUG: save page
 		/*try {
 			try {
-				Utils.saveText(response, "data/index.html");
+				Utils.saveText(responseBody, "data/index.html");
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -200,19 +258,29 @@ public class Service {
 		}*/
 		
 		// DEBUG: use local page
-		/*String response;
+		/*String responseBody;
 		try {
-			response = Utils.getFileContent( new File("data/index.html") );
+			responseBody = Utils.getFileContent( new File("data/index.html") );
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			response = null;
+			responseBody = null;
 		}*/
 		
-		// TODO: extract data from service
-		String responseContentType = this.template.getDocumentElement().getAttribute("contentType");
-		TextToDocument converter = ConvertersFactory.createTextToDocument(responseContentType);
-		Document data = converter.convert(response, this.template);
+		// Extract data from service
+		
+		MixedToDocument converter = new MixedToDocument();
+		converter.setDefaultContent(responseBody);
+		converter.addContent("application/x-www-response-cookies", responseCookies);
+		converter.setTemplate(this.template);
+
+		Document data = null;
+		try {
+			data = converter.convert();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		return data;
 	};

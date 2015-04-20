@@ -4,9 +4,13 @@
         <method>GET</method> <!-- HTTP Method: GET, POST, etc. -->
     </request>
     <response contentType="text/html">
-        <!-- from="cookie" searches in returned cookies; mode="text" in that case means cookie value. -->
-        <cfid from="cookie" el="CFID" mode="text" />
-        <cftoken from="cookie" el="CFTOKEN" mode="text" />
+
+        <!-- this contentType searches in returned cookies; mode="text" in that case means cookie value. -->
+        <session contentType="application/x-www-response-cookies">
+            <cfid el="CFID" mode="text" />
+            <cftoken el="CFTOKEN" mode="text" />
+        </session>
+
     </response>
 
     <!--

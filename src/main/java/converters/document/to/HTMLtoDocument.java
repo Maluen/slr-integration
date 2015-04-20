@@ -1,12 +1,9 @@
-package converters;
+package converters.document.to;
 
 import java.util.List;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -17,41 +14,28 @@ import parsers.xml.XMLParser;
 public class HTMLtoDocument extends TextToDocument {
 
 	protected HTMLParser htmlParser;
-	protected DocumentBuilderFactory docFactory;
-	protected DocumentBuilder docBuilder;
 
 	public HTMLtoDocument() {
 		this.htmlParser = new HTMLParser();
-		
-		this.docFactory = DocumentBuilderFactory.newInstance();
-		try {
-			this.docBuilder = this.docFactory.newDocumentBuilder();
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
-	public static String getFromContentType() {
+	public String getFromContentType() {
 		return "text/html";
 	}
 
 	@Override
-	public Document convert(String content, Document template) {
-		
-		this.setContent(content);
-		this.setTemplate(template);
-		
+	public Document convert() throws Exception {
+
 		// create output document
 		Document doc = this.docBuilder.newDocument();
 		this.setDocument(doc);
 		
 		// parse response
-		org.jsoup.nodes.Document parsedContent = this.htmlParser.parse(content);
+		org.jsoup.nodes.Document parsedContent = this.htmlParser.parse(this.content);
 		
 		// starting point
 		org.jsoup.nodes.Element contentRootElement = parsedContent.getElementsByTag("html").first();
-		Element templateRootElement = template.getDocumentElement();
+		Element templateRootElement = this.template.getDocumentElement();
 		
 		// process!
 		Element docRootElement = this.process(templateRootElement, contentRootElement);
@@ -60,7 +44,15 @@ public class HTMLtoDocument extends TextToDocument {
 		return doc;
 	}
 	
-	public Element process(Element templateElement, org.jsoup.nodes.Element fromHtmlEl) {
+	public Element process(Element templateElement, org.jsoup.nodes.Element fromHtmlEl) throws Exception {
+		
+		String contentType = templateElement.getAttribute("contentType");
+		if (!contentType.isEmpty() && !contentType.equals(this.getFromContentType())) {
+			// unsupported element
+			Element docElement = this.processUnsupported(templateElement);
+			docElement = (Element) this.document.importNode(docElement, true);
+			return docElement;
+		}
 		
 		Element docElement = this.document.createElement(templateElement.getTagName());
 		

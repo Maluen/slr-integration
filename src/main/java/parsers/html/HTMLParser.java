@@ -5,7 +5,7 @@ import org.jsoup.nodes.Document;
 
 import parsers.Parser;
 
-public class HTMLParser implements Parser {
+public class HTMLParser extends Parser {
 
 	public Document parse(String content) {
 		return Jsoup.parse(content);
