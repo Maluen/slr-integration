@@ -4,12 +4,20 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
 public class HTTPClient {
+
+	static { // on class load
+		// Enable cookies
+		CookieHandler.setDefault( new CookieManager( null, CookiePolicy.ACCEPT_ALL ) );
+	}
 
 	// Returned string is the response (full or body only? Don't know yet).
 	// NOTE: do not uses cache.
@@ -18,31 +26,56 @@ public class HTTPClient {
 	
 		try {
 			
+			System.out.println(url);
+			
 			URL urlParsed = new URL(url);
 			
 			String contentLength = Integer.toString(body.getBytes().length);
 			
 			// Create connection
 		    HttpURLConnection connection = (HttpURLConnection) urlParsed.openConnection();
+		    connection.setDoInput(true);
+		    connection.setInstanceFollowRedirects(false); // manually handle redirects (to prevent infinite waiting in some cases)
+		    //connection.setReadTimeout(60*1000);
+		    connection.setUseCaches(false);
+		    
+		    if (!body.isEmpty()) {
+		    	// there is something to write, tell the server to wait for it
+		    	// (doing this in GET requests or similar will cause infinite waiting)
+			    connection.setDoOutput(true);
+		    }
+		    
 		    connection.setRequestMethod(method);
 		    if (!body.isEmpty()) {
 		    	// only set those headers if there is actually something to send
 			    connection.setRequestProperty("Content-Type", contentType);
-			    connection.setRequestProperty("Content-Length", contentLength);
+			    //connection.setRequestProperty("Content-Length", contentLength);
 		    }
 		    if (!cookies.isEmpty()) {
 			    connection.setRequestProperty("Cookie", cookies);
 		    }
-		    connection.addRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
-		    connection.setUseCaches(false);
-		    connection.setDoOutput(true);
-
+		    connection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36");
 		    
-		    // Send request
-		    DataOutputStream wr = new DataOutputStream( connection.getOutputStream() );
-		    wr.writeBytes(body);
-		    wr.flush();
-		    wr.close();
+		    
+		    if (!body.isEmpty()) {
+			    // Send request
+			    DataOutputStream wr = new DataOutputStream( connection.getOutputStream() );
+			    wr.writeBytes(body);
+			    wr.flush();
+			    wr.close();
+		    }
+		    
+		    // Handle redirects
+		    Integer responseCode = connection.getResponseCode();
+		    if (responseCode.equals(HttpURLConnection.HTTP_MOVED_PERM) || responseCode.equals(HttpURLConnection.HTTP_MOVED_TEMP)) {
+	           String location = connection.getHeaderField("Location"); 
+	           // location might be relative, reconstruct absolute url
+	           url = new URL(urlParsed, location).toExternalForm(); // see http://stackoverflow.com/a/26046079
+	           
+	           // do a simple GET request to the location
+	           System.out.println("Redirect: " + url);
+	           return this.request(url, "GET", "", cookies, "");
+		    }
 		    
 		    // Get response body
 		    InputStream is = connection.getInputStream();
@@ -54,6 +87,7 @@ public class HTTPClient {
 		    	responseBuffer.append('\r');
 		    }
 		    rd.close();
+		    is.close();
 		    String responseBody = responseBuffer.toString();
 		    
 		    // Get response headers

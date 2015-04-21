@@ -1,13 +1,25 @@
 <service>
     <request> <!-- Specifies how to retrieve/access service -->
         <url>
-            http://dl.acm.org/results.cfm?coll=DL&amp;dl=GUIDE&amp;CFID={{{cfid}}}&amp;CFTOKEN={{{cftoken}}}
+            http://dl.acm.org/results.cfm?h=1&amp;cfid={{{cfid}}}&amp;cftoken={{{cftoken}}}
+            <!--
+            http://dl.acm.org/results.cfm?within={{query}}&amp;CFID={{cfid}}&amp;CFTOKEN={{cftoken}}&amp;adv=1&amp;COLL=DL&amp;qrycnt=2358153&amp;DL=ACM&amp;Go.x=35&amp;Go.y=3&amp;termzone=all&amp;allofem=&amp;anyofem=&amp;noneofem=&amp;peoplezone=Name&amp;people=&amp;peoplehow=and&amp;keyword=&amp;keywordhow=AND&amp;affil=&amp;affilhow=AND&amp;pubin=&amp;pubinhow=and&amp;pubby=&amp;pubbyhow=OR&amp;since_year=&amp;before_year=&amp;pubashow=OR&amp;sponsor=&amp;sponsorhow=AND&amp;confdate=&amp;confdatehow=OR&amp;confloc=&amp;conflochow=OR&amp;isbnhow=OR&amp;isbn=&amp;doi=&amp;ccs=&amp;subj=
+        -->
         </url>
         <method>POST</method> <!-- HTTP Method: GET, POST, etc. -->
-        <body contentType="application/x-www-form-urlencoded"> <!-- POST parameters -->
+        <!-- POST parameters -->
+        <body contentType="application/x-www-form-urlencoded">
             <item>
                 <name>query</name>
                 <value>{{query}}</value>
+            </item>
+            <item>
+                <name>Go.x</name>
+                <value>34</value>
+            </item>
+            <item>
+                <name>Go.y</name>
+                <value>16</value>
             </item>
         </body>
         <cookies>
@@ -23,6 +35,10 @@
                 <name>DEEPCHK</name>
                 <value>1</value>
             </item>
+            <item>
+                <name>__atuvc</name>
+                <value>{{atuvc}}</value>
+            </item>
         </cookies>
     </request>
     <response contentType="text/html">
@@ -31,8 +47,15 @@
             <count></count>
         </meta>
 
-        <articles>
-
+        <articles el="a" expand="true">
+            <condition mode="script">
+                el.attr('href').indexOf('citation.cfm') != -1
+            </condition>
+            <value mode="list">
+                <item>
+                    <title mode="text" />
+                </item>
+            </value>
         </articles>
 
     </response>

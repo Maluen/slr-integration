@@ -20,7 +20,7 @@ import com.mashape.unirest.request.GetRequest;
 import com.owlike.genson.Genson;
 
 import engines.Engine;
-import engines.acm.ACMEngine;
+import engines.ieee.IEEEEngine;
 
 /**
  * 
@@ -86,7 +86,7 @@ public class Main {
 	 * @param args
 	 * @throws IOException 
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {		
 		// TODO Auto-generated method stub
 		//System.out.println("Hello, World!");
 		
@@ -95,13 +95,15 @@ public class Main {
 		//Main.json("json/example.json");
 		//Main.http("http://www.google.com/");
 		
-		String queryText = "mde OR dsl";
+		//String queryText = "mde";
+		String queryText = Utils.getFileContent(new File("data/querystring.txt"));
+		System.out.println("Query string: " + queryText);
 		
-		//Engine ieeeEngine = new IEEEEngine();
-		//ieeeEngine.search(queryText);
+		Engine ieeeEngine = new IEEEEngine();
+		ieeeEngine.search(queryText);
 		
-		Engine acmEngine = new ACMEngine();
-		acmEngine.search(queryText);
+		//Engine acmEngine = new ACMEngine();
+		//acmEngine.search(queryText);
 	}
 
 }

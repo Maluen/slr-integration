@@ -1,9 +1,9 @@
 package converters.document.from;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+
+import network.http.HTTPEncoder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
@@ -36,16 +36,10 @@ public class DocumentToCookies extends DocumentToText {
 			name = this.data.apply(name);
 			value = this.data.apply(value);
 			
-	    	try {
-	    		// TODO: only encode real special characters
-	    		// http://www.nczonline.net/blog/2009/05/05/http-cookies-explained/
-		    	name = URLEncoder.encode(name, "UTF-8");
-				value = URLEncoder.encode(value, "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				// TODO: Wrong format
-				e.printStackTrace();
-				return null;
-			}
+    		// TODO: only encode real special characters
+    		// http://www.nczonline.net/blog/2009/05/05/http-cookies-explained/
+	    	name = HTTPEncoder.encodeForFormData(name);
+			value = HTTPEncoder.encodeForFormData(value);
 	    	
 	    	String element = name + "=" + value;
 	    	cookiesDataParts.add(element);

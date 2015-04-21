@@ -1,7 +1,8 @@
 <service>
     <request> <!-- Specifies how to retrieve/access service -->
         <url>
-            http://ieeexplore.ieee.org/search/searchresult.jsp?newsearch=true&amp;queryText={{{queryText}}}&amp;pageNumber={{{pageNumber}}}
+            <!--http://ieeexplore.ieee.org/search/searchresult.jsp?newsearch=true&amp;queryText={{{queryText}}}&amp;pageNumber={{{pageNumber}}}-->
+            http://ieeexplore.ieee.org/search/searchresult.jsp?action=search&amp;sortType=&amp;rowsPerPage=&amp;matchBoolean=true&amp;searchField=Search_All&amp;queryText={{{queryText}}}&amp;newsearch=true&amp;pageNumber={{{pageNumber}}}
         </url>
         <method>GET</method> <!-- HTTP Method: GET, POST, etc. -->
     </request>
@@ -106,8 +107,11 @@
 
                 <authors el="#preferredName" mode="script">el.attr('class')</authors>
 
-                <!-- TODO -->
-                <abstract></abstract>
+                <!-- TODO: the :not selector does not seem to work properly here -->
+                <abstract el="#abstract-1 > p" mode="script">
+                    // Get the text content skipping the "View full abstract" anchor
+                    el.select(':not(.more)').text().trim()
+                </abstract>
 
                 <!-- TODO -->
                 <affiliations></affiliations>

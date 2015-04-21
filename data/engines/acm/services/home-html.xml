@@ -9,6 +9,7 @@
         <session contentType="application/x-www-response-cookies">
             <cfid el="CFID" mode="text" />
             <cftoken el="CFTOKEN" mode="text" />
+            <atuvc el="__atuvc" mode="text" />
         </session>
 
     </response>

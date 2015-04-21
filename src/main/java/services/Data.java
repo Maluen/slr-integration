@@ -1,15 +1,20 @@
 package services;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+
+import network.http.HTTPEncoder;
 
 public class Data<T> extends HashMap<String, T> {
 
 	private static final long serialVersionUID = 3980218241538314470L;
 
 	public String apply(String target) {
+		// default encoding
+		return this.apply(target, HTTPEncoder.EncodeMode.FORM_DATA);
+	}
+	
+	public String apply(String target, HTTPEncoder.EncodeMode encodeMode) {
 	    for (Map.Entry<String, T> entry : this.entrySet()) {
 	    	
 	    	String name = entry.getKey();
@@ -17,17 +22,10 @@ public class Data<T> extends HashMap<String, T> {
 	    	
 	    	String valueString = value.toString();
 	    	
-	    	try {
-	    		// do this first since the other also matches this form
-				target = target.replace("{{{"+name+"}}}", URLEncoder.encode(valueString, "UTF-8"));
-				
-				target = target.replace("{{"+name+"}}", valueString);
-				
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return null;
-			}
+    		// do this first since the other also matches this form
+			target = target.replace("{{{"+name+"}}}", HTTPEncoder.encode(valueString, encodeMode));
+			
+			target = target.replace("{{"+name+"}}", valueString);
 	    	
 	    }
 		

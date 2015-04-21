@@ -7,6 +7,7 @@ import java.util.Map;
 
 import misc.Utils;
 import network.http.HTTPClient;
+import network.http.HTTPEncoder;
 import network.http.HTTPResponse;
 
 import org.w3c.dom.Document;
@@ -194,7 +195,7 @@ public class Service {
 	
 	public Document request() {
 		// apply data to parameters
-		String url = this.data.apply(this.url);
+		String url = this.data.apply(this.url, HTTPEncoder.EncodeMode.URL);
 		String method = this.data.apply(this.method);
 		
 		// resolve content type
@@ -243,7 +244,7 @@ public class Service {
 		String responseBody = response.getBody();
 		Map<String, List<String>> responseHeaders = response.getHeaders();
 		List<String> responseCookies = responseHeaders.get("Set-Cookie");
-				
+		
 		// DEBUG: save page
 		/*try {
 			try {

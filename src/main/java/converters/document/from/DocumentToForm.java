@@ -1,9 +1,9 @@
 package converters.document.from;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+
+import network.http.HTTPEncoder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
@@ -37,14 +37,8 @@ public class DocumentToForm extends DocumentToText {
 			name = this.data.apply(name);
 			value = this.data.apply(value);
 			
-	    	try {
-		    	name = URLEncoder.encode(name, "UTF-8");
-				value = URLEncoder.encode(value, "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				// TODO: Wrong format
-				e.printStackTrace();
-				return null;
-			}
+	    	name = HTTPEncoder.encodeForFormData(name);
+			value = HTTPEncoder.encodeForFormData(value);
 	    	
 	    	String element = name + "=" + value;
 	    	formDataParts.add(element);
