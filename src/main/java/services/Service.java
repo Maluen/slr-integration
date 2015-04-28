@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.xpath.XPathExpressionException;
+
 import misc.Utils;
 import network.http.HTTPClient;
 import network.http.HTTPEncoder;
@@ -38,8 +40,10 @@ public class Service {
 	private String cookies;
 	private Document cookiesDocument;
 	
-	private Document template;
+	private String responseBodyContentType;
 	
+	private Document template;
+		
 	public Service() {
 		this.xmlParser = new XMLParser();
 		this.httpClient = new HTTPClient();
@@ -89,7 +93,7 @@ public class Service {
 			if (bodyEl != null) contentType = bodyEl.getAttribute("contentType");
 			this.setContentType(contentType);
 			
-			// body
+			// cookies
 			
 			Element cookiesEl = null;
 			if (requestEl != null) cookiesEl = (Element) requestEl.getElementsByTagName("cookies").item(0);
@@ -100,7 +104,28 @@ public class Service {
 			
 			// TODO: add cookies as string instead that as document
 			// if cookiesEl content is a string/cdata
-			this.setCookies(""); // reset			
+			this.setCookies(""); // reset
+			
+			// response body content type
+			
+			List<Element> resourceElList;
+			try {
+				resourceElList = this.xmlParser.select("/service/resources/item", rootEl);
+			} catch (XPathExpressionException e) {
+				// file has wrong schema
+				resourceElList = null;
+			}
+			
+			String responseBodyContentType = null;
+			for (Element resourceEl : resourceElList) {
+				Element nameEl = XMLParser.getChildElementByTagName(resourceEl, "name");
+				String name = nameEl.getTextContent().trim();
+				if (name.equals("body")) {
+					Element responseBodyContentTypeEl = XMLParser.getChildElementByTagName(resourceEl, "contentType");
+					responseBodyContentType = responseBodyContentTypeEl.getTextContent().trim();
+				}
+			}
+			this.setResponseBodyContentType(responseBodyContentType);
 			
 			// template
 			
@@ -184,6 +209,14 @@ public class Service {
 	public void setCookiesDocument(Document cookiesDocument) {
 		this.cookiesDocument = cookiesDocument;
 	}
+	
+	public String getResponseBodyContentType() {
+		return this.responseBodyContentType;
+	}
+
+	public void setResponseBodyContentType(String responseBodyContentType) {
+		this.responseBodyContentType = responseBodyContentType;
+	}
 
 	public Document getTemplate() {
 		return template;
@@ -192,18 +225,18 @@ public class Service {
 	public void setTemplate(Document template) {
 		this.template = template;
 	}
-	
+
 	public Document request() {
-		// apply data to parameters
+		// resolve url
 		String url = this.data.apply(this.url, HTTPEncoder.EncodeMode.URL);
-		String method = this.data.apply(this.method);
 		
 		// resolve content type
-		String contentType = this.data.apply(this.contentType);
+		String contentType = this.contentType;
 		if (contentType.isEmpty()) {
 			// default content type
 			contentType = this.documentToForm.getToContentType();
 		}
+		contentType = this.data.apply(contentType);
 		
 		// resolve body
 		String body;
@@ -221,6 +254,14 @@ public class Service {
 			body = "";
 		}
 		
+		// resolve method
+		String method = this.method;
+		if (method.isEmpty()) {
+			// default method
+			method = (body.isEmpty()) ? "GET" : "POST";
+		}
+		method = this.data.apply(method);
+		
 		// resolve cookies
 		String cookies;
 		if (!this.cookies.isEmpty()) {
@@ -237,13 +278,16 @@ public class Service {
 			cookies = "";
 		}
 		
+		// resolve response body content type
+		String responseBodyContentType = this.getResponseBodyContentType();
+		
 		// call service
 		HTTPResponse response = httpClient.request(url, method, contentType, cookies, body);
 		
 		// extract response contents
 		String responseBody = response.getBody();
 		Map<String, List<String>> responseHeaders = response.getHeaders();
-		List<String> responseCookies = responseHeaders.get("Set-Cookie");
+		List<String> responseCookies = responseHeaders.get("Set-Cookie");		
 		
 		// DEBUG: save page
 		/*try {
@@ -268,12 +312,24 @@ public class Service {
 			responseBody = null;
 		}*/
 		
-		// Extract data from service
+		// Extract data from response contents
 		
 		MixedToDocument converter = new MixedToDocument();
-		converter.setDefaultContent(responseBody);
-		converter.addContent("application/x-www-response-cookies", responseCookies);
 		converter.setTemplate(this.template);
+		
+		Resource bodyResource = new Resource();
+		bodyResource.setName("body");
+		bodyResource.setContent(responseBody);
+		bodyResource.setContentType(responseBodyContentType);
+		converter.addResource("body", bodyResource);
+		
+		Resource cookiesResource = new Resource();
+		cookiesResource.setName("cookies");
+		cookiesResource.setContentType("application/x-www-response-cookies");
+		cookiesResource.setContent(responseCookies);
+		converter.addResource("cookies", cookiesResource);
+		
+		converter.setDefaultResourceName("body");
 
 		Document data = null;
 		try {

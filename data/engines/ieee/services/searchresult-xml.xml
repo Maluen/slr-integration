@@ -1,26 +1,35 @@
 <service>
+    <resources>
+        <item>
+            <name>body</name>
+            <contentType>text/xml</contentType>
+        </item>
+    </resources>
     <request> <!-- Specifies how to retrieve/access service -->
         <url>
             http://ieeexplore.ieee.org/gateway/ipsSearch.jsp?querytext={{{queryText}}}&amp;rs={{{startNumber}}}&amp;hc={{{numberOfResults}}}
         </url>
         <method>GET</method> <!-- HTTP Method: GET, POST, etc. -->
     </request>
-    <response contentType="text/xml">
+    <response from="body">
 
-        <meta el="totalfound">
-            <count></count>
+        <meta>
+            <count el="totalfound" mode="text" />
         </meta>
 
         <articles el="document" mode="list">
             <item>
-                <title el="title"></title>
-                <authors></authors>
-                <abstract></abstract>
-                <affiliations></affiliations>
-                <publication></publication>
-                <doi></doi>
-                <year></year>
-                <pagesRange></pagesRange>
+                <title el="title" mode="text" />
+                <authors el="authors" mode="text" />
+                <abstract el="abstract" mode="text" />
+                <affiliations el="affiliations" mode="text" />
+                <publication el="pubtitle" mode="text" />
+                <doi el="doi" mode="text" />
+                <year el="py" mode="text" />
+                <pagesRange>
+                  <startPage el="spage" mode="text" />
+                  <endPage el="epage" mode="text" />
+                </pagesRange>
             </item>
         </articles>
 

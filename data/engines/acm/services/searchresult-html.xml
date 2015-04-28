@@ -1,4 +1,10 @@
 <service>
+    <resources>
+        <item>
+            <name>body</name>
+            <contentType>text/html</contentType>
+        </item>
+    </resources>
     <request> <!-- Specifies how to retrieve/access service -->
         <url>
             http://dl.acm.org/results.cfm?h=1&amp;cfid={{{cfid}}}&amp;cftoken={{{cftoken}}}
@@ -41,19 +47,52 @@
             </item>
         </cookies>
     </request>
-    <response contentType="text/html">
+    <response from="body">
 
         <meta>
-            <count></count>
+            <count el="table > tbody > tr > td" expand="true" mode="script">
+                <condition mode="script">
+                    el.text().trim().match(/Results ([\s\S]*?) of ([\s\S]*?) /) != null
+                </condition>
+                <value>
+                    var count = el.text().trim().match(/Results ([\s\S]*?) of ([\s\S]*?) /)[2]
+                    // Remove all "," separators
+                    count = count.replace(new RegExp(',', 'g'), '')
+                </value>
+            </count>
         </meta>
 
-        <articles el="a" expand="true">
+        <articles el="a" expand="true" mode="list">
             <condition mode="script">
                 el.attr('href').indexOf('citation.cfm') != -1
             </condition>
-            <value mode="list">
+            <value>
                 <item>
                     <title mode="text" />
+                    <url mode="script">el.attr('href').trim()</url>
+                    <id mode="script">
+                      <!-- get 647583.730422 from id=647583.730422& -->
+                      <!-- Note: first item might have id 0 (INFORMS Journal on Computing: Volume 0) -->
+                      <![CDATA[
+                          el.attr('href').match(/id=([\s\S]*?)&/)[1]
+                      ]]>
+                    </id>
+
+                    <authors expand="true" mode="text">
+                        <el mode="script">
+                            // .authors element inside first parent table
+                            el.parents().not(':not(table)').first().select('.authors')
+                        </el>
+                    </authors>
+                    
+                    <year />
+
+                    <publication expand="true" mode="text">
+                        <el mode="script">
+                            el.parents().not(':not(table)').first().select('.addinfo strong')
+                        </el>
+                    </publication>
+
                 </item>
             </value>
         </articles>

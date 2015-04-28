@@ -1,0 +1,28 @@
+<service>
+    <resources>
+        <item>
+            <name>body</name>
+            <contentType>text/html</contentType>
+        </item>
+    </resources>
+    <request> <!-- Specifies how to retrieve/access service -->
+        <url>
+            http://dl.acm.org/citation.cfm?id={{id}}&amp;coll=DL&amp;dl=ACM&amp;CFID={{{cfid}}}&amp;CFTOKEN={{{cftoken}}}&amp;preflayout=flat
+        </url>
+        <method>GET</method> <!-- HTTP Method: GET, POST, etc. -->
+    </request>
+    <response from="body">
+
+        <article>
+            <!-- Abstract is first paragraph inside main content -->
+            <abstract el=".flatbody p" mode="text" />
+
+            <doi el="a" expand="true" mode="text">
+                <condition mode="script">
+                    el.attr('href').indexOf('doi.org') != -1
+                </condition>
+            </doi>
+        </article>
+
+    </response>
+</service>

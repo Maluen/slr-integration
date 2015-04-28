@@ -1,4 +1,10 @@
 <service>
+    <resources>
+        <item>
+            <name>body</name>
+            <contentType>text/html</contentType>
+        </item>
+    </resources>
     <request> <!-- Specifies how to retrieve/access service -->
         <url>
             <!--http://ieeexplore.ieee.org/search/searchresult.jsp?newsearch=true&amp;queryText={{{queryText}}}&amp;pageNumber={{{pageNumber}}}-->
@@ -6,7 +12,7 @@
         </url>
         <method>GET</method> <!-- HTTP Method: GET, POST, etc. -->
     </request>
-    <response contentType="text/html">
+    <response from="body">
 
         <meta>
             <!-- number of results -->
@@ -41,7 +47,7 @@
                         el.textNodes().get(0).text().trim()
                     </name>
                     <!-- Number of found articles published by this author -->
-                    <count el=".refinement-count" mode="script"> 
+                    <count el=".refinement-count" mode="script">
                         <!-- e.g. extract '2' from (2) -->
                         el.text().match(/\d+/)[0]
                     </count>
@@ -56,7 +62,7 @@
                         el.textNodes().get(0).text().trim()
                     </name>
                     <!-- Number of found articles published by this author -->
-                    <count el=".refinement-count" mode="script"> 
+                    <count el=".refinement-count" mode="script">
                         <!-- e.g. extract '2' from (2) -->
                         el.text().match(/\d+/)[0]
                     </count>
@@ -72,7 +78,7 @@
                         el.textNodes().get(0).text().trim()
                     </name>
                     <!-- Number of found articles published by this author -->
-                    <count el=".refinement-count" mode="script"> 
+                    <count el=".refinement-count" mode="script">
                         <!-- e.g. extract '2' from (2) -->
                         el.text().match(/\d+/)[0]
                     </count>
@@ -87,7 +93,7 @@
                         el.textNodes().get(0).text().trim()
                     </name>
                     <!-- Number of found articles published by this author -->
-                    <count el=".refinement-count" mode="script"> 
+                    <count el=".refinement-count" mode="script">
                         <!-- e.g. extract '2' from (2) -->
                         el.text().match(/\d+/)[0]
                     </count>
@@ -107,41 +113,51 @@
 
                 <authors el="#preferredName" mode="script">el.attr('class')</authors>
 
-                <!-- TODO: the :not selector does not seem to work properly here -->
                 <abstract el="#abstract-1 > p" mode="script">
-                    // Get the text content skipping the "View full abstract" anchor
-                    el.select(':not(.more)').text().trim()
+                    // Get the text content skipping the "View full abstract»" final text
+                    // Note: when using the replace method, cast to JavaScript string
+                    // to prevent ambiguity with Java method:
+                    // http://www.mirthcorp.com/community/forums/showthread.php?t=235
+                    // Note: "[\s\S]" means "any character including newlines"
+                    var text = el.text();
+                    new String(text).replace(/View full abstract»[\s\S]*/, '');
                 </abstract>
 
                 <!-- TODO -->
-                <affiliations></affiliations>
+                <!-- Missing in result view, is in the article details -->
+                <affiliations>
+                </affiliations>
 
-                <publication el="a" expand="true">
+                <publication el="a" expand="true" mode="text">
                     <!-- when expand is true we can set further options on the parent element, such as condition (xml characteristic: we can't set them as attributes if their structure is 'complex') -->
                     <condition mode="script">
                         <!-- must evaluate to true to pass -->
                         el.attr('href').indexOf('RecentIssue.jsp') != -1
                     </condition>
-                    <value mode="text" />
+                    <value />
                 </publication>
 
-                <doi el="a" expand="true">
+                <doi el="a" expand="true" mode="text">
                     <condition mode="script">
                         el.attr('href').indexOf('doi.org') != -1
                     </condition>
-                    <value mode="text" />
+                    <value />
                 </doi>
 
-                <!-- TODO -->
                 <year mode="script">
-                    <!-- get child text node containing "Publication Year:" -->
-                    <!-- TODO: check ambiguity in case the above string is also used in other places -->
+                    <!-- e.g. extract 2013 from "Publication Year: 2013" -->
+                    el.text().match(/Publication Year:\s*(\d+)/)[1]
                 </year>
 
-                <!-- TODO -->
                 <pagesRange>
-                    <!-- get child text node containing "Page(s):" -->
-                    <!-- TODO: check ambiguity in case the above string is also used in other places -->
+                    <startPage mode="script">
+                      <!-- e.g. extract 71 from "Page(s): 71	- 76" -->
+                      el.text().match(/Page\(s\):\s*(\d+)\s*-\s*(\d+)/)[1]
+                    </startPage>
+                    <endPage mode="script">
+                      <!-- e.g. extract 76 from "Page(s): 71	- 76" -->
+                      el.text().match(/Page\(s\):\s*(\d+)\s*-\s*(\d+)/)[2]
+                    </endPage>
                 </pagesRange>
             </item>
         </articles>

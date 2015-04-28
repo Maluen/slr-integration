@@ -12,11 +12,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import parsers.cookie.CookieParser;
-import parsers.xml.XMLParser;
+import services.Template;
 
 public class SetCookiesToDocument extends ToDocument {
 
-	protected List<String> content; // list of "Set-Cookie" header values
 	protected CookieParser cookieParser;
 	
 	public SetCookiesToDocument() {
@@ -28,127 +27,194 @@ public class SetCookiesToDocument extends ToDocument {
 		return "application/x-www-response-cookies";
 	}
 	
-	@Override
-	public List<String> getContent() {
-		return this.content;
-	}
-
-	@Override
-	public void setContent(Object content) {
-		this.content = (List<String>) content;
-	}
-	
-	public void setContent(List<String> content) {
-		this.content = content;
+	protected List<HTTPCookie> parseContent(Object content) {
+		if (content instanceof List<?>) {
+			// assumes is List<String> (can't do precise instanceof check)
+			// (list of "Set-Cookie" header values)
+			// parse content
+			List<HTTPCookie> parsedContent = new ArrayList<HTTPCookie>();
+			for (String cookieString : (List<String>) content) {
+				HTTPCookie httpCookie = this.cookieParser.parse(cookieString);
+				parsedContent.add(httpCookie);
+			}
+			return parsedContent;
+		}
+		
+		return null;
 	}
 
 	@Override
 	public Document convert() throws Exception {
-		// starting point
-		Element templateRootElement = this.template.getDocumentElement();
-		
-		// parse response
-		List<HTTPCookie> parsedContent = new ArrayList<HTTPCookie>();
-		for (String cookieString : this.content) {
-			HTTPCookie httpCookie = this.cookieParser.parse(cookieString);
-			parsedContent.add(httpCookie);
-		}
 		
 		// create output document
-		Document doc = this.docBuilder.newDocument();
-		this.setDocument(doc);
+		Document document = this.docBuilder.newDocument();
+		this.setDocument(document);
+		
+		// parse response
+		Object content = this.resource.getContent();
+		List<HTTPCookie> parsedContent = this.parseContent(content);
+		
+		// starting point
+		Element templateRootEl = this.template.getDocumentElement();
 		
 		// process!
-		Element docRootElement = this.process(templateRootElement, parsedContent);
-		doc.appendChild(docRootElement);
+		Element documentRootEl = this.process(templateRootEl, parsedContent);
+		document.appendChild(documentRootEl);
 		
-		return doc;
+		return document;
 	}
 	
-	public Element process(Element templateElement, List<HTTPCookie> cookies) throws Exception {
+	// retrieve base elements pool
+	protected List<Object> findContentElements(Element templateEl, List<HTTPCookie> cookies, ScriptEngine engine) {
+		List<HTTPCookie> contentElList;
 		
-		String contentType = templateElement.getAttribute("contentType");
-		if (!contentType.isEmpty() && !contentType.equals(this.getFromContentType())) {
-			// unsupported element
-			Element docElement = this.processUnsupported(templateElement);
-			docElement = (Element) this.document.importNode(docElement, true);
-			return docElement;
+		Object el = Template.getProperty(templateEl, "el", engine);
+		
+		if (!Template.hasProperty(templateEl, "el")) {
+			// defaults to parent element
+			contentElList = cookies;
+			
+		} else if (el == null) {
+			// error: no element
+			contentElList = new ArrayList<HTTPCookie>();
+			
+		} else if (el instanceof HTTPCookie) {
+			// element returned directly
+			contentElList = new ArrayList<HTTPCookie>();
+			contentElList.add( (HTTPCookie) el);
+			
+		} else if (el instanceof List) {
+			// assumes is List<HTTPCookie>
+			// element collection returned directly
+			contentElList = (List<HTTPCookie>) el;
+			
+		} else if (el instanceof String) {
+			// el is the cookie name
+			String cookieName = (String) el;
+			
+			if (cookieName.isEmpty()) {
+				// defaults to parent element
+				contentElList = new ArrayList<HTTPCookie>();
+			} else {
+				contentElList = new ArrayList<HTTPCookie>();
+				for (HTTPCookie cookie : cookies) {
+					if (cookie.getName().equals(cookieName)) {
+						contentElList.add(cookie);
+					}
+				}
+			}
+
+		} else {
+			// unsupported value
+			return null;
 		}
 		
-		Element docElement = this.document.createElement(templateElement.getTagName());
+		return (List<Object>)(List<?>) contentElList;
+	}
+	
+	public Element process(Element templateEl, List<HTTPCookie> cookies) throws Exception {
+		
+		Element documentEl;
+		documentEl = this.processIfUnsupported(templateEl);
+		if (documentEl != null) return documentEl;
+		documentEl = this.document.createElement(templateEl.getTagName());
+		
+        // create a JavaScript engine
+        ScriptEngine engine = this.scriptFactory.getEngineByName("JavaScript");
+        engine = this.configureScriptEngine(engine, cookies);
 
 		// retrieve base elements pool
-		// -> el is just the cookie name
-		HTTPCookie el = null;
-		if (templateElement.hasAttribute("el")) {
-			String elString = templateElement.getAttribute("el");
-			for (HTTPCookie cookie : cookies) {
-				if (cookie.getName().equals(elString)) {
-					el = cookie;
-					break;
+		List<Object> contentElList = this.findContentElements(templateEl, cookies, engine);
+				
+		// filter base elements pool if needed		
+		try {
+			contentElList = this.filterContentElements(contentElList, templateEl);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			// This exception (class to refactor) means that the template has incorrect schema
+			// => return
+			e.printStackTrace();
+			return null;
+		}
+		
+		if (contentElList.isEmpty()) {
+			System.out.println("No matched elements for " + templateEl.getTagName());
+		}
+		
+		// get first content element
+		HTTPCookie firstContentEl = null;
+		if (contentElList.size() > 0) { // check to prevent exception
+			firstContentEl = (HTTPCookie) contentElList.get(0);
+		}
+		
+        // update JavaScript engine to pass first element
+		// Note: might be null
+        engine = this.scriptFactory.getEngineByName("JavaScript");
+        engine = this.configureScriptEngine(engine, firstContentEl);
+
+		// get mode
+		String mode = (String) Template.getProperty(templateEl, "mode", engine);
+		if (mode == null) mode = "";
+		
+		if (mode.equals("list")) {
+
+			System.out.println("Processing list " + templateEl.getTagName());
+			
+			// retrieve list item descriptor
+			Element valueListItemEl = Template.getListItemDescriptor(templateEl);
+			
+			// create one list item for each content element
+			for (Object contentEl : contentElList) {
+				List<HTTPCookie> contentElCookies = new ArrayList<HTTPCookie>();
+				contentElCookies.add((HTTPCookie) contentEl);
+				
+				Element documentListItemEl = this.process(valueListItemEl, contentElCookies);
+				documentEl.appendChild(documentListItemEl);
+			}
+			
+		} else {
+			
+			if (mode.equals("script")) {
+				
+				String script = Template.getScriptContent(templateEl);
+
+		        // evaluate JavaScript code from String
+		        try {
+		        	String documentElText = (String) engine.eval(script);
+		        	documentEl.setTextContent(documentElText);
+					System.out.println(templateEl.getTagName() + ": " + documentElText + " (script)");
+				} catch (ScriptException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					System.out.println(templateEl.getTagName() + ": script failed");
+				}
+				
+			} else if (mode.equals("text")) {
+				
+				String documentElText;
+				
+				if (firstContentEl == null) {
+					// el is strictly required here, leave content blank
+					documentElText = "";
+				} else {
+					// cookie value
+					documentElText = firstContentEl.getValue();
+				}
+				
+				documentEl.setTextContent(documentElText);
+				System.out.println(templateEl.getTagName() + ": " + documentElText + " (text)");
+				
+			} else {
+				// nothing, just proceed further with children
+				List<Element> templateElNextLevel = Template.getNextLevel(templateEl);
+				for (Element templateElNextLevelChild : templateElNextLevel) {
+					Element documentElChild = this.process(templateElNextLevelChild, cookies);
+					documentEl.appendChild(documentElChild);
 				}
 			}
 		}
-
-		// filter base elements pool if needed
-		// -> not needed, there is only one element
 		
-		if (el == null) {
-			System.out.println("Empty el for " + templateElement.getTagName());
-		}
-		
-		// get value element (explicit in case of expand)
-		Element valueElement;
-		if (HTMLtoDocument.isExpand(templateElement)) {
-			valueElement = (Element) templateElement.getElementsByTagName("value").item(0);
-		} else {
-			// implicit: is the element itself
-			valueElement = templateElement;
-		}
-		
-		String mode = valueElement.getAttribute("mode");
-		if (mode.equals("script")) {
-			
-			String script = valueElement.getTextContent().trim();
-
-	        // create a JavaScript engine
-	        ScriptEngine engine = this.scriptFactory.getEngineByName("JavaScript");
-	        // evaluate JavaScript code from String
-	        try {
-	        	engine.put("el", el);
-	        	String docElementText = (String) engine.eval(script);
-	        	docElement.setTextContent(docElementText);
-				System.out.println(templateElement.getTagName() + ": " + docElementText + " (script)");
-			} catch (ScriptException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		} else if (mode.equals("text")) {
-			
-			String docElementText;
-			
-			if (el == null) {
-				// el is strictly required here, leave content blank
-				docElementText = "";
-			} else {
-				// cookie value
-				docElementText = el.getValue();				
-			}
-			
-			docElement.setTextContent(docElementText);
-			System.out.println(templateElement.getTagName() + ": " + docElementText + " (text)");
-			
-		} else {
-			// nothing, just proceed further with children
-			List<Element> childElementList = XMLParser.getChildElements(valueElement);
-			for (Element childElement : childElementList) {
-				Element docElementChild = this.process(childElement, cookies);
-				docElement.appendChild(docElementChild);
-			}
-		}
-		
-		return docElement;
+		return documentEl;
 	}
 
 }

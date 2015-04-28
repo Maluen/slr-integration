@@ -5,7 +5,7 @@ import org.w3c.dom.Element;
 
 import parsers.json.JSONParser;
 
-public class JSONtoDocument extends TextToDocument {
+public class JSONtoDocument extends ToDocument {
 
 	protected JSONParser jsonParser;
 	

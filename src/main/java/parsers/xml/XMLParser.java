@@ -7,6 +7,10 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Document;
@@ -20,6 +24,7 @@ public class XMLParser extends Parser {
 
 	DocumentBuilderFactory factory;
 	DocumentBuilder builder;
+	XPath xpath;
 	
 	public XMLParser() {
 	    this.factory = DocumentBuilderFactory.newInstance();
@@ -30,6 +35,8 @@ public class XMLParser extends Parser {
 			e.printStackTrace();
 			this.builder = null; // not needed, but we make it explicit
 		}
+	    
+	    this.xpath = XPathFactory.newInstance().newXPath();
 	}
 	
 	public Document parse(String content) {
@@ -79,6 +86,19 @@ public class XMLParser extends Parser {
 		}
         
         return null;
+	}
+
+	// uses XPATH
+	public List<Element> select(String selector, Element fromContentEl) throws XPathExpressionException {
+		NodeList nodeList = (NodeList) this.xpath.evaluate(selector, fromContentEl, XPathConstants.NODESET);
+		
+		// convert to List<Element>
+		List<Element> elementList = new ArrayList<Element>();
+		for (int i=0; i<nodeList.getLength(); i++) {
+			elementList.add( (Element) nodeList.item(i) );
+		}
+		
+		return elementList;
 	}
 	
 }

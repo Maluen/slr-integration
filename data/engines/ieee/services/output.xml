@@ -1,0 +1,33 @@
+<service>
+    <resources>
+        <item>
+            <name>searchresult</name>
+            <value mode="script">
+                var service = new Service();
+                // ...
+            </value>
+        </item>
+        <item>
+            <name>articleDetails_{{id}}</name>
+            <value>
+                // use {{id}} here, will be replaced
+                // ...
+            </value>
+        </item>
+    </resources>
+    <response from="searchresult">
+        <articles mode="list">
+            <item>
+                <title></title>
+                <abstract expand="true">
+                    <from mode="script">
+                        var id = xnlParser.select('id', el).getTextContent().trim();
+                        resources.get('articleDetails_'+id, {
+                            id: id
+                        });
+                    </from>
+                </abstract>
+            </item>
+        </articles>
+    </response>
+</service>

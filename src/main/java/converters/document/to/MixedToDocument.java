@@ -4,22 +4,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.script.ScriptEngine;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import parsers.xml.XMLParser;
+import services.Resource;
+import services.Template;
 import converters.document.DocumentConverterFactory;
 
 public class MixedToDocument extends ToDocument {
 
 	protected XMLParser xmlParser;
-	protected Map<String, Object> contentMap; // <content type, content>
-	protected Object defaultContent;
+	protected Map<String, Resource> resourceMap; // key: resource name
+	protected String defaultResourceName;
 	
 	public MixedToDocument() {
 		this.xmlParser = new XMLParser();
 
-		this.contentMap = new HashMap<String, Object>();
+		this.resourceMap = new HashMap<String, Resource>();
 	}
 	
 	@Override
@@ -27,103 +31,75 @@ public class MixedToDocument extends ToDocument {
 		return "multipart/mixed";
 	}
 	
-	public Map<String, Object> getContentMap() {
-		return this.contentMap;
-	}
-	
-	public Map<String, Object> getContent() {
-		return this.getContentMap();
-	}
-	
-	public void setContent(Object content) {
-		this.setContentMap( (Map<String, Object>) contentMap);
+	public Map<String, Resource> getResourceMap() {
+		return this.resourceMap;
 	}
 
-	public void setContentMap(Map<String, Object> contentMap) {
-		this.contentMap = contentMap;
+	public void setResourceMap(Map<String, Resource> resourceMap) {
+		this.resourceMap = resourceMap;
 	}
 
-	public void addContent(String contentType, Object content) {
-		this.contentMap.put(contentType, content);
-	}
-	
-	public Object getDefaultContent() {
-		return this.defaultContent;
+	public void addResource(String resourceName, Resource resource) {
+		this.resourceMap.put(resourceName, resource);
 	}
 
-	public void setDefaultContent(Object defaultContent) {
-		this.defaultContent = defaultContent;
+	public String getDefaultResourceName() {
+		return this.defaultResourceName;
+	}
+
+	public void setDefaultResourceName(String defaultResourceName) {
+		this.defaultResourceName = defaultResourceName;
 	}
 
 	@Override
 	public Document convert() throws Exception {
 		
-		// starting point
-		Element templateRootElement = this.template.getDocumentElement();
-		
 		// create output document
-		Document doc = this.docBuilder.newDocument();
-		this.setDocument(doc);
+		Document document = this.docBuilder.newDocument();
+		this.setDocument(document);
+		
+		// starting point
+		Element templateRootEl = this.template.getDocumentElement();
 		
 		// process!
-		Element docRootElement = this.process(templateRootElement);
-		doc.appendChild(docRootElement);
+		Element documentRootEl = this.process(templateRootEl);
+		document.appendChild(documentRootEl);
 		
-		return doc;
+		return document;
 	}
 	
-	public Element process(Element templateElement) throws Exception {
-
-		String contentType = templateElement.getAttribute("contentType");
-		if (contentType.isEmpty()) {
-			// just proceed further with children
-			
-			List<Element> childElementList = XMLParser.getChildElements(templateElement);
-			if (childElementList.isEmpty()) {
-				// just return the element (to keep element content like text etc.)
-				Element docElement = (Element) this.document.importNode(templateElement, true);
-				return docElement;
-			}
-			Element docElement = this.document.createElement(templateElement.getTagName());			
-			for (Element childElement : childElementList) {
-				Element docElementChild = this.process(childElement);
-				docElement.appendChild(docElementChild);
-			}
-			return docElement;
+	public Element process(Element templateEl) throws Exception {
+		
+        // create a JavaScript engine
+        ScriptEngine engine = this.scriptFactory.getEngineByName("JavaScript");
+        engine = this.configureScriptEngine(engine, null);
+		
+		String resourceName = (String) Template.getProperty(templateEl, "from", engine);
+		if (resourceName == null) resourceName = "";
+		
+		if (resourceName.isEmpty()) {
+			// use default name
+			resourceName = this.getDefaultResourceName();
 		}
 		
 		// a converter wasn't able to handle this templateElement,
-		// find the suitable converter
+		// find the suitable one
 		
-		Object content = this.contentMap.get(contentType);
-		if (content == null) {
-			content = this.defaultContent;
-		}
-
-		Document template = this.xmlParser.createDocumentFromElement(templateElement);
+		Resource resource = this.resourceMap.get(resourceName);
+		String contentType = resource.getContentType();
+		
+		Document template = this.xmlParser.createDocumentFromElement(templateEl);
 		
 		ToDocument converter = DocumentConverterFactory.createToDocument(contentType);
 		converter.setParent(this);
-		converter.setContent(content);
+		converter.setResource(resource);
 		converter.setTemplate(template);
 		Document converterDocument = converter.convert();
 		
-		Element docElement = (Element) converterDocument.getDocumentElement();
-		docElement = (Element) this.document.importNode(docElement, true);
+		Element documentEl = (Element) converterDocument.getDocumentElement();
+		documentEl = (Element) this.document.importNode(documentEl, true);
 		
-		return docElement;
-	}
-	
-	/*
-	public TextToDocument findConverterByContentType(String contentType) {		
-		for (TextToDocument converterCandidate : this.converterContents.keySet()) {
-			if (converterCandidate.getFromContentType().equals(contentType)) {
-				return converterCandidate;
-			}
-		}
-		
-		return null;
-	}*/
-	
+		return documentEl;
+	}	
 
 }
