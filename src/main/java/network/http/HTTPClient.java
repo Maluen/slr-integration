@@ -12,6 +12,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.map.CaseInsensitiveMap;
+
 public class HTTPClient {
 
 	static { // on class load
@@ -92,6 +94,8 @@ public class HTTPClient {
 		    
 		    // Get response headers
 			Map<String, List<String>> responseHeaders = connection.getHeaderFields();
+			// make header names case insensitive (as they should)
+			responseHeaders = new CaseInsensitiveMap<String, List<String>>(responseHeaders);
 			
 			HTTPResponse response = new HTTPResponse();
 			response.setBody(responseBody);
