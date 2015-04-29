@@ -5,7 +5,7 @@ public class Logger {
 	protected static boolean isEnabled;
 	protected static String[] logCategories;
 	
-	protected String category;
+	protected String category = "";
 	
 	public static boolean isEnabled() {
 		return isEnabled;

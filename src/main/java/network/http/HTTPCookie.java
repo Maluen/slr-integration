@@ -2,11 +2,11 @@ package network.http;
 
 public class HTTPCookie {
 
-	private String name;
-	private String value;
-	private String expires;
-	private String path;
-	private String domain;
+	private String name = "";
+	private String value = "";
+	private String expires = "";
+	private String path = "";
+	private String domain = "";
 	
 	public String getName() {
 		return this.name;

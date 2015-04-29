@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class HTTPResponse {
 
-	private String body;
+	private String body = "";
 	Map<String, List<String>> headers;
 	
 	public HTTPResponse() {

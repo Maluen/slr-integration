@@ -52,7 +52,7 @@ public class ACMEngine extends Engine {
 		File serviceFile = new File(this.inputBasePath + fileName);
 		searchService.loadFromFile(serviceFile);
 		
-		Document searchResultContent = searchService.request(); // TODO: make this async?
+		Document searchResultContent = searchService.execute(); // TODO: make this async?
 		
 		// save result
 		try {
@@ -103,7 +103,7 @@ public class ACMEngine extends Engine {
 		}
 		searchService.addData("query", queryText);
 		
-		Document searchResultContent = searchService.request(); // TODO: make this async?
+		Document searchResultContent = searchService.execute(); // TODO: make this async?
 		
 		// save result
 		try {
@@ -144,7 +144,7 @@ public class ACMEngine extends Engine {
 		}
 		searchService.addData("id", articleId);
 		
-		Document searchResultContent = searchService.request(); // TODO: make this async?
+		Document searchResultContent = searchService.execute(); // TODO: make this async?
 		
 		// save result
 		try {

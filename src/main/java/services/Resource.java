@@ -2,9 +2,9 @@ package services;
 
 public class Resource {
 
-	protected String name;
-	protected String contentType;
-	protected Object content;
+	protected String name = "";
+	protected String contentType = "";
+	protected Object content = "";
 	
 	public String getName() {
 		return this.name;

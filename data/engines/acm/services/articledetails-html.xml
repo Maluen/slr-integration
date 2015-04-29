@@ -1,7 +1,7 @@
 <service>
     <resources>
         <item>
-            <name>body</name>
+            <name>response.body</name>
             <contentType>text/html</contentType>
         </item>
     </resources>
@@ -11,7 +11,7 @@
         </url>
         <method>GET</method> <!-- HTTP Method: GET, POST, etc. -->
     </request>
-    <response from="body">
+    <response from="response.body">
 
         <article>
             <!-- Abstract is first paragraph inside main content -->

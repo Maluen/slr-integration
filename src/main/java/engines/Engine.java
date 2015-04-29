@@ -3,10 +3,10 @@ package engines;
 public abstract class Engine {
 
 	// NOTE: name must have unix-names format
-	protected String name;
+	protected String name = "";
 	
-	protected String inputBasePath;
-	protected String outputBasePath;
+	protected String inputBasePath = "";
+	protected String outputBasePath = "";
 	
 	public Engine(String name) {
 		

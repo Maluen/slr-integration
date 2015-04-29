@@ -45,7 +45,7 @@ public class IEEEEngine extends Engine {
 		searchService.addData("queryText", queryText);
 		searchService.addData("pageNumber", "1");
 		
-		Document searchResultContent = searchService.request(); // TODO: make this async?
+		Document searchResultContent = searchService.execute(); // TODO: make this async?
 		
 		// save result
 		try {
@@ -81,7 +81,7 @@ public class IEEEEngine extends Engine {
 		searchService.addData("startNumber", "1");
 		searchService.addData("numberOfResults", "25"); // max 1000
 		
-		Document searchResultContent = searchService.request(); // TODO: make this async?
+		Document searchResultContent = searchService.execute(); // TODO: make this async?
 		
 		// save result
 		try {

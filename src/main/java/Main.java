@@ -20,7 +20,7 @@ import com.mashape.unirest.request.GetRequest;
 import com.owlike.genson.Genson;
 
 import engines.Engine;
-import engines.acm.ACMEngine;
+import engines.ieee.IEEEEngine;
 
 /**
  * 
@@ -99,11 +99,11 @@ public class Main {
 		//String queryText = Utils.getFileContent(new File("data/querystring.txt"));
 		System.out.println("Query string: " + queryText);
 		
-		//Engine ieeeEngine = new IEEEEngine();
-		//ieeeEngine.search(queryText);
+		Engine ieeeEngine = new IEEEEngine();
+		ieeeEngine.search(queryText);
 		
-		Engine acmEngine = new ACMEngine();
-		acmEngine.search(queryText);
+		//Engine acmEngine = new ACMEngine();
+		//acmEngine.search(queryText);
 	}
 
 }

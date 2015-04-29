@@ -1,8 +1,6 @@
 package converters.document.to;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.script.ScriptEngine;
 
@@ -11,19 +9,20 @@ import org.w3c.dom.Element;
 
 import parsers.xml.XMLParser;
 import services.Resource;
+import services.ResourceList;
 import services.Template;
 import converters.document.DocumentConverterFactory;
 
 public class MixedToDocument extends ToDocument {
 
 	protected XMLParser xmlParser;
-	protected Map<String, Resource> resourceMap; // key: resource name
-	protected String defaultResourceName;
+	private ResourceList resourceList;
+	protected String defaultResourceName = "";
 	
 	public MixedToDocument() {
 		this.xmlParser = new XMLParser();
 
-		this.resourceMap = new HashMap<String, Resource>();
+		this.resourceList = new ResourceList();
 	}
 	
 	@Override
@@ -31,16 +30,12 @@ public class MixedToDocument extends ToDocument {
 		return "multipart/mixed";
 	}
 	
-	public Map<String, Resource> getResourceMap() {
-		return this.resourceMap;
+	public ResourceList getResourceList() {
+		return this.resourceList;
 	}
-
-	public void setResourceMap(Map<String, Resource> resourceMap) {
-		this.resourceMap = resourceMap;
-	}
-
-	public void addResource(String resourceName, Resource resource) {
-		this.resourceMap.put(resourceName, resource);
+	
+	public void setResourceList(ResourceList resourceList) {
+		this.resourceList = resourceList;
 	}
 
 	public String getDefaultResourceName() {
@@ -85,7 +80,12 @@ public class MixedToDocument extends ToDocument {
 		// a converter wasn't able to handle this templateElement,
 		// find the suitable one
 		
-		Resource resource = this.resourceMap.get(resourceName);
+		Resource resource = this.resourceList.getByName(resourceName);
+		if (resource == null) {
+			// error: unknown resource
+			throw new Exception();
+		}
+		
 		String contentType = resource.getContentType();
 		
 		Document template = this.xmlParser.createDocumentFromElement(templateEl);

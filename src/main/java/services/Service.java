@@ -2,6 +2,7 @@ package services;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,18 +30,17 @@ public class Service {
 	private DocumentToForm documentToForm;
 	
 	private Data<String> data;
+	private ResourceList resourceList;
 	
-	private String url;
-	private String method;
-	private String contentType;
+	private String url = "";
+	private String method = "";
+	private String contentType = "";
 	
-	private String body;
+	private String body = "";
 	private Document bodyDocument;
 	
-	private String cookies;
+	private String cookies = "";
 	private Document cookiesDocument;
-	
-	private String responseBodyContentType;
 	
 	private Document template;
 		
@@ -50,6 +50,7 @@ public class Service {
 		this.documentToForm = new DocumentToForm();
 		
 		this.data = new Data<String>();
+		this.resourceList = new ResourceList();
 	}
 	
 	public void loadFromFile(File file) {
@@ -57,9 +58,44 @@ public class Service {
 			String fileContent = Utils.getFileContent(file);
 			Document document = this.xmlParser.parse(fileContent);
 			
+			Element rootEl = document.getDocumentElement();
+			
+			// resources
+			
+			List<Element> resourceElList;
+			try {
+				resourceElList = this.xmlParser.select("/service/resources/item", rootEl);
+			} catch (XPathExpressionException e) {
+				// file has wrong schema
+				e.printStackTrace();
+				resourceElList = null;
+			}
+			
+			ResourceList resourceList = new ResourceList();
+			for (Element resourceEl : resourceElList) {
+				Element nameEl = XMLParser.getChildElementByTagName(resourceEl, "name");
+				Element contentTypeEl = XMLParser.getChildElementByTagName(resourceEl, "contentType");
+				Element contentEl = XMLParser.getChildElementByTagName(resourceEl, "content");
+
+				Resource resource = new Resource();
+				if (nameEl != null) {
+					String name = nameEl.getTextContent().trim();
+					resource.setName(name);
+				}
+				if (contentTypeEl != null) {
+					String contentType = contentTypeEl.getTextContent().trim();
+					resource.setContentType(contentType);
+				}
+				if (contentEl != null) {
+					String content = contentEl.getTextContent().trim();
+					resource.setContent(content);
+				}
+				resourceList.add(resource);
+			}
+			this.setResourceList(resourceList);
+			
 			// request
 			
-			Element rootEl = document.getDocumentElement();
 			Element requestEl = (Element) rootEl.getElementsByTagName("request").item(0);
 			
 			String url = "";
@@ -106,27 +142,6 @@ public class Service {
 			// if cookiesEl content is a string/cdata
 			this.setCookies(""); // reset
 			
-			// response body content type
-			
-			List<Element> resourceElList;
-			try {
-				resourceElList = this.xmlParser.select("/service/resources/item", rootEl);
-			} catch (XPathExpressionException e) {
-				// file has wrong schema
-				resourceElList = null;
-			}
-			
-			String responseBodyContentType = null;
-			for (Element resourceEl : resourceElList) {
-				Element nameEl = XMLParser.getChildElementByTagName(resourceEl, "name");
-				String name = nameEl.getTextContent().trim();
-				if (name.equals("body")) {
-					Element responseBodyContentTypeEl = XMLParser.getChildElementByTagName(resourceEl, "contentType");
-					responseBodyContentType = responseBodyContentTypeEl.getTextContent().trim();
-				}
-			}
-			this.setResponseBodyContentType(responseBodyContentType);
-			
 			// template
 			
 			Document template = null;
@@ -152,6 +167,14 @@ public class Service {
 	
 	public void addData(String name, String value) {
 		this.data.put(name, value);
+	}
+	
+	public ResourceList getResourceList() {
+		return this.resourceList;
+	}
+	
+	public void setResourceList(ResourceList resourceList) {
+		this.resourceList = resourceList;
 	}
 
 	public String getUrl() {
@@ -209,14 +232,6 @@ public class Service {
 	public void setCookiesDocument(Document cookiesDocument) {
 		this.cookiesDocument = cookiesDocument;
 	}
-	
-	public String getResponseBodyContentType() {
-		return this.responseBodyContentType;
-	}
-
-	public void setResponseBodyContentType(String responseBodyContentType) {
-		this.responseBodyContentType = responseBodyContentType;
-	}
 
 	public Document getTemplate() {
 		return template;
@@ -226,7 +241,7 @@ public class Service {
 		this.template = template;
 	}
 
-	public Document request() {
+	public Document execute() {
 		// resolve url
 		String url = this.data.apply(this.url, HTTPEncoder.EncodeMode.URL);
 		
@@ -278,58 +293,89 @@ public class Service {
 			cookies = "";
 		}
 		
-		// resolve response body content type
-		String responseBodyContentType = this.getResponseBodyContentType();
-		
-		// call service
-		HTTPResponse response = httpClient.request(url, method, contentType, cookies, body);
-		
-		// extract response contents
-		String responseBody = response.getBody();
-		Map<String, List<String>> responseHeaders = response.getHeaders();
-		List<String> responseCookies = responseHeaders.get("Set-Cookie");		
-		
-		// DEBUG: save page
-		/*try {
-			try {
-				Utils.saveText(responseBody, "data/index.html");
-			} catch (FileNotFoundException e) {
+		if (!url.isEmpty()) { // there is a request to be made
+			
+			// Call service
+			HTTPResponse response = httpClient.request(url, method, contentType, cookies, body);
+			
+			// Get response contents
+			String responseBody = response.getBody();
+			Map<String, List<String>> responseHeaders = response.getHeaders();
+			List<String> responseCookies = responseHeaders.get("Set-Cookie");
+			
+			// DEBUG: save page
+			/*try {
+				try {
+					Utils.saveText(responseBody, "data/index.html");
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			}*/
+			
+			// DEBUG: use local page
+			/*String responseBody;
+			try {
+				responseBody = Utils.getFileContent( new File("data/index.html") );
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				responseBody = null;
+			}*/
+			
+			// Response body resource
+			
+			Resource responseBodyResource = this.resourceList.getByName("response.body");
+			if (responseBodyResource == null) {
+				responseBodyResource = new Resource();
+				responseBodyResource.setName("response.body");
+				this.resourceList.add(responseBodyResource);
 			}
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
+			
+			// override content
+			responseBodyResource.setContent(responseBody);	
+			
+			if (responseBodyResource.getContentType().isEmpty()) {
+				// use response content type (if any)
+				List<String> responseBodyContentTypeHeaders = responseHeaders.get("Content-Type");
+				if (responseBodyContentTypeHeaders != null && responseBodyContentTypeHeaders.size() > 0) {
+					String responseBodyContentType = responseBodyContentTypeHeaders.get(0);
+					responseBodyResource.setContentType(responseBodyContentType);
+				}
+			}
+			
+			// Response cookies resource
+			
+			Resource responseCookiesResource = this.resourceList.getByName("response.cookies");
+			if (responseCookiesResource == null) {
+				responseCookiesResource = new Resource();
+				responseCookiesResource.setName("response.cookies");
+				this.resourceList.add(responseCookiesResource);
+			}
+			
+			// override content
+			responseCookiesResource.setContent(responseCookies);
+			
+			if (responseCookiesResource.getContentType().isEmpty()) {
+				// use default content type
+				responseCookiesResource.setContentType("application/x-www-response-cookies");
+			}
+			
+		} else {
+			// remove old response resources (if any)
+			this.resourceList.removeByName("response.body");
+			this.resourceList.removeByName("response.cookies");
+		}
 		
-		// DEBUG: use local page
-		/*String responseBody;
-		try {
-			responseBody = Utils.getFileContent( new File("data/index.html") );
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			responseBody = null;
-		}*/
-		
-		// Extract data from response contents
+		// Extract the document
 		
 		MixedToDocument converter = new MixedToDocument();
 		converter.setTemplate(this.template);
-		
-		Resource bodyResource = new Resource();
-		bodyResource.setName("body");
-		bodyResource.setContent(responseBody);
-		bodyResource.setContentType(responseBodyContentType);
-		converter.addResource("body", bodyResource);
-		
-		Resource cookiesResource = new Resource();
-		cookiesResource.setName("cookies");
-		cookiesResource.setContentType("application/x-www-response-cookies");
-		cookiesResource.setContent(responseCookies);
-		converter.addResource("cookies", cookiesResource);
-		
-		converter.setDefaultResourceName("body");
+		converter.setResourceList(this.resourceList);
+		converter.setDefaultResourceName("response.body");
 
 		Document data = null;
 		try {

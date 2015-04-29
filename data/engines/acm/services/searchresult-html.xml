@@ -1,7 +1,7 @@
 <service>
     <resources>
         <item>
-            <name>body</name>
+            <name>response.body</name>
             <contentType>text/html</contentType>
         </item>
     </resources>
@@ -47,7 +47,7 @@
             </item>
         </cookies>
     </request>
-    <response from="body">
+    <response from="response.body">
 
         <meta>
             <count el="table > tbody > tr > td" expand="true" mode="script">

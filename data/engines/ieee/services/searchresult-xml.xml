@@ -1,7 +1,7 @@
 <service>
     <resources>
         <item>
-            <name>body</name>
+            <name>response.body</name>
             <contentType>text/xml</contentType>
         </item>
     </resources>
@@ -11,7 +11,7 @@
         </url>
         <method>GET</method> <!-- HTTP Method: GET, POST, etc. -->
     </request>
-    <response from="body">
+    <response from="response.body">
 
         <meta>
             <count el="totalfound" mode="text" />

@@ -2,17 +2,17 @@
     <resources>
         <item>
             <name>searchresult</name>
-            <value mode="script">
+            <content mode="script">
                 var service = new Service();
                 // ...
-            </value>
+            </content>
         </item>
         <item>
             <name>articleDetails_{{id}}</name>
-            <value>
+            <content mode="script">
                 // use {{id}} here, will be replaced
                 // ...
-            </value>
+            </content>
         </item>
     </resources>
     <response from="searchresult">
