@@ -1,4 +1,5 @@
 <service>
+    <name>articleDetails</name>
     <resources>
         <item>
             <name>response.body</name>

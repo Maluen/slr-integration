@@ -1,4 +1,5 @@
 <service>
+    <name>searchResult</name>
     <resources>
         <item>
             <name>response.body</name>

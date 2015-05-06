@@ -1,4 +1,5 @@
 <service>
+    <name>home</name>
     <resources>
         <item>
             <name>response.body</name>
@@ -11,7 +12,7 @@
     </request>
     <response from="response.body">
 
-        <!-- this contentType searches in returned cookies; mode="text" in that case means cookie value. -->
+        <!-- el here means cookie name, mode="text" means cookie value. -->
         <session from="response.cookies">
             <cfid el="CFID" mode="text" />
             <cftoken el="CFTOKEN" mode="text" />

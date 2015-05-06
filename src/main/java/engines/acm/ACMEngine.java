@@ -21,6 +21,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import parsers.xml.XMLParser;
+import services.Resource;
 import services.Service;
 import engines.Engine;
 
@@ -33,12 +34,15 @@ public class ACMEngine extends Engine {
 	@Override
 	public void search(String queryText) {
 		Map<String, String> userData = this.login();
-		//List<String> articleIdList = this.searchFromHtml(queryText, userData);
 		
+		Resource searchResult  = this.searchFromHtml(queryText, userData);
+		List<String> articleIdList = this.getArticleIdsFromSearchResult(searchResult);
+
 		//this.getArticleDetails(articleIdList.get(0), userData);
-		
 		// DEBUG
-		this.getArticleDetails("2400267.2400302", userData);
+		Resource articleDetails = this.getArticleDetails("2400267.2400302", userData);
+		
+		this.getOutput(searchResult, articleDetails);
 	}
 	
 	/**
@@ -52,7 +56,8 @@ public class ACMEngine extends Engine {
 		File serviceFile = new File(this.inputBasePath + fileName);
 		searchService.loadFromFile(serviceFile);
 		
-		Document searchResultContent = searchService.execute(); // TODO: make this async?
+		Resource searchResultResource = searchService.execute(); // TODO: make this async?
+		Document searchResultContent = (Document) searchResultResource.getContent();
 		
 		// save result
 		try {
@@ -90,7 +95,7 @@ public class ACMEngine extends Engine {
 		return userData;
 	}
 	
-	public List<String> searchFromHtml(String queryText, Map<String, String> userData) {
+	public Resource searchFromHtml(String queryText, Map<String, String> userData) {
 		String fileName = "services/searchresult-html.xml"; // relative to base paths
 		
 		Service searchService = new Service();
@@ -103,7 +108,8 @@ public class ACMEngine extends Engine {
 		}
 		searchService.addData("query", queryText);
 		
-		Document searchResultContent = searchService.execute(); // TODO: make this async?
+		Resource searchResultResource = searchService.execute(); // TODO: make this async?
+		Document searchResultContent = (Document) searchResultResource.getContent();
 		
 		// save result
 		try {
@@ -113,7 +119,14 @@ public class ACMEngine extends Engine {
 			e1.printStackTrace();
 		}
 		
+		return searchResultResource;
+	}
+	
+	public List<String> getArticleIdsFromSearchResult(Resource searchResult) {
 		List<String> articleIdList = new ArrayList<String>();
+		
+		Document searchResultContent = (Document) searchResult.getContent();
+		
 		XPathFactory xPathfactory = XPathFactory.newInstance();
 		XPath xpath = xPathfactory.newXPath();
 		XMLParser xmlParser = new XMLParser();
@@ -131,7 +144,7 @@ public class ACMEngine extends Engine {
 		return articleIdList;
 	}
 	
-	public void getArticleDetails(String articleId, Map<String, String> userData) {
+	public Resource getArticleDetails(String articleId, Map<String, String> userData) {
 		String fileName = "services/articledetails-html.xml"; // relative to base paths
 		
 		Service searchService = new Service();
@@ -144,7 +157,8 @@ public class ACMEngine extends Engine {
 		}
 		searchService.addData("id", articleId);
 		
-		Document searchResultContent = searchService.execute(); // TODO: make this async?
+		Resource searchResultResource = searchService.execute(); // TODO: make this async?
+		Document searchResultContent = (Document) searchResultResource.getContent();
 		
 		// save result
 		try {
@@ -153,6 +167,35 @@ public class ACMEngine extends Engine {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
+		return searchResultResource;
+	}
+	
+	// later on will take a List of articleDetails
+	public Resource getOutput(Resource searchResult, Resource articleDetails) {
+		
+		String fileName = "services/output.xml"; // relative to base paths
+		
+		Service outputService = new Service();
+		// load from file
+		File serviceFile = new File(this.inputBasePath + fileName);
+		outputService.loadFromFile(serviceFile);
+		// add any needed resource
+		outputService.getResourceList().add(searchResult);
+		outputService.getResourceList().add(articleDetails);
+		
+		Resource outputResource = outputService.execute(); // TODO: make this async?
+		Document outputContent = (Document) outputResource.getContent();
+		
+		// save result
+		try {
+			Utils.saveDocument(outputContent, this.outputBasePath + fileName);
+		} catch (TransformerFactoryConfigurationError | TransformerException | IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		return outputResource;
 	}
 
 }

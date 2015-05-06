@@ -1,32 +1,10 @@
 <service>
-    <resources>
-        <item>
-            <name>searchresult</name>
-            <content mode="script">
-                var service = new Service();
-                // ...
-            </content>
-        </item>
-        <item>
-            <name>articleDetails_{{id}}</name>
-            <content mode="script">
-                // use {{id}} here, will be replaced
-                // ...
-            </content>
-        </item>
-    </resources>
+    <name>output</name>
     <response from="searchresult">
-        <articles mode="list">
+        <articles el="articles" mode="list">
             <item>
-                <title></title>
-                <abstract expand="true">
-                    <from mode="script">
-                        var id = xnlParser.select('id', el).getTextContent().trim();
-                        resources.get('articleDetails_'+id, {
-                            id: id
-                        });
-                    </from>
-                </abstract>
+                <title el="title"></title>
+                <abstract from="articleDetails" el="abstract" />
             </item>
         </articles>
     </response>

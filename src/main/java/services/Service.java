@@ -32,6 +32,8 @@ public class Service {
 	private Data<String> data;
 	private ResourceList resourceList;
 	
+	private String name;
+	
 	private String url = "";
 	private String method = "";
 	private String contentType = "";
@@ -60,39 +62,15 @@ public class Service {
 			
 			Element rootEl = document.getDocumentElement();
 			
+			// name
+			
+			String name = "";
+			Element nameEl = (Element) rootEl.getElementsByTagName("name").item(0);
+			if (nameEl != null) name = nameEl.getTextContent().trim();
+			this.setName(name);
+			
 			// resources
-			
-			List<Element> resourceElList;
-			try {
-				resourceElList = this.xmlParser.select("/service/resources/item", rootEl);
-			} catch (XPathExpressionException e) {
-				// file has wrong schema
-				e.printStackTrace();
-				resourceElList = null;
-			}
-			
-			ResourceList resourceList = new ResourceList();
-			for (Element resourceEl : resourceElList) {
-				Element nameEl = XMLParser.getChildElementByTagName(resourceEl, "name");
-				Element contentTypeEl = XMLParser.getChildElementByTagName(resourceEl, "contentType");
-				Element contentEl = XMLParser.getChildElementByTagName(resourceEl, "content");
-
-				Resource resource = new Resource();
-				if (nameEl != null) {
-					String name = nameEl.getTextContent().trim();
-					resource.setName(name);
-				}
-				if (contentTypeEl != null) {
-					String contentType = contentTypeEl.getTextContent().trim();
-					resource.setContentType(contentType);
-				}
-				if (contentEl != null) {
-					String content = contentEl.getTextContent().trim();
-					resource.setContent(content);
-				}
-				resourceList.add(resource);
-			}
-			this.setResourceList(resourceList);
+			this.loadResourcesFromDocument(document);
 			
 			// request
 			
@@ -156,6 +134,42 @@ public class Service {
 			e.printStackTrace();
 		}
 	}
+	
+	public void loadResourcesFromDocument(Document document) {
+		Element rootEl = document.getDocumentElement();
+		
+		List<Element> resourceElList;
+		try {
+			resourceElList = this.xmlParser.select("/service/resources/item", rootEl);
+		} catch (XPathExpressionException e) {
+			// file has wrong schema
+			e.printStackTrace();
+			resourceElList = null;
+		}
+		
+		ResourceList resourceList = new ResourceList();
+		for (Element resourceEl : resourceElList) {
+			Element nameEl = XMLParser.getChildElementByTagName(resourceEl, "name");
+			Element contentTypeEl = XMLParser.getChildElementByTagName(resourceEl, "contentType");
+			Element contentEl = XMLParser.getChildElementByTagName(resourceEl, "content");
+
+			Resource resource = new Resource();
+			if (nameEl != null) {
+				String name = nameEl.getTextContent().trim();
+				resource.setName(name);
+			}
+			if (contentTypeEl != null) {
+				String contentType = contentTypeEl.getTextContent().trim();
+				resource.setContentType(contentType);
+			}
+			if (contentEl != null) {
+				String content = contentEl.getTextContent().trim();
+				resource.setContent(content);
+			}
+			resourceList.add(resource);
+		}
+		this.setResourceList(resourceList);
+	}
 
 	public Data<String> getData() {
 		return this.data;
@@ -175,6 +189,14 @@ public class Service {
 	
 	public void setResourceList(ResourceList resourceList) {
 		this.resourceList = resourceList;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getUrl() {
@@ -241,7 +263,15 @@ public class Service {
 		this.template = template;
 	}
 
-	public Document execute() {
+	public Resource execute() {
+		
+		// resolve name
+		String name = this.data.apply(this.name);
+		if (name.isEmpty()) {
+			// default name
+			name = "default";
+		}
+		
 		// resolve url
 		String url = this.data.apply(this.url, HTTPEncoder.EncodeMode.URL);
 		
@@ -377,15 +407,21 @@ public class Service {
 		converter.setResourceList(this.resourceList);
 		converter.setDefaultResourceName("response.body");
 
-		Document data = null;
+		Document document = null;
 		try {
-			data = converter.convert();
+			System.out.println("Converting " + name);
+			document = converter.convert();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		return data;
+		Resource response = new Resource();
+		response.setName(name);
+		response.setContentType("text/xml");
+		response.setContent(document);
+		
+		return response;
 	};
 	
 }

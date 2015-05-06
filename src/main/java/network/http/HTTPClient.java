@@ -50,8 +50,8 @@ public class HTTPClient {
 		    connection.setRequestMethod(method);
 		    if (!body.isEmpty()) {
 		    	// only set those headers if there is actually something to send
-			    connection.setRequestProperty("ContentDetails-Type", contentType);
-			    //connection.setRequestProperty("ContentDetails-Length", contentLength);
+			    connection.setRequestProperty("Content-Type", contentType);
+			    //connection.setRequestProperty("Content-Length", contentLength);
 		    }
 		    if (!cookies.isEmpty()) {
 			    connection.setRequestProperty("Cookie", cookies);

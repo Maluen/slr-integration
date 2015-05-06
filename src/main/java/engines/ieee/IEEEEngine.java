@@ -15,6 +15,7 @@ import misc.Utils;
 
 import org.w3c.dom.Document;
 
+import services.Resource;
 import services.Service;
 import engines.Engine;
 
@@ -45,7 +46,8 @@ public class IEEEEngine extends Engine {
 		searchService.addData("queryText", queryText);
 		searchService.addData("pageNumber", "1");
 		
-		Document searchResultContent = searchService.execute(); // TODO: make this async?
+		Resource searchResultResource = searchService.execute(); // TODO: make this async?
+		Document searchResultContent = (Document) searchResultResource.getContent();
 		
 		// save result
 		try {
@@ -81,7 +83,8 @@ public class IEEEEngine extends Engine {
 		searchService.addData("startNumber", "1");
 		searchService.addData("numberOfResults", "25"); // max 1000
 		
-		Document searchResultContent = searchService.execute(); // TODO: make this async?
+		Resource searchResultResource = searchService.execute(); // TODO: make this async?
+		Document searchResultContent = (Document) searchResultResource.getContent();
 		
 		// save result
 		try {
