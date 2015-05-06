@@ -1,5 +1,7 @@
 # Maven target directory
-/target
+target/classes
+target/test-classes
+target/*.jar
 
 # Logging and caching
 
