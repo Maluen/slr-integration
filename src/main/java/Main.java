@@ -6,13 +6,15 @@ import java.util.Map;
 
 import misc.Utils;
 
-import org.antlr.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.supercsv.io.CsvListReader;
 import org.supercsv.io.ICsvListReader;
 import org.supercsv.prefs.CsvPreference;
+
+import parsers.language.LanguageParser;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -21,7 +23,7 @@ import com.mashape.unirest.request.GetRequest;
 import com.owlike.genson.Genson;
 
 import engines.Engine;
-import engines.acm.ACMEngine;
+import engines.ieee.IEEEEngine;
 
 /**
  * 
@@ -96,15 +98,18 @@ public class Main {
 		//Main.json("json/example.json");
 		//Main.http("http://www.google.com/");
 		
-		String queryText = "mde";
-		//String queryText = Utils.getFileContent(new File("data/querystring.txt"));
+		//String queryText = "mde";
+		String queryText = Utils.getFileContent(new File("data/querystring.txt"));
 		System.out.println("Query string: " + queryText);
 		
-		//Engine ieeeEngine = new IEEEEngine();
-		//ieeeEngine.search(queryText);
+		LanguageParser languageParser = new LanguageParser();
+		ParseTree queryTree = languageParser.parse(queryText);
 		
-		Engine acmEngine = new ACMEngine();
-		acmEngine.search(queryText);
+		Engine ieeeEngine = new IEEEEngine();
+		ieeeEngine.search(queryTree);
+		
+		//Engine acmEngine = new ACMEngine();
+		//acmEngine.search(queryTree);
 	}
 
 }

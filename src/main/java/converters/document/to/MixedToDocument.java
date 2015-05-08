@@ -1,7 +1,5 @@
 package converters.document.to;
 
-import java.util.List;
-
 import javax.script.ScriptEngine;
 
 import org.w3c.dom.Document;

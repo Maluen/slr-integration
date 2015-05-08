@@ -13,6 +13,7 @@ import javax.xml.xpath.XPathFactory;
 
 import misc.Utils;
 
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.w3c.dom.Document;
 
 import services.Resource;
@@ -25,7 +26,9 @@ public class IEEEEngine extends Engine {
 		super("ieee");
 	}
 
-	public void search(String queryText) {
+	@Override
+	public void search(ParseTree queryTree) {
+		String queryText = queryTree.getText();
 		
 		// TODO: convert generic search input into engine-specific search input
 	

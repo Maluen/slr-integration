@@ -17,6 +17,7 @@ import javax.xml.xpath.XPathFactory;
 
 import misc.Utils;
 
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -32,15 +33,17 @@ public class ACMEngine extends Engine {
 	}
 
 	@Override
-	public void search(String queryText) {
+	public void search(ParseTree queryTree) {
+		String queryText = queryTree.getText();
+		
 		Map<String, String> userData = this.login();
 		
 		Resource searchResult  = this.searchFromHtml(queryText, userData);
 		List<String> articleIdList = this.getArticleIdsFromSearchResult(searchResult);
 
-		//this.getArticleDetails(articleIdList.get(0), userData);
+		Resource articleDetails = this.getArticleDetails(articleIdList.get(0), userData);
 		// DEBUG
-		Resource articleDetails = this.getArticleDetails("2400267.2400302", userData);
+		//Resource articleDetails = this.getArticleDetails("2400267.2400302", userData);
 		
 		this.getOutput(searchResult, articleDetails);
 	}

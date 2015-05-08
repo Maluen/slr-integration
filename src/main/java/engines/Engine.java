@@ -1,5 +1,7 @@
 package engines;
 
+import org.antlr.v4.runtime.tree.ParseTree;
+
 public abstract class Engine {
 
 	// NOTE: name must have unix-names format
@@ -25,6 +27,6 @@ public abstract class Engine {
 	}
 
 	// TODO: add search input parameters
-	public abstract void search(String queryText);
+	public abstract void search(ParseTree queryTree);
 	
 }

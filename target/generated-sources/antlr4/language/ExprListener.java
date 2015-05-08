@@ -1,4 +1,4 @@
-// Generated from Expr.g4 by ANTLR 4.4
+// Generated from Expr.g4 by ANTLR 4.5
 package language;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
@@ -9,23 +9,33 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface ExprListener extends ParseTreeListener {
 	/**
+	 * Enter a parse tree produced by {@link ExprParser#init}.
+	 * @param ctx the parse tree
+	 */
+	void enterInit(ExprParser.InitContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ExprParser#init}.
+	 * @param ctx the parse tree
+	 */
+	void exitInit(ExprParser.InitContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ExprParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void enterExpr(@NotNull ExprParser.ExprContext ctx);
+	void enterExpr(ExprParser.ExprContext ctx);
 	/**
 	 * Exit a parse tree produced by {@link ExprParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void exitExpr(@NotNull ExprParser.ExprContext ctx);
+	void exitExpr(ExprParser.ExprContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ExprParser#prog}.
+	 * Enter a parse tree produced by {@link ExprParser#phrase}.
 	 * @param ctx the parse tree
 	 */
-	void enterProg(@NotNull ExprParser.ProgContext ctx);
+	void enterPhrase(ExprParser.PhraseContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ExprParser#prog}.
+	 * Exit a parse tree produced by {@link ExprParser#phrase}.
 	 * @param ctx the parse tree
 	 */
-	void exitProg(@NotNull ExprParser.ProgContext ctx);
+	void exitPhrase(ExprParser.PhraseContext ctx);
 }
