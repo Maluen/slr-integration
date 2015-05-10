@@ -84,9 +84,15 @@ public class HTTPClient {
 		    BufferedReader rd = new BufferedReader(new InputStreamReader(is));
 		    String line;
 		    StringBuffer responseBuffer = new StringBuffer(); 
-		    while ((line = rd.readLine()) != null) {
+		    /*while ((line = rd.readLine()) != null) {
 		    	responseBuffer.append(line);
 		    	responseBuffer.append('\r');
+		    }*/
+		    int BUFFER_SIZE = 1024;
+		    char[] buffer = new char[BUFFER_SIZE]; // or some other size, 
+		    int charsRead = 0;
+		    while ( (charsRead = rd.read(buffer, 0, BUFFER_SIZE)) != -1) {
+		    	responseBuffer.append(buffer, 0, charsRead);
 		    }
 		    rd.close();
 		    is.close();

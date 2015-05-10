@@ -6,9 +6,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import parsers.xml.XMLParser;
-import services.Resource;
-import services.ResourceList;
+import services.Data;
 import services.Template;
+import services.resources.Resource;
+import services.resources.ResourceList;
 import converters.document.DocumentConverterFactory;
 
 public class MixedToDocument extends ToDocument {
@@ -54,20 +55,26 @@ public class MixedToDocument extends ToDocument {
 		// starting point
 		Element templateRootEl = this.template.getDocumentElement();
 		
+        // create a JavaScript engine
+        ScriptEngine engine = this.scriptFactory.getEngineByName("JavaScript");
+        engine = this.configureScriptEngine(engine, null);
+		
 		// process!
-		Element documentRootEl = this.process(templateRootEl);
+		Element documentRootEl = this.process(templateRootEl, engine, this.data);
 		document.appendChild(documentRootEl);
 		
 		return document;
 	}
 	
-	public Element process(Element templateEl) throws Exception {
+	@Override
+	public Element process(Element templateEl, ScriptEngine engine, Data<String> data) throws Exception {
+
+        // update data
+		// Note: if the converter was called from another converter that failed,
+		// then its engine is used so to get the same data
+        data = Template.getData(templateEl, engine, data);
 		
-        // create a JavaScript engine
-        ScriptEngine engine = this.scriptFactory.getEngineByName("JavaScript");
-        engine = this.configureScriptEngine(engine, null);
-		
-		String resourceName = (String) Template.getProperty(templateEl, "from", engine);
+		String resourceName = (String) Template.getProperty(templateEl, "from", engine, data);
 		if (resourceName == null) resourceName = "";
 		
 		if (resourceName.isEmpty()) {
@@ -86,12 +93,13 @@ public class MixedToDocument extends ToDocument {
 		
 		String contentType = resource.getContentType();
 		
-		Document template = this.xmlParser.createDocumentFromElement(templateEl);
+		Document template = XMLParser.createDocumentFromElement(templateEl);
 		
 		ToDocument converter = DocumentConverterFactory.createToDocument(contentType);
 		converter.setParent(this);
 		converter.setResource(resource);
 		converter.setTemplate(template);
+		converter.setData(data);
 		Document converterDocument = converter.convert();
 		
 		Element documentEl = (Element) converterDocument.getDocumentElement();

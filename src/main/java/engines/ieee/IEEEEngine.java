@@ -15,9 +15,10 @@ import misc.Utils;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
-import services.Resource;
 import services.Service;
+import services.resources.Resource;
 import engines.Engine;
 
 public class IEEEEngine extends Engine {
@@ -28,75 +29,101 @@ public class IEEEEngine extends Engine {
 
 	@Override
 	public void search(ParseTree queryTree) {
-		String queryText = queryTree.getText();
-		
 		// TODO: convert generic search input into engine-specific search input
+		String queryText = queryTree.getText();
 	
 		this.searchFromHTML(queryText);
 		this.searchFromXML(queryText);
 	}
 	
-	public void searchFromHTML(String queryText) {
-		// Fetch, parse and extract service content
+	public Resource searchFromHTML(String queryText) {
+		Resource searchResultResource;
+		String resourceFilename = this.outputBasePath + "resources/searchresult-html.xml";
 		
-		String fileName = "services/searchresult-html.xml"; // relative to base paths
+		try {
+			searchResultResource = this.resourceLoader.load(new File(resourceFilename));
+			System.out.println("Resumed: " + resourceFilename);
+			return searchResultResource;
+		} catch (SAXException | IOException e1) {
+			// proceed
+			System.out.println("Unable to resume " + resourceFilename);
+		}
 		
 		Service searchService = new Service();
-		// load from file
-		File serviceFile = new File(this.inputBasePath + fileName);
-		searchService.loadFromFile(serviceFile);
+		String serviceFilename = this.inputBasePath + "services/searchresult-html.xml";
+		searchService.loadFromFile(new File(serviceFilename));
+		
 		// set any needed data
 		searchService.addData("queryText", queryText);
 		searchService.addData("pageNumber", "1");
 		
-		Resource searchResultResource = searchService.execute(); // TODO: make this async?
-		Document searchResultContent = (Document) searchResultResource.getContent();
+		searchResultResource = searchService.execute(); // TODO: make this async?
 		
-		// save result
+		// save resource
 		try {
-			Utils.saveDocument(searchResultContent, this.outputBasePath + fileName);
-		} catch (TransformerFactoryConfigurationError | TransformerException | IOException e1) {
+			this.resourceSerializer.serialize(searchResultResource, resourceFilename);
+		} catch (Exception e2) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			e2.printStackTrace();
 		}
 		
-		// explore result content tree!
+		return searchResultResource;
+	}
+	
+	public Integer getCount(Resource searchResultHtmlResource) {
+		Integer count;
+		
+		Document searchResultContent = (Document) searchResultHtmlResource.getContent();
 		
 		XPathFactory xPathfactory = XPathFactory.newInstance();
 		XPath xpath = xPathfactory.newXPath();
 		try {
 			XPathExpression expr = xpath.compile("/response/meta/count");
-			Double count = (Double) expr.evaluate(searchResultContent, XPathConstants.NUMBER);
+			Double countDouble = (Double) expr.evaluate(searchResultContent, XPathConstants.NUMBER);
+			count = countDouble.intValue();
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
+			count = null;
 		}
+		
+		return count;
 	}
 	
-	public void searchFromXML(String queryText) {
+	public Resource searchFromXML(String queryText) {
+		Resource searchResultResource;
+		String resourceFilename = this.outputBasePath + "resources/searchresult-xml.xml";
 		
-		String fileName = "services/searchresult-xml.xml"; // relative to base paths
+		try {
+			searchResultResource = this.resourceLoader.load(new File(resourceFilename));
+			System.out.println("Resumed: " + resourceFilename);
+			return searchResultResource;
+		} catch (SAXException | IOException e1) {
+			// proceed
+			System.out.println("Unable to resume " + resourceFilename);
+		}
 		
 		Service searchService = new Service();
-		// load from file
-		File serviceFile = new File(this.inputBasePath + fileName);
-		searchService.loadFromFile(serviceFile);
+		String serviceFilename = this.inputBasePath + "services/searchresult-xml.xml";
+		searchService.loadFromFile(new File(serviceFilename));
+		
 		// set any needed data
 		searchService.addData("queryText", queryText);
 		searchService.addData("startNumber", "1");
 		searchService.addData("numberOfResults", "25"); // max 1000
 		
-		Resource searchResultResource = searchService.execute(); // TODO: make this async?
-		Document searchResultContent = (Document) searchResultResource.getContent();
-		
-		// save result
+		searchResultResource = searchService.execute(); // TODO: make this async?
+
+		// save resource
 		try {
-			Utils.saveDocument(searchResultContent, this.outputBasePath + fileName);
-		} catch (TransformerFactoryConfigurationError | TransformerException | IOException e1) {
+			this.resourceSerializer.serialize(searchResultResource, resourceFilename);
+		} catch (Exception e2) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			e2.printStackTrace();
 		}
 		
+		return searchResultResource;
 	}
 	
 }

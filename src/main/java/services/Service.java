@@ -16,6 +16,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import parsers.xml.XMLParser;
+import services.resources.Resource;
+import services.resources.ResourceList;
 import converters.document.DocumentConverterFactory;
 import converters.document.from.DocumentToCookies;
 import converters.document.from.DocumentToForm;
@@ -95,7 +97,7 @@ public class Service {
 			if (requestEl != null) bodyEl = (Element) requestEl.getElementsByTagName("body").item(0);
 			
 			Document bodyDocument = null;
-			if (bodyEl != null) bodyDocument = xmlParser.createDocumentFromElement(bodyEl);
+			if (bodyEl != null) bodyDocument = XMLParser.createDocumentFromElement(bodyEl);
 			this.setBodyDocument(bodyDocument);
 			
 			// TODO: add body as string instead that as document
@@ -112,7 +114,7 @@ public class Service {
 			if (requestEl != null) cookiesEl = (Element) requestEl.getElementsByTagName("cookies").item(0);
 			
 			Document cookiesDocument = null;
-			if (cookiesEl != null) cookiesDocument = xmlParser.createDocumentFromElement(cookiesEl);
+			if (cookiesEl != null) cookiesDocument = XMLParser.createDocumentFromElement(cookiesEl);
 			this.setCookiesDocument(cookiesDocument);
 			
 			// TODO: add cookies as string instead that as document
@@ -124,7 +126,7 @@ public class Service {
 			Document template = null;
 			if (rootEl != null) {
 				Element templateEl = (Element) rootEl.getElementsByTagName("response").item(0);
-				if (templateEl != null) template = xmlParser.createDocumentFromElement(templateEl);
+				if (templateEl != null) template = XMLParser.createDocumentFromElement(templateEl);
 			}
 			this.setTemplate(template);
 			

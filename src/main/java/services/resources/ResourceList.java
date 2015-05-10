@@ -1,4 +1,4 @@
-package services;
+package services.resources;
 
 import java.util.ArrayList;
 

@@ -1,9 +1,12 @@
 package converters.document.to;
 
+import javax.script.ScriptEngine;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import parsers.json.JSONParser;
+import services.Data;
 
 public class JSONtoDocument extends ToDocument {
 
@@ -24,6 +27,12 @@ public class JSONtoDocument extends ToDocument {
 		Element element = document.createElement("stub");
 		document.appendChild(element);
 		return document;
+	}
+	
+	@Override
+	public Element process(Element templateElement, ScriptEngine engine,
+			Data<String> data) throws UnsupportedOperationException, Exception {
+		throw new UnsupportedOperationException();
 	}
 
 }

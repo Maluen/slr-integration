@@ -12,6 +12,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import parsers.cookie.CookieParser;
+import services.Data;
 import services.Template;
 
 public class SetCookiesToDocument extends ToDocument {
@@ -58,17 +59,17 @@ public class SetCookiesToDocument extends ToDocument {
 		Element templateRootEl = this.template.getDocumentElement();
 		
 		// process!
-		Element documentRootEl = this.process(templateRootEl, parsedContent);
+		Element documentRootEl = this.process(templateRootEl, parsedContent, this.data);
 		document.appendChild(documentRootEl);
 		
 		return document;
 	}
 	
 	// retrieve base elements pool
-	protected List<Object> findContentElements(Element templateEl, List<HTTPCookie> cookies, ScriptEngine engine) {
+	protected List<Object> findContentElements(Element templateEl, List<HTTPCookie> cookies, ScriptEngine engine, Data<String> data) {
 		List<HTTPCookie> contentElList;
 		
-		Object el = Template.getProperty(templateEl, "el", engine);
+		Object el = Template.getProperty(templateEl, "el", engine, data);
 		
 		if (!Template.hasProperty(templateEl, "el")) {
 			// defaults to parent element
@@ -112,23 +113,26 @@ public class SetCookiesToDocument extends ToDocument {
 		return (List<Object>)(List<?>) contentElList;
 	}
 	
-	public Element process(Element templateEl, List<HTTPCookie> cookies) throws Exception {
-		
-		Element documentEl;
-		documentEl = this.processIfUnsupported(templateEl);
-		if (documentEl != null) return documentEl;
-		documentEl = this.document.createElement(templateEl.getTagName());
+	public Element process(Element templateEl, List<HTTPCookie> cookies, Data<String> data) throws Exception {
 		
         // create a JavaScript engine
         ScriptEngine engine = this.scriptFactory.getEngineByName("JavaScript");
         engine = this.configureScriptEngine(engine, cookies);
+		
+        // update data
+        data = Template.getData(templateEl, engine, data);
+		
+		Element documentEl;
+		documentEl = this.processIfUnsupported(templateEl, engine, data);
+		if (documentEl != null) return documentEl;
+		documentEl = this.document.createElement(templateEl.getTagName());
 
 		// retrieve base elements pool
-		List<Object> contentElList = this.findContentElements(templateEl, cookies, engine);
+		List<Object> contentElList = this.findContentElements(templateEl, cookies, engine, data);
 				
 		// filter base elements pool if needed		
 		try {
-			contentElList = this.filterContentElements(contentElList, templateEl);
+			contentElList = this.filterContentElements(contentElList, templateEl, data);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			// This exception (class to refactor) means that the template has incorrect schema
@@ -153,7 +157,7 @@ public class SetCookiesToDocument extends ToDocument {
         engine = this.configureScriptEngine(engine, firstContentEl);
 
 		// get mode
-		String mode = (String) Template.getProperty(templateEl, "mode", engine);
+		String mode = (String) Template.getProperty(templateEl, "mode", engine, data);
 		if (mode == null) mode = "";
 		
 		if (mode.equals("list")) {
@@ -168,7 +172,7 @@ public class SetCookiesToDocument extends ToDocument {
 				List<HTTPCookie> contentElCookies = new ArrayList<HTTPCookie>();
 				contentElCookies.add((HTTPCookie) contentEl);
 				
-				Element documentListItemEl = this.process(valueListItemEl, contentElCookies);
+				Element documentListItemEl = this.process(valueListItemEl, contentElCookies, data);
 				documentEl.appendChild(documentListItemEl);
 			}
 			
@@ -176,7 +180,7 @@ public class SetCookiesToDocument extends ToDocument {
 			
 			if (mode.equals("script")) {
 				
-				String script = Template.getScriptContent(templateEl);
+				String script = Template.getScriptContent(templateEl, data);
 
 		        // evaluate JavaScript code from String
 		        try {
@@ -208,13 +212,19 @@ public class SetCookiesToDocument extends ToDocument {
 				// nothing, just proceed further with children
 				List<Element> templateElNextLevel = Template.getNextLevel(templateEl);
 				for (Element templateElNextLevelChild : templateElNextLevel) {
-					Element documentElChild = this.process(templateElNextLevelChild, cookies);
+					Element documentElChild = this.process(templateElNextLevelChild, cookies, data);
 					documentEl.appendChild(documentElChild);
 				}
 			}
 		}
 		
 		return documentEl;
+	}
+	
+	@Override
+	public Element process(Element templateElement, ScriptEngine engine,
+			Data<String> data) throws UnsupportedOperationException, Exception {
+		throw new UnsupportedOperationException();
 	}
 
 }

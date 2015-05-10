@@ -11,6 +11,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import parsers.xml.XMLParser;
+import services.Data;
 import services.Template;
 
 public class XMLtoDocument extends ToDocument {
@@ -52,17 +53,17 @@ public class XMLtoDocument extends ToDocument {
 		Element templateRootEl = this.template.getDocumentElement();
 		
 		// process!
-		Element documentRootEl = this.process(templateRootEl, contentRootEl);
+		Element documentRootEl = this.process(templateRootEl, contentRootEl, this.data);
 		document.appendChild(documentRootEl);
 		
 		return document;
 	}
 	
 	// retrieve base elements pool
-	protected List<Object> findContentElements(Element templateEl, Element fromContentEl, ScriptEngine engine) {
+	protected List<Object> findContentElements(Element templateEl, Element fromContentEl, ScriptEngine engine, Data<String> data) {
 		List<Element> contentElList;
 		
-		Object el = Template.getProperty(templateEl, "el", engine);
+		Object el = Template.getProperty(templateEl, "el", engine, data);
 		
 		if (!Template.hasProperty(templateEl, "el")) {
 			// defaults to parent element
@@ -109,23 +110,26 @@ public class XMLtoDocument extends ToDocument {
 		return (List<Object>)(List<?>) contentElList;
 	}
 
-	public Element process(Element templateEl, Element fromContentEl) throws Exception {
-		
-		Element documentEl;
-		documentEl = this.processIfUnsupported(templateEl);
-		if (documentEl != null) return documentEl;
-		documentEl = this.document.createElement(templateEl.getTagName());
+	public Element process(Element templateEl, Element fromContentEl, Data<String> data) throws Exception {
 		
         // create a JavaScript engine
         ScriptEngine engine = this.scriptFactory.getEngineByName("JavaScript");
         engine = this.configureScriptEngine(engine, fromContentEl);
+		
+        // update data
+        data = Template.getData(templateEl, engine, data);
+		
+		Element documentEl;
+		documentEl = this.processIfUnsupported(templateEl, engine, data);
+		if (documentEl != null) return documentEl;
+		documentEl = this.document.createElement(templateEl.getTagName());
 
 		// retrieve base elements pool
-		List<Object> contentElList = this.findContentElements(templateEl, fromContentEl, engine);
+		List<Object> contentElList = this.findContentElements(templateEl, fromContentEl, engine, data);
 		
 		// filter base elements pool if needed		
 		try {
-			contentElList = this.filterContentElements(contentElList, templateEl);
+			contentElList = this.filterContentElements(contentElList, templateEl, data);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			// This exception (class to refactor) means that the template has incorrect schema
@@ -150,7 +154,7 @@ public class XMLtoDocument extends ToDocument {
         engine = this.configureScriptEngine(engine, firstContentEl);
 
 		// get mode
-		String mode = (String) Template.getProperty(templateEl, "mode", engine);
+		String mode = (String) Template.getProperty(templateEl, "mode", engine, data);
 		if (mode == null) mode = "";
 		
 		if (mode.equals("list")) {
@@ -162,14 +166,14 @@ public class XMLtoDocument extends ToDocument {
 			
 			// create one list item for each content element
 			for (Object contentEl : contentElList) {
-				Element documentListItemEl = this.process(valueListItemEl, (Element) contentEl);
+				Element documentListItemEl = this.process(valueListItemEl, (Element) contentEl, data);
 				documentEl.appendChild(documentListItemEl);
 			}
 			
 		}  else {
 
 			if (mode.equals("script")) {
-				String script = Template.getScriptContent(templateEl);
+				String script = Template.getScriptContent(templateEl, data);
 
 		        // evaluate JavaScript code from String
 		        try {
@@ -203,7 +207,7 @@ public class XMLtoDocument extends ToDocument {
 				
 				List<Element> templateElNextLevel = Template.getNextLevel(templateEl);
 				for (Element templateElNextLevelChild : templateElNextLevel) {
-					Element documentElChild = this.process(templateElNextLevelChild, firstContentEl);
+					Element documentElChild = this.process(templateElNextLevelChild, firstContentEl, data);
 					documentEl.appendChild(documentElChild);
 				}
 			}
@@ -216,6 +220,12 @@ public class XMLtoDocument extends ToDocument {
 		engine.put("el", contentEl);
 		engine.put("parser", this.xmlParser);
 		return engine;
+	}
+	
+	@Override
+	public Element process(Element templateElement, ScriptEngine engine,
+			Data<String> data) throws UnsupportedOperationException, Exception {
+		throw new UnsupportedOperationException();
 	}
 	
 }

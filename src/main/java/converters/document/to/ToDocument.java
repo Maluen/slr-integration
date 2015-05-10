@@ -12,8 +12,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import services.Resource;
+import services.Data;
 import services.Template;
+import services.resources.Resource;
 import converters.document.DocumentConverter;
 
 public abstract class ToDocument extends DocumentConverter {
@@ -27,6 +28,7 @@ public abstract class ToDocument extends DocumentConverter {
 	
 	protected Resource resource;
 	protected Document template;
+	protected Data<String> data;
 	
 	public ToDocument() {
 	    // create a script engine manager
@@ -39,6 +41,8 @@ public abstract class ToDocument extends DocumentConverter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		this.data = new Data<String>();
 	}
 	
 	public abstract String getFromContentType();
@@ -67,23 +71,26 @@ public abstract class ToDocument extends DocumentConverter {
 		this.template = template;
 	}
 	
+	public Data<String> getData() {
+		return this.data;
+	}
+
+	public void setData(Data<String> data) {
+		this.data = data;
+	}
+
 	public abstract Document convert() throws Exception;
 	
-	public Element process(Element templateElement) throws UnsupportedOperationException, Exception {
-		throw new UnsupportedOperationException();
-	}
+	public abstract Element process(Element templateElement, ScriptEngine engine, Data<String> data) throws Exception;
 	
-	protected Element processIfUnsupported(Element templateEl) throws Exception {
-		// create a JavaScript engine
-		ScriptEngine engine = this.scriptFactory.getEngineByName("JavaScript");
-		engine = this.configureScriptEngine(engine, null);
+	protected Element processIfUnsupported(Element templateEl, ScriptEngine engine, Data<String> data) throws Exception {
 		
-		String resourceName = (String) Template.getProperty(templateEl, "from", engine);
+		String resourceName = (String) Template.getProperty(templateEl, "from", engine, data);
 		if (resourceName == null) resourceName = "";
 		
 		if (!resourceName.isEmpty() && !resourceName.equals(this.resource.getName())) {
 			// unsupported element
-			Element documentEl = this.processUnsupported(templateEl);
+			Element documentEl = this.processUnsupported(templateEl, engine, data);
 			documentEl = (Element) this.document.importNode(documentEl, true);
 			return documentEl;
 		}
@@ -91,22 +98,22 @@ public abstract class ToDocument extends DocumentConverter {
 		return null;
 	}
 	
-	protected Element processUnsupported(Element templateElement) throws Exception {
+	protected Element processUnsupported(Element templateElement, ScriptEngine engine, Data<String> data) throws Exception {
 		if (this.parent != null) {
 			// try with parent
-			return this.parent.process(templateElement);
+			return this.parent.process(templateElement, engine, data);
 		}
 		
 		// TODO: add better exception
 		throw new Exception("Unsupported template element");
 	}
-	
+
 	protected ScriptEngine configureScriptEngine(ScriptEngine engine, Object contentEl) {
 		engine.put("el", contentEl);
 		return engine;
 	}
 	
-	protected List<Object> filterContentElements(List<Object> contentElList, Element templateEl) throws Exception {
+	protected List<Object> filterContentElements(List<Object> contentElList, Element templateEl, Data<String> data) throws Exception {
 		
 		List<Object> filteredContentElList = new ArrayList<Object>();
 		
@@ -116,11 +123,11 @@ public abstract class ToDocument extends DocumentConverter {
 		}
 		
 		for (Object contentEl : contentElList) {
-			// create a JavaScript engine
+			// create a JavaScript engine with the current element
 			ScriptEngine engine = this.scriptFactory.getEngineByName("JavaScript");
 			engine = this.configureScriptEngine(engine, contentEl);
 
-			Object property = Template.getProperty(templateEl, "condition", engine);
+			Object property = Template.getProperty(templateEl, "condition", engine, data);
 			Boolean passes;
 			
 			if (property == null) {

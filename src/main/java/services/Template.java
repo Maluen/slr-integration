@@ -26,35 +26,37 @@ public class Template {
 	
 	// Note: a return value of null can either mean "property does not exist" or actual null property value (e.g. in case of evaluation),
 	// use hasProperty to distinguish between the cases.
-	public static Object getProperty(Element templateEl, String propertyName, ScriptEngine engine) {
+	public static Object getProperty(Element templateEl, String propertyName, ScriptEngine engine, Data<String> data) {
 		if (Template.isExpand(templateEl)) {
 			// priority to expand property
-			Object property = Template.getExpandProperty(templateEl, propertyName, engine);
+			Object property = Template.getExpandProperty(templateEl, propertyName, engine, data);
 			if (property != null) return property;
 		}
 		
 		// default: attribute (plain text)
-		return templateEl.getAttribute(propertyName);
+		String attribute = templateEl.getAttribute(propertyName);
+		return data.apply(attribute);
 	}
 	
 	// Get a property from an element with expand="true"
-	protected static Object getExpandProperty(Element templateEl, String propertyName, ScriptEngine engine) {
+	protected static Object getExpandProperty(Element templateEl, String propertyName, ScriptEngine engine, Data<String> data) {
 		Element propertyEl = XMLParser.getChildElementByTagName(templateEl, propertyName);
 		if (propertyEl == null) {
 			// the property does not exist
 			return null;
 		}
 		
-		Object property = Template.evaluatePropertyElement(propertyEl, engine);
+		Object property = Template.evaluatePropertyElement(propertyEl, engine, data);
 		return property;
 	}
 	
-	protected static Object evaluatePropertyElement(Element propertyEl, ScriptEngine engine) {
+	protected static Object evaluatePropertyElement(Element propertyEl, ScriptEngine engine, Data<String> data) {
 		Object property;
 		
 		String propertyContent = propertyEl.getTextContent().trim();
+		propertyContent = data.apply(propertyContent);
 		
-		String mode = (String) Template.getProperty(propertyEl, "mode", engine);
+		String mode = (String) Template.getProperty(propertyEl, "mode", engine, data);
 		if (mode == null) mode = "";
 		
 		if (mode.equals("script")) {
@@ -77,6 +79,31 @@ public class Template {
 		}
 		
 		return property;
+	}
+	
+	// Returns a NEW data that extends the given data with the template element data
+	public static Data<String> getData(Element templateEl, ScriptEngine engine, Data<String> data) {
+		Data<String> newData = new Data<String>();
+		newData.putAll(data);
+				
+		if (!Template.isExpand(templateEl)) return data;
+				
+		Element dataEl = XMLParser.getChildElementByTagName(templateEl, "data");
+		if (dataEl == null) return data;
+		
+		List<Element> dataItemElList = XMLParser.getChildElements(dataEl);
+		for (Element dataItemEl : dataItemElList) {
+			Element dataItemNameEl = XMLParser.getChildElementByTagName(dataItemEl, "name");
+			Element dataItemValueEl = XMLParser.getChildElementByTagName(dataItemEl, "value");
+
+			// evaluate (uses current new data)
+			String name = (String) Template.evaluatePropertyElement(dataItemNameEl, engine, newData);
+			String value = (String) Template.evaluatePropertyElement(dataItemValueEl, engine, newData);
+			
+			newData.put(name, value);
+		}
+		
+		return newData;
 	}
 	
 	// get value element (explicit in case of expand)
@@ -107,14 +134,14 @@ public class Template {
 	}
 	
 	// Note: assumes templateEl is a mode "script" element
-	public static String getScriptContent(Element templateEl) {
+	public static String getScriptContent(Element templateEl, Data<String> data) {
 		Element valueEl = Template.getValueElement(templateEl);
 		if (valueEl == null) {
 			return null;
 		}
 		
 		String scriptCode = valueEl.getTextContent().trim();
-		return scriptCode;
+		return data.apply(scriptCode);
 	}
 	
 	// Note: assumes templateEl is not any of the previous modes.

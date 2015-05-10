@@ -7,23 +7,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import misc.Utils;
-
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import parsers.xml.XMLParser;
-import services.Resource;
 import services.Service;
+import services.resources.Resource;
 import engines.Engine;
 
 public class ACMEngine extends Engine {
@@ -36,41 +33,62 @@ public class ACMEngine extends Engine {
 	public void search(ParseTree queryTree) {
 		String queryText = queryTree.getText();
 		
-		Map<String, String> userData = this.login();
+		Resource homeResource = this.home();
+		Map<String, String> userData = this.getUserData(homeResource);
 		
 		Resource searchResult  = this.searchFromHtml(queryText, userData);
-		List<String> articleIdList = this.getArticleIdsFromSearchResult(searchResult);
-
-		Resource articleDetails = this.getArticleDetails(articleIdList.get(0), userData);
-		// DEBUG
-		//Resource articleDetails = this.getArticleDetails("2400267.2400302", userData);
+		List<String> articleIdList = this.getArticleIds(searchResult);
 		
-		this.getOutput(searchResult, articleDetails);
+		// DEBUG
+		//List<Resource> articleDetailsList = new ArrayList<Resource>();
+		//Resource articleDetails = this.getArticleDetails("2400267.2400302", userData);
+		//articleDetailsList.add(articleDetails);
+		
+		// get all article details
+		List<Resource> articleDetailsList = new ArrayList<Resource>();
+		for (String articleId : articleIdList) {
+			Resource articleDetails = this.getArticleDetails(articleId, userData);
+			articleDetailsList.add(articleDetails);
+		}
+		
+		this.output(searchResult, articleDetailsList);
 	}
 	
 	/**
 	 * @return user data that can be passed to the service
 	 */
-	public Map<String, String> login() {
-		String fileName = "services/home-html.xml"; // relative to base paths
-		
-		Service searchService = new Service();
-		// load from file
-		File serviceFile = new File(this.inputBasePath + fileName);
-		searchService.loadFromFile(serviceFile);
-		
-		Resource searchResultResource = searchService.execute(); // TODO: make this async?
-		Document searchResultContent = (Document) searchResultResource.getContent();
-		
-		// save result
+	public Resource home() {
+		Resource homeResource;
+		String resourceFilename = this.outputBasePath + "resources/home-html.xml";
+
 		try {
-			Utils.saveDocument(searchResultContent, this.outputBasePath + fileName);
-		} catch (TransformerFactoryConfigurationError | TransformerException | IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			homeResource = this.resourceLoader.load(new File(resourceFilename));
+			System.out.println("Resumed: " + resourceFilename);
+			return homeResource;
+		} catch (SAXException | IOException e1) {
+			// proceed
+			System.out.println("Unable to resume " + resourceFilename);
 		}
 		
-		// explore result content tree!
+		Service homeService = new Service();
+		String serviceFilename = this.inputBasePath + "services/home-html.xml";
+		homeService.loadFromFile(new File(serviceFilename));
+		homeResource = homeService.execute(); // TODO: make this async?
+		
+		// save resource
+		try {
+			this.resourceSerializer.serialize(homeResource, resourceFilename);
+		} catch (Exception e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		
+		return homeResource;
+	}
+	
+	public Map<String, String> getUserData(Resource homeResource) {
+		Document homeContent = (Document) homeResource.getContent();
+		
 		String cfid = null;
 		String cftoken = null;
 		String atuvc = null;
@@ -79,13 +97,13 @@ public class ACMEngine extends Engine {
 		XPath xpath = xPathfactory.newXPath();
 		try {
 			XPathExpression expr = xpath.compile("/response/session/cfid");
-			cfid = (String) expr.evaluate(searchResultContent, XPathConstants.STRING);
+			cfid = (String) expr.evaluate(homeContent, XPathConstants.STRING);
 			
 			XPathExpression expr2 = xpath.compile("/response/session/cftoken");
-			cftoken = (String) expr2.evaluate(searchResultContent, XPathConstants.STRING);
+			cftoken = (String) expr2.evaluate(homeContent, XPathConstants.STRING);
 			
 			XPathExpression expr3 = xpath.compile("/response/session/atuvc");
-			atuvc = (String) expr3.evaluate(searchResultContent, XPathConstants.STRING);
+			atuvc = (String) expr3.evaluate(homeContent, XPathConstants.STRING);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -99,33 +117,42 @@ public class ACMEngine extends Engine {
 	}
 	
 	public Resource searchFromHtml(String queryText, Map<String, String> userData) {
-		String fileName = "services/searchresult-html.xml"; // relative to base paths
+		Resource searchResultResource;
+		String resourceFilename = this.outputBasePath + "resources/searchresult-html.xml";
+		
+		try {
+			searchResultResource = this.resourceLoader.load(new File(resourceFilename));
+			System.out.println("Resumed: " + resourceFilename);
+			return searchResultResource;
+		} catch (SAXException | IOException e1) {
+			// proceed
+			System.out.println("Unable to resume " + resourceFilename);
+		}
 		
 		Service searchService = new Service();
-		// load from file
-		File serviceFile = new File(this.inputBasePath + fileName);
-		searchService.loadFromFile(serviceFile);
+		String serviceFilename = this.inputBasePath + "services/searchresult-html.xml";
+		searchService.loadFromFile(new File(serviceFilename));
+		
 		// set any needed data
 		for (Map.Entry<String, String> aData : userData.entrySet()) {
 			searchService.addData( aData.getKey(), aData.getValue() );
 		}
 		searchService.addData("query", queryText);
 		
-		Resource searchResultResource = searchService.execute(); // TODO: make this async?
-		Document searchResultContent = (Document) searchResultResource.getContent();
+		searchResultResource = searchService.execute(); // TODO: make this async?
 		
-		// save result
+		// save resource
 		try {
-			Utils.saveDocument(searchResultContent, this.outputBasePath + fileName);
-		} catch (TransformerFactoryConfigurationError | TransformerException | IOException e1) {
+			this.resourceSerializer.serialize(searchResultResource, resourceFilename);
+		} catch (Exception e2) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			e2.printStackTrace();
 		}
 		
 		return searchResultResource;
 	}
 	
-	public List<String> getArticleIdsFromSearchResult(Resource searchResult) {
+	public List<String> getArticleIds(Resource searchResult) {
 		List<String> articleIdList = new ArrayList<String>();
 		
 		Document searchResultContent = (Document) searchResult.getContent();
@@ -148,54 +175,73 @@ public class ACMEngine extends Engine {
 	}
 	
 	public Resource getArticleDetails(String articleId, Map<String, String> userData) {
-		String fileName = "services/articledetails-html.xml"; // relative to base paths
+		Resource articleDetailsResource;
+		String resourceFilename = this.outputBasePath + "resources/articledetails-html_"+articleId+".xml";
 		
-		Service searchService = new Service();
-		// load from file
-		File serviceFile = new File(this.inputBasePath + fileName);
-		searchService.loadFromFile(serviceFile);
+		try {
+			articleDetailsResource = this.resourceLoader.load(new File(resourceFilename));
+			System.out.println("Resumed: " + resourceFilename);
+			return articleDetailsResource;
+		} catch (SAXException | IOException e1) {
+			// proceed
+			System.out.println("Unable to resume " + resourceFilename);
+		}
+		
+		Service articleDetailsService = new Service();
+		String serviceFilename = this.inputBasePath + "services/articledetails-html.xml";
+		articleDetailsService.loadFromFile(new File(serviceFilename));
+		
 		// set any needed data
 		for (Map.Entry<String, String> aData : userData.entrySet()) {
-			searchService.addData( aData.getKey(), aData.getValue() );
+			articleDetailsService.addData( aData.getKey(), aData.getValue() );
 		}
-		searchService.addData("id", articleId);
+		articleDetailsService.addData("id", articleId);
 		
-		Resource searchResultResource = searchService.execute(); // TODO: make this async?
-		Document searchResultContent = (Document) searchResultResource.getContent();
+		articleDetailsResource = articleDetailsService.execute(); // TODO: make this async?
 		
-		// save result
+		// save resource
 		try {
-			Utils.saveDocument(searchResultContent, this.outputBasePath + fileName);
-		} catch (TransformerFactoryConfigurationError | TransformerException | IOException e1) {
+			this.resourceSerializer.serialize(articleDetailsResource, resourceFilename);
+		} catch (Exception e2) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			e2.printStackTrace();
 		}
 		
-		return searchResultResource;
+		return articleDetailsResource;
 	}
 	
 	// later on will take a List of articleDetails
-	public Resource getOutput(Resource searchResult, Resource articleDetails) {
+	public Resource output(Resource searchResult, List<Resource> articleDetailsList) {
+		Resource outputResource;
+		String resourceFilename = this.outputBasePath + "resources/output.xml";
 		
-		String fileName = "services/output.xml"; // relative to base paths
+		try {
+			outputResource = this.resourceLoader.load(new File(resourceFilename));
+			System.out.println("Resumed: " + resourceFilename);
+			return outputResource;
+		} catch (SAXException | IOException e1) {
+			// proceed
+			System.out.println("Unable to resume " + resourceFilename);
+		}
 		
 		Service outputService = new Service();
-		// load from file
-		File serviceFile = new File(this.inputBasePath + fileName);
-		outputService.loadFromFile(serviceFile);
+		String serviceFilename = this.inputBasePath + "services/output.xml";
+		outputService.loadFromFile(new File(serviceFilename));
+		
 		// add any needed resource
 		outputService.getResourceList().add(searchResult);
-		outputService.getResourceList().add(articleDetails);
+		for (Resource articleDetails : articleDetailsList) {
+			outputService.getResourceList().add(articleDetails);
+		}
 		
-		Resource outputResource = outputService.execute(); // TODO: make this async?
-		Document outputContent = (Document) outputResource.getContent();
+		outputResource = outputService.execute(); // TODO: make this async?
 		
-		// save result
+		// save resource
 		try {
-			Utils.saveDocument(outputContent, this.outputBasePath + fileName);
-		} catch (TransformerFactoryConfigurationError | TransformerException | IOException e1) {
+			this.resourceSerializer.serialize(outputResource, resourceFilename);
+		} catch (Exception e2) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			e2.printStackTrace();
 		}
 		
 		return outputResource;

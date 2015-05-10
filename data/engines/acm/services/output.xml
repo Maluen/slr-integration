@@ -1,11 +1,24 @@
 <service>
     <name>output</name>
     <response from="searchResult">
+
         <articles el="articles/item" mode="list">
-            <item>
-                <title el="title" mode="text" />
-                <abstract from="articleDetails" el="article/abstract" mode="text" />
+            <item expand="true">
+                <data>
+                    <item>
+                        <name>articleDetails</name>
+                        <value mode="script">
+                            var id = parser.select('id', el).get(0).getTextContent().trim()
+                            'articleDetails_'+id
+                        </value>
+                    </item>
+                </data>
+                <value>
+                    <title el="title" mode="text" />
+                    <abstract from="{{articleDetails}}" el="article/abstract" mode="text" />
+                </value>
             </item>
         </articles>
+
     </response>
 </service>

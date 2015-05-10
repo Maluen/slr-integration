@@ -4,16 +4,13 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import org.w3c.dom.Element;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -22,27 +19,16 @@ import parsers.Parser;
 
 public class XMLParser extends Parser {
 
-	DocumentBuilderFactory factory;
-	DocumentBuilder builder;
 	XPath xpath;
 	
 	public XMLParser() {
-	    this.factory = DocumentBuilderFactory.newInstance();
-	    try {
-			this.builder = factory.newDocumentBuilder();
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			this.builder = null; // not needed, but we make it explicit
-		}
-	    
 	    this.xpath = XPathFactory.newInstance().newXPath();
 	}
 	
 	public Document parse(String content) {
 	    InputSource is = new InputSource(new StringReader(content));
 	    try {
-			return builder.parse(is);
+			return DocumentFactory.getDocBuilder().parse(is);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -52,8 +38,8 @@ public class XMLParser extends Parser {
 	}
 	
 	// Creates a new Document and import the (deeply cloned) element inside it
-	public Document createDocumentFromElement(Element element) {
-		Document doc = this.builder.newDocument();
+	public static Document createDocumentFromElement(Element element) {
+		Document doc = DocumentFactory.getDocBuilder().newDocument();
 		
 		Node node = (Node) element;
 		Node importedNode = doc.importNode(node, true);
