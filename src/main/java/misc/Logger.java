@@ -2,7 +2,7 @@ package misc;
 
 public class Logger {
 	
-	protected static boolean isEnabled;
+	protected static boolean isEnabled = true;
 	protected static String[] logCategories;
 	
 	protected String category = "";
@@ -49,8 +49,8 @@ public class Logger {
 		this.category = category;
 	}
 
-	public void log(String message, String category, int tabAmount) {
-		if (Logger.isEnabled && Logger.isLogCategory(category)) {
+	public void log(String message) {
+		if (Logger.isEnabled && Logger.isLogCategory(this.category)) {
 			System.out.println(message);
 		}
 	}
