@@ -154,4 +154,9 @@ public class Template {
 		return XMLParser.getChildElements(valueEl);
 	}
 	
+	public static Object evaluateValue(Element templateEl, ScriptEngine engine, Data<String> data) {
+		Element valueEl = Template.getValueElement(templateEl);
+		return Template.evaluatePropertyElement(valueEl, engine, data);
+	}
+	
 }

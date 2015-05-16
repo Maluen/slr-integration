@@ -19,6 +19,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import parsers.xml.XMLParser;
+import query.QueryMatcherVisitor;
 import services.Service;
 import services.resources.Resource;
 import engines.Engine;
@@ -31,27 +32,40 @@ public class ACMEngine extends Engine {
 
 	@Override
 	public void search(ParseTree queryTree) {
+		this.setQueryTree(queryTree);
+		
+		// TODO: convert generic search input into engine-specific search input
 		String queryText = queryTree.getText();
 		
 		Resource homeResource = this.home();
 		Map<String, String> userData = this.getUserData(homeResource);
 		
 		Resource searchResult  = this.searchFromHtml(queryText, userData);
-		List<String> articleIdList = this.getArticleIds(searchResult);
+		List<String> articleIdList = this.getArticleIdsFromSearchResult(searchResult);
+		
+		// first filtering with the information we have right now
+		// THIS IS WRONG, WE CAN'T FILTER ANYTHING FOR SURE!
+		//List<String> validArticleIdList = this.filterArticleIdsBySearchResult(searchResult, articleIdList);
+		List<String> validArticleIdList = articleIdList;
 		
 		// DEBUG
 		//List<Resource> articleDetailsList = new ArrayList<Resource>();
 		//Resource articleDetails = this.getArticleDetails("2400267.2400302", userData);
 		//articleDetailsList.add(articleDetails);
 		
-		// get all article details
-		List<Resource> articleDetailsList = new ArrayList<Resource>();
-		for (String articleId : articleIdList) {
-			Resource articleDetails = this.getArticleDetails(articleId, userData);
-			articleDetailsList.add(articleDetails);
+		// get all valid article details
+		List<Resource> validArticleDetailsList = new ArrayList<Resource>();
+		for (String validArticleId : validArticleIdList) {
+			Resource validArticleDetails = this.getArticleDetails(validArticleId, userData);
+			validArticleDetailsList.add(validArticleDetails);
 		}
 		
-		this.output(searchResult, articleDetailsList);
+		// TODO: filter again with the new information (abstract)
+		validArticleDetailsList = this.filterArticleDetails(validArticleDetailsList);
+		// update the valid ids
+		validArticleIdList = this.getArticleIdsFromDetails(validArticleDetailsList);
+		
+		this.output(searchResult, validArticleDetailsList, validArticleIdList);
 	}
 	
 	/**
@@ -152,8 +166,8 @@ public class ACMEngine extends Engine {
 		return searchResultResource;
 	}
 	
-	public List<String> getArticleIds(Resource searchResult) {
-		List<String> articleIdList = new ArrayList<String>();
+	public List<String> getArticlePropertiesFromSearchResult(Resource searchResult, String propertyName) {
+		List<String> articlePropertyList = new ArrayList<String>();
 		
 		Document searchResultContent = (Document) searchResult.getContent();
 		
@@ -162,17 +176,115 @@ public class ACMEngine extends Engine {
 		XMLParser xmlParser = new XMLParser();
 		try {
 			List<Element> articleList = xmlParser.select("articles/item", searchResultContent.getDocumentElement());
-			for (Element article : articleList) {
-				String id = (String) xpath.evaluate("id", article, XPathConstants.STRING);
-				articleIdList.add(id);
+			for (Element articleEl : articleList) {
+				String property = (String) xpath.evaluate(propertyName, articleEl, XPathConstants.STRING);
+				articlePropertyList.add(property);
 			}
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
+		return articlePropertyList;
+	}
+	
+	public String getArticlePropertyFromDetails(Resource articleDetails, String propertyName) {
+		String property;
+		
+		Document articleDetailsContent = (Document) articleDetails.getContent();
+		
+		XPathFactory xPathfactory = XPathFactory.newInstance();
+		XPath xpath = xPathfactory.newXPath();
+		XMLParser xmlParser = new XMLParser();
+		try {
+			Element articleEl = xmlParser.select("article", articleDetailsContent.getDocumentElement()).get(0);
+			property = (String) xpath.evaluate(propertyName, articleEl, XPathConstants.STRING);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+			property = null;
+		}
+		
+		return property;
+	}
+	
+	public List<String> getArticleIdsFromSearchResult(Resource searchResult) {
+		return this.getArticlePropertiesFromSearchResult(searchResult, "id");
+	}
+	
+	public List<String> getArticleIdsFromDetails(List<Resource> articleDetailsList) {
+		List<String> articleIdList = new ArrayList<String>();
+		
+		for (Resource articleDetails : articleDetailsList) {
+			String id = this.getArticlePropertyFromDetails(articleDetails, "id");
+			articleIdList.add(id);
+		}
+		
 		return articleIdList;
 	}
+	
+	public List<String> filterArticleIdsBySearchResult(Resource searchResult, List<String> articleIdList) {
+		List<String> filteredArticleIdList = new ArrayList<String>();
+		
+		List<String> articleTitleList = this.getArticlePropertiesFromSearchResult(searchResult, "title");
+		
+		QueryMatcherVisitor visitor = new QueryMatcherVisitor();
+		for (int i=0; i<articleIdList.size(); i++) {
+			String id = articleIdList.get(i);
+			String title = articleTitleList.get(i);
+			// TODO: also add keywords if possible (OR)
+
+			if (title == null || title.isEmpty()) {
+				// nothing can be said, just keep it
+				filteredArticleIdList.add(title);
+				
+			} else {
+				visitor.setTarget(title);
+				Boolean passes = visitor.visit(this.queryTree);
+				if (passes) {
+					filteredArticleIdList.add(id);
+				}
+			}
+		}
+	
+		return filteredArticleIdList;
+	}
+	
+	public List<Resource> filterArticleDetails(List<Resource> articleDetailList) {
+		List<Resource> filteredArticleDetailList = new ArrayList<Resource>();
+		
+		QueryMatcherVisitor visitor = new QueryMatcherVisitor();
+		for (Resource articleDetail : articleDetailList) {
+			String title = this.getArticlePropertyFromDetails(articleDetail, "title");
+			String abstractProp = this.getArticlePropertyFromDetails(articleDetail, "abstract");
+			
+			Boolean titlePasses;
+			if (title == null || title.isEmpty()) {
+				// nothing can be said, just keep it
+				titlePasses = true;
+			} else {
+				visitor.setTarget(title);
+				titlePasses = visitor.visit(this.queryTree);
+			}
+			
+			Boolean abstractPasses;
+			if (abstractProp == null || abstractProp.isEmpty()) {
+				// nothing can be said, just keep it
+				abstractPasses = true;
+			} else {
+				visitor.setTarget(abstractProp);
+				abstractPasses = visitor.visit(this.queryTree);
+			}
+
+			if (titlePasses || abstractPasses) {
+				filteredArticleDetailList.add(articleDetail);
+			}
+		}
+		
+		return filteredArticleDetailList;
+	}
+	
 	
 	public Resource getArticleDetails(String articleId, Map<String, String> userData) {
 		Resource articleDetailsResource;
@@ -211,7 +323,7 @@ public class ACMEngine extends Engine {
 	}
 	
 	// later on will take a List of articleDetails
-	public Resource output(Resource searchResult, List<Resource> articleDetailsList) {
+	public Resource output(Resource searchResult, List<Resource> articleDetailsList, List<String> validArticleIdList) {
 		Resource outputResource;
 		String resourceFilename = this.outputBasePath + "resources/output.xml";
 		
@@ -227,6 +339,9 @@ public class ACMEngine extends Engine {
 		Service outputService = new Service();
 		String serviceFilename = this.inputBasePath + "services/output.xml";
 		outputService.loadFromFile(new File(serviceFilename));
+		
+		// set the base engine scope
+		outputService.getEngineBaseScope().put("validArticleIdList", validArticleIdList);
 		
 		// add any needed resource
 		outputService.getResourceList().add(searchResult);

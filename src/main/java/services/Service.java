@@ -2,6 +2,7 @@ package services;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +31,7 @@ public class Service {
 	private HTTPClient httpClient;
 	private DocumentToForm documentToForm;
 	
+	private Map<String, Object> engineBaseScope;
 	private Data<String> data;
 	private ResourceList resourceList;
 	
@@ -52,6 +54,7 @@ public class Service {
 		this.httpClient = new HTTPClient();
 		this.documentToForm = new DocumentToForm();
 		
+		this.engineBaseScope = new HashMap<String, Object>();
 		this.data = new Data<String>();
 		this.resourceList = new ResourceList();
 	}
@@ -170,6 +173,14 @@ public class Service {
 			resourceList.add(resource);
 		}
 		this.setResourceList(resourceList);
+	}
+
+	public Map<String, Object> getEngineBaseScope() {
+		return this.engineBaseScope;
+	}
+
+	public void setEngineBaseScope(Map<String, Object> engineBaseScope) {
+		this.engineBaseScope = engineBaseScope;
 	}
 
 	public Data<String> getData() {
@@ -404,8 +415,10 @@ public class Service {
 		// Extract the document
 		
 		MixedToDocument converter = new MixedToDocument();
+		converter.setEngineBaseScope(this.engineBaseScope);
 		converter.setTemplate(this.template);
 		converter.setResourceList(this.resourceList);
+		converter.setData(this.data);
 		converter.setDefaultResourceName("response.body");
 
 		Document document = null;

@@ -201,14 +201,22 @@ public class XMLtoDocument extends ToDocument {
 				System.out.println(templateEl.getTagName() + ": " + documentElText + " (text)");
 				
 			} else {
-				// nothing, just proceed further with children
+				// defaults
 				
 				System.out.println(templateEl.getTagName());
 				
 				List<Element> templateElNextLevel = Template.getNextLevel(templateEl);
-				for (Element templateElNextLevelChild : templateElNextLevel) {
-					Element documentElChild = this.process(templateElNextLevelChild, firstContentEl, data);
-					documentEl.appendChild(documentElChild);
+				if (templateElNextLevel.size() > 0) {
+					// proceed further with children
+					for (Element templateElNextLevelChild : templateElNextLevel) {
+						Element documentElChild = this.process(templateElNextLevelChild, firstContentEl, data);
+						documentEl.appendChild(documentElChild);
+					}
+					
+				} else {
+					// evaluate value (expected string)
+					String documentElText = (String) Template.evaluateValue(templateEl, engine, data);
+					documentEl.setTextContent(documentElText);
 				}
 			}
 		}
@@ -217,6 +225,8 @@ public class XMLtoDocument extends ToDocument {
 	}
 	
 	protected ScriptEngine configureScriptEngine(ScriptEngine engine, Object contentEl) {
+		engine = super.configureScriptEngine(engine, contentEl);
+		
 		engine.put("el", contentEl);
 		engine.put("parser", this.xmlParser);
 		return engine;

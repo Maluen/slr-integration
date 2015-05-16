@@ -29,6 +29,8 @@ public class IEEEEngine extends Engine {
 
 	@Override
 	public void search(ParseTree queryTree) {
+		this.setQueryTree(queryTree);
+		
 		// TODO: convert generic search input into engine-specific search input
 		String queryText = queryTree.getText();
 	

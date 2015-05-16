@@ -1,7 +1,10 @@
 package converters.document.to;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -26,6 +29,8 @@ public abstract class ToDocument extends DocumentConverter {
 	// optional
 	protected ToDocument parent;
 	
+	protected Map<String, Object> engineBaseScope;
+	
 	protected Resource resource;
 	protected Document template;
 	protected Data<String> data;
@@ -42,6 +47,8 @@ public abstract class ToDocument extends DocumentConverter {
 			e.printStackTrace();
 		}
 		
+		this.engineBaseScope = new HashMap<String, Object>();
+		
 		this.data = new Data<String>();
 	}
 	
@@ -55,6 +62,14 @@ public abstract class ToDocument extends DocumentConverter {
 		this.parent = parent;
 	}
 	
+	public Map<String, Object> getEngineBaseScope() {
+		return this.engineBaseScope;
+	}
+
+	public void setEngineBaseScope(Map<String, Object> engineBaseScope) {
+		this.engineBaseScope = engineBaseScope;
+	}
+
 	public Resource getResource() {
 		return this.resource;
 	}
@@ -109,6 +124,15 @@ public abstract class ToDocument extends DocumentConverter {
 	}
 
 	protected ScriptEngine configureScriptEngine(ScriptEngine engine, Object contentEl) {
+		
+		// put all base scope
+		for (Map.Entry<String, Object> entry : this.engineBaseScope.entrySet()) {
+			String key = entry.getKey();
+			Object value = entry.getValue();
+			engine.put(key, value);
+		}
+		
+		// extend with parameter
 		engine.put("el", contentEl);
 		return engine;
 	}

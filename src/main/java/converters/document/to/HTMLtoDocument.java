@@ -208,14 +208,22 @@ public class HTMLtoDocument extends ToDocument {
 				System.out.println(templateEl.getTagName() + ": " + documentElText + " (text)");
 				
 			} else {
-				// nothing, just proceed further with children
+				// defaults
 				
 				System.out.println(templateEl.getTagName());
 				
-				List<Element> templateElNextLevel = Template.getNextLevel(templateEl);				
-				for (Element templateElNextLevelChild : templateElNextLevel) {
-					Element documentElChild = this.process(templateElNextLevelChild, firstContentEl, data);
-					documentEl.appendChild(documentElChild);
+				List<Element> templateElNextLevel = Template.getNextLevel(templateEl);	
+				if (templateElNextLevel.size() > 0) {
+					// proceed further with children
+					for (Element templateElNextLevelChild : templateElNextLevel) {
+						Element documentElChild = this.process(templateElNextLevelChild, firstContentEl, data);
+						documentEl.appendChild(documentElChild);
+					}
+					
+				} else {
+					// evaluate value (expected string)
+					String documentElText = (String) Template.evaluateValue(templateEl, engine, data);
+					documentEl.setTextContent(documentElText);
 				}
 			}
 		}

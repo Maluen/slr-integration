@@ -16,6 +16,8 @@ public abstract class Engine {
 	protected ResourceSerializer resourceSerializer;
 	protected ResourceLoader resourceLoader;
 	
+	protected ParseTree queryTree;
+	
 	public Engine(String name) {
 		
 		this.name = name;
@@ -33,6 +35,14 @@ public abstract class Engine {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public ParseTree getQueryTree() {
+		return this.queryTree;
+	}
+
+	public void setQueryTree(ParseTree queryTree) {
+		this.queryTree = queryTree;
 	}
 
 	// TODO: add search input parameters

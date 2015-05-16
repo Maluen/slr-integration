@@ -209,11 +209,20 @@ public class SetCookiesToDocument extends ToDocument {
 				System.out.println(templateEl.getTagName() + ": " + documentElText + " (text)");
 				
 			} else {
-				// nothing, just proceed further with children
+				// defaults
+				
 				List<Element> templateElNextLevel = Template.getNextLevel(templateEl);
-				for (Element templateElNextLevelChild : templateElNextLevel) {
-					Element documentElChild = this.process(templateElNextLevelChild, cookies, data);
-					documentEl.appendChild(documentElChild);
+				if (templateElNextLevel.size() > 0) {
+					// proceed further with children
+					for (Element templateElNextLevelChild : templateElNextLevel) {
+						Element documentElChild = this.process(templateElNextLevelChild, cookies, data);
+						documentEl.appendChild(documentElChild);
+					}
+					
+				} else {
+					// evaluate value (expected string)
+					String documentElText = (String) Template.evaluateValue(templateEl, engine, data);
+					documentEl.setTextContent(documentElText);
 				}
 			}
 		}

@@ -1,5 +1,5 @@
-// Generated from Expr.g4 by ANTLR 4.5
-package language;
+// Generated from Query.g4 by ANTLR 4.5
+package query;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
@@ -10,7 +10,7 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
-public class ExprLexer extends Lexer {
+public class QueryLexer extends Lexer {
 	static { RuntimeMetaData.checkVersion("4.5", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -66,13 +66,13 @@ public class ExprLexer extends Lexer {
 	}
 
 
-	public ExprLexer(CharStream input) {
+	public QueryLexer(CharStream input) {
 		super(input);
 		_interp = new LexerATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
 	@Override
-	public String getGrammarFileName() { return "Expr.g4"; }
+	public String getGrammarFileName() { return "Query.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }

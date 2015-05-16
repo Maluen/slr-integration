@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import misc.Logger;
 import misc.Utils;
 
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -14,7 +15,8 @@ import org.supercsv.io.CsvListReader;
 import org.supercsv.io.ICsvListReader;
 import org.supercsv.prefs.CsvPreference;
 
-import parsers.language.LanguageParser;
+import parsers.query.QueryParser;
+import query.QueryMatcherVisitor;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -24,7 +26,6 @@ import com.owlike.genson.Genson;
 
 import engines.Engine;
 import engines.acm.ACMEngine;
-import engines.ieee.IEEEEngine;
 
 /**
  * 
@@ -91,6 +92,12 @@ public class Main {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws IOException {		
+		
+		String[] logCategories = new String[]{
+				//"queryMatcherVisitor"
+		};
+		Logger.setLogCategories(logCategories);
+		
 		// TODO Auto-generated method stub
 		//System.out.println("Hello, World!");
 		
@@ -99,12 +106,16 @@ public class Main {
 		//Main.json("json/example.json");
 		//Main.http("http://www.google.com/");
 		
-		String queryText = "mde";
-		//String queryText = Utils.getFileContent(new File("data/querystring.txt"));
+		//String queryText = "mde";
+		//String queryText = "(\"easy collaboration\") AND NOT easy OR collab*";
+		String queryText = Utils.getFileContent(new File("data/querystring.txt"));
 		//System.out.println("Query string: " + queryText);
 		
-		LanguageParser languageParser = new LanguageParser();
+		QueryParser languageParser = new QueryParser();
 		ParseTree queryTree = languageParser.parse(queryText);
+		
+		QueryMatcherVisitor matcherVisitor = new QueryMatcherVisitor("easy  collaboration asd");
+		System.out.println( matcherVisitor.visit(queryTree) );
 		
 		//Engine ieeeEngine = new IEEEEngine();
 		//ieeeEngine.search(queryTree);

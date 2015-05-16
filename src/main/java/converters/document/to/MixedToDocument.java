@@ -97,6 +97,7 @@ public class MixedToDocument extends ToDocument {
 		
 		ToDocument converter = DocumentConverterFactory.createToDocument(contentType);
 		converter.setParent(this);
+		converter.setEngineBaseScope(this.engineBaseScope);
 		converter.setResource(resource);
 		converter.setTemplate(template);
 		converter.setData(data);
