@@ -86,6 +86,7 @@
                         </el>
                     </authors>
                     
+                    <!-- TODO -->
                     <year />
 
                     <publication expand="true" mode="text">
@@ -93,6 +94,18 @@
                             el.parents().not(':not(table)').first().select('.addinfo strong')
                         </el>
                     </publication>
+
+                    <keywords expand="true" mode="script">
+                        <el mode="script">
+                            el.parents().not(':not(table)').first().select('.abstract2')
+                        </el>
+                        <value>
+                            <![CDATA[
+                            // Take everything after the "Keywords: " text
+                            el.text().match(/Keywords: ([\s\S]+)/)[1].trim()
+                            ]]>
+                        </value>
+                    </keywords>
 
                 </item>
             </value>

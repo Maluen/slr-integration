@@ -1,11 +1,31 @@
 <service>
     <name>output</name>
-    <response from="searchresult">
-        <articles el="articles" mode="list">
-            <item>
-                <title el="title"></title>
-                <abstract from="articleDetails" el="abstract" />
-            </item>
+    <response from="searchResult">
+
+        <articles expand="true" el="articles/item" mode="list">
+            <condition mode="script">
+                var id = parser.select('id', el).get(0).getTextContent().trim();
+                validArticleIdList.contains(id);
+            </condition>
+            <value>
+                <item expand="true">
+                    <data>
+                        <item>
+                            <name>articleDetails</name>
+                            <value mode="script">
+                                var id = parser.select('id', el).get(0).getTextContent().trim();
+                                'articleDetails_'+id
+                            </value>
+                        </item>
+                    </data>
+                    <value>
+                        <title el="title" mode="text" />
+                        <abstract el="abstract" mode="text" />
+                        <keywords from="{{{articleDetails}}}" el="article/keywords" mode="text" />
+                    </value>
+                </item>
+            </value>
         </articles>
+
     </response>
 </service>

@@ -94,7 +94,7 @@ public class XMLtoDocument extends ToDocument {
 				contentElList.add(fromContentEl);
 			} else {
 				try {
-					contentElList = this.xmlParser.select(selector, fromContentEl);
+					contentElList = XMLParser.select(selector, fromContentEl);
 				} catch (XPathExpressionException e) {
 					// selector error
 					e.printStackTrace();
@@ -212,11 +212,13 @@ public class XMLtoDocument extends ToDocument {
 						Element documentElChild = this.process(templateElNextLevelChild, firstContentEl, data);
 						documentEl.appendChild(documentElChild);
 					}
+					System.out.println(templateEl.getTagName() + ": next level");
 					
 				} else {
 					// evaluate value (expected string)
 					String documentElText = (String) Template.evaluateValue(templateEl, engine, data);
 					documentEl.setTextContent(documentElText);
+					System.out.println(templateEl.getTagName() + ": " + documentElText + " (evaluate value)");
 				}
 			}
 		}

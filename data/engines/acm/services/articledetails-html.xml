@@ -15,7 +15,7 @@
     <response from="response.body">
 
         <article>
-            <id>{{id}}</id>
+            <id>{{{id}}}</id>
 
             <!-- Abstract is first paragraph inside main content -->
             <abstract el=".flatbody p" mode="text" />

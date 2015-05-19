@@ -144,7 +144,7 @@ public class Service {
 		
 		List<Element> resourceElList;
 		try {
-			resourceElList = this.xmlParser.select("/service/resources/item", rootEl);
+			resourceElList = XMLParser.select("/service/resources/item", rootEl);
 		} catch (XPathExpressionException e) {
 			// file has wrong schema
 			e.printStackTrace();

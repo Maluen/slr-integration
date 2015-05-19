@@ -19,12 +19,20 @@ import parsers.Parser;
 
 public class XMLParser extends Parser {
 
-	XPath xpath;
+	static XPath xpath;
 	
-	public XMLParser() {
-	    this.xpath = XPathFactory.newInstance().newXPath();
+	static {
+		XMLParser.xpath = XPathFactory.newInstance().newXPath();
 	}
 	
+	public static XPath getXpath() {
+		return xpath;
+	}
+
+	public static void setXpath(XPath xpath) {
+		XMLParser.xpath = xpath;
+	}
+
 	public Document parse(String content) {
 	    InputSource is = new InputSource(new StringReader(content));
 	    try {
@@ -73,10 +81,10 @@ public class XMLParser extends Parser {
         
         return null;
 	}
-
+	
 	// uses XPATH
-	public List<Element> select(String selector, Element fromContentEl) throws XPathExpressionException {
-		NodeList nodeList = (NodeList) this.xpath.evaluate(selector, fromContentEl, XPathConstants.NODESET);
+	public static List<Element> select(String selector, Element fromContentEl) throws XPathExpressionException {
+		NodeList nodeList = (NodeList) XMLParser.xpath.evaluate(selector, fromContentEl, XPathConstants.NODESET);
 		
 		// convert to List<Element>
 		List<Element> elementList = new ArrayList<Element>();
