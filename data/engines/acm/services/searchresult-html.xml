@@ -86,8 +86,35 @@
                         </el>
                     </authors>
                     
-                    <!-- TODO -->
-                    <year />
+                    <year expand="true" mode="script">
+                        <el mode="script">
+                            el.parents().not(':not(table)').first()
+                                        .select("td[class*=small-text]")
+                        </el>
+                        <condition mode="script">
+                            <![CDATA[
+                            // Text (trimmed) should have format "October 2015"
+                            var months = ['January', 'February', 'March', 'April', 'May', 'June',
+                                         'July', 'August', 'September', 'October', 'November', 'December'];
+                            var articleMonth = el.text().trim().split(' ')[0];
+                            // Check if it is actually a month.
+                            // Note: we do an old-style for loop here, 
+                            // since indexOf on Array seem to don't work
+                            // in this javascript environment
+                            var found = false;
+                            for (var i=0; i<months.length; i++) {
+                                if (months[i] == articleMonth) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            found
+                            ]]>
+                        </condition>
+                        <value>
+                            el.text().trim().split(' ')[1]
+                        </value>
+                    </year>
 
                     <publication expand="true" mode="text">
                         <el mode="script">

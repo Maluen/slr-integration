@@ -16,6 +16,7 @@
             <id>{{{id}}}</id>
 
             <keywords el="#keywords-section" mode="script">
+                <!-- TODO: this doesn't work since the el isn't available -->
                 var anchors = el.select("a[href*='searchWithin=Search_Index_Terms']");
                 anchors.text();
             </keywords>

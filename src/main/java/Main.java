@@ -25,7 +25,7 @@ import com.mashape.unirest.request.GetRequest;
 import com.owlike.genson.Genson;
 
 import engines.Engine;
-import engines.ieee.IEEEEngine;
+import engines.acm.ACMEngine;
 
 /**
  * 
@@ -117,11 +117,11 @@ public class Main {
 		QueryMatcherVisitor matcherVisitor = new QueryMatcherVisitor("easy  collaboration asd");
 		System.out.println( matcherVisitor.visit(queryTree) );
 		
-		Engine ieeeEngine = new IEEEEngine();
-		ieeeEngine.search(queryTree);
+		//Engine ieeeEngine = new IEEEEngine();
+		//ieeeEngine.search(queryTree);
 		
-		//Engine acmEngine = new ACMEngine();
-		//acmEngine.search(queryTree);
+		Engine acmEngine = new ACMEngine();
+		acmEngine.search(queryTree);
 	}
 
 }
