@@ -147,8 +147,12 @@ public abstract class Engine {
 	}
 	
 	public Resource output(Resource searchResult, List<Resource> articleDetailsList, List<String> validArticleIdList) {
+
+		// retrieve page number
+		String pageNumber = searchResult.getName().split("_")[1]; // name format is "searchResult_1"
+
 		Resource outputResource;
-		String resourceFilename = this.outputBasePath + "resources/output.xml";
+		String resourceFilename = this.outputBasePath + "resources/output_" + pageNumber + ".xml";
 		
 		try {
 			outputResource = this.resourceLoader.load(new File(resourceFilename));
@@ -165,6 +169,10 @@ public abstract class Engine {
 		
 		// set the base engine scope
 		outputService.getEngineBaseScope().put("validArticleIdList", validArticleIdList);
+		
+		// set any needed data
+		outputService.addData("pageNumber", pageNumber);
+		outputService.addData("searchResult", searchResult.getName());
 		
 		// add any needed resource
 		outputService.getResourceList().add(searchResult);

@@ -36,7 +36,11 @@ public class IEEEEngine extends Engine {
 		// TODO: convert generic search input into engine-specific search input
 		String queryText = queryTree.getText();
 	
-		Resource searchResult = this.searchFromHTML(queryText);
+		this.searchPage(queryText, 1);
+	}
+	
+	public Resource searchPage(String queryText, Integer pageNumber) {
+		Resource searchResult = this.searchFromHTML(queryText, pageNumber);
 		//Resource searchResult = this.searchFromXML(queryText);
 		List<String> articleIdList = this.getArticleIdsFromSearchResult(searchResult);
 		
@@ -55,12 +59,12 @@ public class IEEEEngine extends Engine {
 		// update the valid ids
 		validArticleIdList = this.getArticleIdsFromDetails(validArticleDetailsList);
 		
-		this.output(searchResult, validArticleDetailsList, validArticleIdList);
+		return this.output(searchResult, validArticleDetailsList, validArticleIdList);
 	}
 	
-	public Resource searchFromHTML(String queryText) {
+	public Resource searchFromHTML(String queryText, Integer pageNumber) {
 		Resource searchResultResource;
-		String resourceFilename = this.outputBasePath + "resources/searchresult-html.xml";
+		String resourceFilename = this.outputBasePath + "resources/searchresult_" + pageNumber + "-html.xml";
 		
 		try {
 			searchResultResource = this.resourceLoader.load(new File(resourceFilename));
@@ -77,7 +81,7 @@ public class IEEEEngine extends Engine {
 		
 		// set any needed data
 		searchService.addData("queryText", queryText);
-		searchService.addData("pageNumber", "1");
+		searchService.addData("pageNumber", pageNumber.toString());
 		
 		searchResultResource = searchService.execute(); // TODO: make this async?
 		

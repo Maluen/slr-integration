@@ -1,6 +1,6 @@
 <service>
-    <name>output</name>
-    <response from="searchResult">
+    <name>output_{{{pageNumber}}}</name>
+    <response from="{{{searchResult}}}">
 
         <articles expand="true" el="articles/item" mode="list">
             <condition mode="script">

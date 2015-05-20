@@ -7,11 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.w3c.dom.DOMException;
@@ -41,7 +39,11 @@ public class ACMEngine extends Engine {
 		Resource homeResource = this.home();
 		Map<String, String> userData = this.getUserData(homeResource);
 		
-		Resource searchResult  = this.searchFromHTML(queryText, userData);
+		this.searchPage(queryText, 1, userData);
+	}
+	
+	public Resource searchPage(String queryText, Integer pageNumber, Map<String, String> userData) {
+		Resource searchResult  = this.searchFromHTML(queryText, pageNumber, userData);
 		List<String> articleIdList = this.getArticleIdsFromSearchResult(searchResult);
 		
 		// first filtering with the information we have right now
@@ -64,7 +66,7 @@ public class ACMEngine extends Engine {
 		// update the valid ids
 		validArticleIdList = this.getArticleIdsFromDetails(validArticleDetailsList);
 		
-		this.output(searchResult, validArticleDetailsList, validArticleIdList);
+		return this.output(searchResult, validArticleDetailsList, validArticleIdList);
 	}
 	
 	/**
@@ -106,16 +108,14 @@ public class ACMEngine extends Engine {
 		String cftoken = null;
 		String atuvc = null;
 		
-		XPathFactory xPathfactory = XPathFactory.newInstance();
-		XPath xpath = xPathfactory.newXPath();
 		try {
-			XPathExpression expr = xpath.compile("/response/session/cfid");
+			XPathExpression expr = XMLParser.getXpath().compile("/response/session/cfid");
 			cfid = (String) expr.evaluate(homeContent, XPathConstants.STRING);
 			
-			XPathExpression expr2 = xpath.compile("/response/session/cftoken");
+			XPathExpression expr2 = XMLParser.getXpath().compile("/response/session/cftoken");
 			cftoken = (String) expr2.evaluate(homeContent, XPathConstants.STRING);
 			
-			XPathExpression expr3 = xpath.compile("/response/session/atuvc");
+			XPathExpression expr3 = XMLParser.getXpath().compile("/response/session/atuvc");
 			atuvc = (String) expr3.evaluate(homeContent, XPathConstants.STRING);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
@@ -129,9 +129,9 @@ public class ACMEngine extends Engine {
 		return userData;
 	}
 	
-	public Resource searchFromHTML(String queryText, Map<String, String> userData) {
+	public Resource searchFromHTML(String queryText, Integer pageNumber, Map<String, String> userData) {	
 		Resource searchResultResource;
-		String resourceFilename = this.outputBasePath + "resources/searchresult-html.xml";
+		String resourceFilename = this.outputBasePath + "resources/searchresult_" + pageNumber + "-html.xml";
 		
 		try {
 			searchResultResource = this.resourceLoader.load(new File(resourceFilename));
@@ -151,6 +151,7 @@ public class ACMEngine extends Engine {
 			searchService.addData( aData.getKey(), aData.getValue() );
 		}
 		searchService.addData("query", queryText);
+		searchService.addData("pageNumber", pageNumber.toString());
 		
 		searchResultResource = searchService.execute(); // TODO: make this async?
 		

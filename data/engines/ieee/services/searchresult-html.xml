@@ -1,5 +1,5 @@
 <service>
-    <name>searchResult</name>
+    <name>searchResult_{{{pageNumber}}}</name>
     <resources>
         <item>
             <name>response.body</name>
@@ -16,6 +16,8 @@
     <response from="response.body">
 
         <meta>
+            <pageNumber>{{{pageNumber}}}</pageNumber>
+
             <!-- number of results -->
             <count el=".results-returned" mode="script">
                 <!-- e.g. extract 2349 from "2349 Results returned" -->

@@ -1,5 +1,5 @@
 <service>
-    <name>searchResult</name>
+    <name>searchResult_{{pageNumber}}</name>
     <resources>
         <item>
             <name>response.body</name>
@@ -51,6 +51,8 @@
     <response from="response.body">
 
         <meta>
+            <pageNumber>{{pageNumber}}</pageNumber>
+
             <count el="table > tbody > tr > td" expand="true" mode="script">
                 <condition mode="script">
                     el.text().trim().match(/Results ([\s\S]*?) of ([\s\S]*?) /) != null
@@ -116,10 +118,19 @@
                         </value>
                     </year>
 
-                    <publication expand="true" mode="text">
+                    <publication expand="true" mode="script">
                         <el mode="script">
                             el.parents().not(':not(table)').first().select('.addinfo strong')
                         </el>
+                        <value>
+                            var value = el.text().trim();
+                            // some fields have a leading ":", remove it
+                            // TODO: doesn't work, test this more
+                            if (value[value.length-1] == ':') {
+                              value = value.substr(0, value.length-1);
+                            }
+                            value
+                        </value>
                     </publication>
 
                     <keywords expand="true" mode="script">
