@@ -124,10 +124,11 @@
                         </el>
                         <value>
                             var value = el.text().trim();
-                            // some fields have a leading ":", remove it
-                            // TODO: doesn't work, test this more
-                            if (value[value.length-1] == ':') {
-                              value = value.substr(0, value.length-1);
+                            
+                            // some fields have a trailing ":", remove it
+                            // Note: we're using the Java String type here, not the JavaScript one
+                            if (value.endsWith(':')) {
+                              value = value.substring(0, value.length()-1);
                             }
                             value
                         </value>
