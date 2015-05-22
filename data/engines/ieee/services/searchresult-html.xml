@@ -106,14 +106,14 @@
 
         <articles el="#search_results_form ul.Results > li" mode="list">
             <item>
-                <id el="a" expand="true" mode="script">
+                <id el=".article-option img" expand="true" mode="script">
                     <!-- when expand is true we can set further options on the parent element, such as condition (xml characteristic: we can't set them as attributes if their structure is 'complex') -->
                     <condition mode="script">
                         <!-- must evaluate to true to pass -->
-                        el.attr('href').indexOf('articleDetails.jsp') != -1
+                        el.attr('id').startsWith('save-to-project-')
                     </condition>
                     <value>
-                        el.attr('href').match(/arnumber=(\d+)/)[1];
+                        el.attr('id').match(/save-to-project-(\d+)/)[1]
                     </value>
                 </id>
 
