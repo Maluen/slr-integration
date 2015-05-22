@@ -28,7 +28,7 @@ public class IEEEEngine extends Engine {
 	public IEEEEngine() {
 		super("ieee");
 		
-		this.numberOfResultsPerPage = 25;
+		this.numberOfResultsPerPage = 100;
 	}
 
 	@Override
@@ -65,6 +65,7 @@ public class IEEEEngine extends Engine {
 		// set any needed data
 		searchService.addData("queryText", queryText);
 		searchService.addData("pageNumber", pageNumber.toString());
+		searchService.addData("resultsPerPage", this.numberOfResultsPerPage.toString());
 		
 		searchResultResource = searchService.execute(); // TODO: make this async?
 		
