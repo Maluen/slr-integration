@@ -27,6 +27,8 @@ public class IEEEEngine extends Engine {
 	
 	public IEEEEngine() {
 		super("ieee");
+		
+		this.numberOfResultsPerPage = 25;
 	}
 
 	@Override
@@ -36,7 +38,7 @@ public class IEEEEngine extends Engine {
 		// TODO: convert generic search input into engine-specific search input
 		String queryText = queryTree.getText();
 	
-		this.searchPage(queryText, 1);
+		this.searchAllPages(queryText);
 	}
 	
 	public Resource searchFromDefault(String queryText, Integer pageNumber) {	
