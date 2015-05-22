@@ -8,14 +8,14 @@
     </resources>
     <request> <!-- Specifies how to retrieve/access service -->
         <url>
-            http://dl.acm.org/citation.cfm?id={{id}}&amp;coll=DL&amp;dl=ACM&amp;CFID={{{cfid}}}&amp;CFTOKEN={{{cftoken}}}&amp;preflayout=flat
+            http://dl.acm.org/citation.cfm?id={{{id}}}&amp;coll=DL&amp;dl=ACM&amp;CFID={{{cfid}}}&amp;CFTOKEN={{{cftoken}}}&amp;preflayout=flat
         </url>
         <method>GET</method> <!-- HTTP Method: GET, POST, etc. -->
     </request>
     <response from="response.body">
 
         <article>
-            <id>{{{id}}}</id>
+            <id>{{id}}</id>
 
             <!-- Abstract is first paragraph inside main content -->
             <abstract el=".flatbody p" mode="text" />

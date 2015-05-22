@@ -1,6 +1,10 @@
 <service>
-    <name>output_{{{pageNumber}}}</name>
-    <response from="{{{searchResult}}}">
+    <name>output_{{pageNumber}}</name>
+    <response from="{{searchResult}}">
+
+        <meta el="meta">
+            <count el="count" mode="text" />
+        </meta>
 
         <articles expand="true" el="articles/item" mode="list">
             <condition mode="script">
@@ -21,7 +25,7 @@
                     <value>
                         <title el="title" mode="text" />
                         <abstract el="abstract" mode="text" />
-                        <keywords from="{{{articleDetails}}}" el="article/keywords" mode="text" />
+                        <keywords from="{{articleDetails}}" el="article/keywords" mode="text" />
                     </value>
                 </item>
             </value>

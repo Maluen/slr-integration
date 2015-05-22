@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -31,6 +32,7 @@ public abstract class Engine {
 	protected ResourceSerializer resourceSerializer;
 	protected ResourceLoader resourceLoader;
 	
+	protected Integer numberOfResultsPerPage;	
 	protected ParseTree queryTree;
 	
 	public Engine(String name) {
@@ -62,6 +64,48 @@ public abstract class Engine {
 
 	// TODO: add search input parameters
 	public abstract void search(ParseTree queryTree);
+	
+	protected void searchAllPages(String queryText) {
+		// get first page
+		Resource outputResource = this.searchPage(queryText, 1);
+		Integer count = this.getCount(outputResource);
+		Integer numberOfPages = this.calculateNumberOfPages(count, this.numberOfResultsPerPage);
+		// get remaining pages
+		for (int i=1; i<numberOfPages; i++) {
+			this.searchPage(queryText, i);
+		}
+	}
+	
+	public Resource searchPage(String queryText, Integer pageNumber) {
+		Resource searchResult = this.searchFromDefault(queryText, pageNumber);
+		//Resource searchResult = this.searchFromXML(queryText);
+		List<String> articleIdList = this.getArticleIdsFromSearchResult(searchResult);
+		
+		// first filtering with the information we have right now
+		List<String> validArticleIdList = this.filterArticleIdsBySearchResult(searchResult, articleIdList);
+		
+		// get all valid article details
+		List<Resource> validArticleDetailsList = new ArrayList<Resource>();
+		for (String validArticleId : validArticleIdList) {
+			Resource validArticleDetails = this.getArticleDetailsFromDefault(validArticleId);
+			validArticleDetailsList.add(validArticleDetails);
+		}
+		
+		// TODO: filter again with the new information
+		validArticleDetailsList = this.filterArticleDetails(validArticleDetailsList, searchResult);
+		// update the valid ids
+		validArticleIdList = this.getArticleIdsFromDetails(validArticleDetailsList);
+		
+		return this.output(searchResult, validArticleDetailsList, validArticleIdList);
+	}
+	
+	public abstract Resource searchFromDefault(String queryText, Integer pageNumber);
+	
+	public abstract List<String> filterArticleIdsBySearchResult(Resource searchResult, List<String> articleIdList);
+	
+	public abstract Resource getArticleDetailsFromDefault(String articleId);
+	
+	public abstract List<Resource> filterArticleDetails(List<Resource> articleDetailList, Resource searchResult);
 	
 	public List<String> getArticlePropertiesFromSearchResult(Resource searchResult, String propertyName) {
 		List<String> articlePropertyList = new ArrayList<String>();
@@ -192,4 +236,32 @@ public abstract class Engine {
 		
 		return outputResource;
 	}
+	
+	public Integer getCount(Resource output) {
+		Integer count;
+		
+		Document searchResultContent = (Document) output.getContent();
+		
+		try {
+			XPathExpression expr = XMLParser.getXpath().compile("/response/meta/count");
+			Double countDouble = (Double) expr.evaluate(searchResultContent, XPathConstants.NUMBER);
+			count = countDouble.intValue();
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+			count = null;
+		}
+		
+		return count;
+	}
+	
+	public Integer calculateNumberOfPages(Integer count, Integer numberOfResultsPerPage) {
+		return (int) Math.ceil( ((float)count) / numberOfResultsPerPage);
+	}
+	
+	public Integer calculateStartResult(Integer pageNumber, Integer numberOfResultsPerPage) {
+		return ((pageNumber-1) * numberOfResultsPerPage) + 1;
+	}
+	
 }

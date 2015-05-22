@@ -25,8 +25,14 @@ import engines.Engine;
 
 public class ACMEngine extends Engine {
 
+	protected Map<String, String> userData;
+	
 	public ACMEngine() {
 		super("acm");
+		
+		this.numberOfResultsPerPage = 20;
+		
+		this.userData = new HashMap<String, String>();
 	}
 
 	@Override
@@ -37,36 +43,9 @@ public class ACMEngine extends Engine {
 		String queryText = queryTree.getText();
 		
 		Resource homeResource = this.home();
-		Map<String, String> userData = this.getUserData(homeResource);
+		this.userData = this.getUserData(homeResource);
 		
-		this.searchPage(queryText, 1, userData);
-	}
-	
-	public Resource searchPage(String queryText, Integer pageNumber, Map<String, String> userData) {
-		Resource searchResult  = this.searchFromHTML(queryText, pageNumber, userData);
-		List<String> articleIdList = this.getArticleIdsFromSearchResult(searchResult);
-		
-		// first filtering with the information we have right now
-		List<String> validArticleIdList = this.filterArticleIdsBySearchResult(searchResult, articleIdList);
-		
-		// DEBUG
-		//List<Resource> articleDetailsList = new ArrayList<Resource>();
-		//Resource articleDetails = this.getArticleDetails("2400267.2400302", userData);
-		//articleDetailsList.add(articleDetails);
-		
-		// get all valid article details
-		List<Resource> validArticleDetailsList = new ArrayList<Resource>();
-		for (String validArticleId : validArticleIdList) {
-			Resource validArticleDetails = this.getArticleDetailsFromHTML(validArticleId, userData);
-			validArticleDetailsList.add(validArticleDetails);
-		}
-		
-		// TODO: filter again with the new information
-		validArticleDetailsList = this.filterArticleDetails(validArticleDetailsList, searchResult);
-		// update the valid ids
-		validArticleIdList = this.getArticleIdsFromDetails(validArticleDetailsList);
-		
-		return this.output(searchResult, validArticleDetailsList, validArticleIdList);
+		this.searchAllPages(queryText);
 	}
 	
 	/**
@@ -128,8 +107,12 @@ public class ACMEngine extends Engine {
 		userData.put("atuvc", atuvc);
 		return userData;
 	}
+
+	public Resource searchFromDefault(String queryText, Integer pageNumber) {	
+		return this.searchFromHTML(queryText, pageNumber);
+	}
 	
-	public Resource searchFromHTML(String queryText, Integer pageNumber, Map<String, String> userData) {	
+	public Resource searchFromHTML(String queryText, Integer pageNumber) {	
 		Resource searchResultResource;
 		String resourceFilename = this.outputBasePath + "resources/searchresult_" + pageNumber + "-html.xml";
 		
@@ -147,11 +130,15 @@ public class ACMEngine extends Engine {
 		searchService.loadFromFile(new File(serviceFilename));
 		
 		// set any needed data
-		for (Map.Entry<String, String> aData : userData.entrySet()) {
+		
+		for (Map.Entry<String, String> aData : this.userData.entrySet()) {
 			searchService.addData( aData.getKey(), aData.getValue() );
 		}
 		searchService.addData("query", queryText);
 		searchService.addData("pageNumber", pageNumber.toString());
+		
+		Integer startResult = this.calculateStartResult(pageNumber, this.numberOfResultsPerPage);
+		searchService.addData("startResult", startResult.toString());
 		
 		searchResultResource = searchService.execute(); // TODO: make this async?
 		
@@ -251,7 +238,11 @@ public class ACMEngine extends Engine {
 		return filteredArticleDetailList;
 	}
 	
-	public Resource getArticleDetailsFromHTML(String articleId, Map<String, String> userData) {
+	public Resource getArticleDetailsFromDefault(String articleId) {
+		return this.getArticleDetailsFromHTML(articleId);
+	}
+	
+	public Resource getArticleDetailsFromHTML(String articleId) {
 		Resource articleDetailsResource;
 		String resourceFilename = this.outputBasePath + "resources/articledetails-html_"+articleId+".xml";
 		
@@ -269,7 +260,7 @@ public class ACMEngine extends Engine {
 		articleDetailsService.loadFromFile(new File(serviceFilename));
 		
 		// set any needed data
-		for (Map.Entry<String, String> aData : userData.entrySet()) {
+		for (Map.Entry<String, String> aData : this.userData.entrySet()) {
 			articleDetailsService.addData( aData.getKey(), aData.getValue() );
 		}
 		articleDetailsService.addData("id", articleId);

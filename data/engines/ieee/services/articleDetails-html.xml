@@ -7,13 +7,13 @@
         </item>
     </resources>
     <request> <!-- Specifies how to retrieve/access service -->
-        <url>http://ieeexplore.ieee.org/xpls/icp.jsp?arnumber={{id}}</url>
+        <url>http://ieeexplore.ieee.org/xpls/icp.jsp?arnumber={{{id}}}</url>
         <method>GET</method> <!-- HTTP Method: GET, POST, etc. -->
     </request>
     <response from="response.body">
 
         <article>
-            <id>{{{id}}}</id>
+            <id>{{id}}</id>
 
             <keywords el="#keywords-section" mode="script">
                 <!-- TODO: this doesn't work since the el isn't available -->

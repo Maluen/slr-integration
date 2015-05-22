@@ -24,7 +24,7 @@ import services.resources.Resource;
 import engines.Engine;
 
 public class IEEEEngine extends Engine {
-
+	
 	public IEEEEngine() {
 		super("ieee");
 	}
@@ -39,27 +39,8 @@ public class IEEEEngine extends Engine {
 		this.searchPage(queryText, 1);
 	}
 	
-	public Resource searchPage(String queryText, Integer pageNumber) {
-		Resource searchResult = this.searchFromHTML(queryText, pageNumber);
-		//Resource searchResult = this.searchFromXML(queryText);
-		List<String> articleIdList = this.getArticleIdsFromSearchResult(searchResult);
-		
-		// first filtering with the information we have right now
-		List<String> validArticleIdList = this.filterArticleIdsBySearchResult(searchResult, articleIdList);
-		
-		// get all valid article details
-		List<Resource> validArticleDetailsList = new ArrayList<Resource>();
-		for (String validArticleId : validArticleIdList) {
-			Resource validArticleDetails = this.getArticleDetailsFromHTML(validArticleId);
-			validArticleDetailsList.add(validArticleDetails);
-		}
-		
-		// TODO: filter again with the new information
-		validArticleDetailsList = this.filterArticleDetails(validArticleDetailsList, searchResult);
-		// update the valid ids
-		validArticleIdList = this.getArticleIdsFromDetails(validArticleDetailsList);
-		
-		return this.output(searchResult, validArticleDetailsList, validArticleIdList);
+	public Resource searchFromDefault(String queryText, Integer pageNumber) {	
+		return this.searchFromHTML(queryText, pageNumber);
 	}
 	
 	public Resource searchFromHTML(String queryText, Integer pageNumber) {
@@ -94,27 +75,6 @@ public class IEEEEngine extends Engine {
 		}
 		
 		return searchResultResource;
-	}
-	
-	public Integer getCount(Resource searchResultHtmlResource) {
-		Integer count;
-		
-		Document searchResultContent = (Document) searchResultHtmlResource.getContent();
-		
-		XPathFactory xPathfactory = XPathFactory.newInstance();
-		XPath xpath = xPathfactory.newXPath();
-		try {
-			XPathExpression expr = xpath.compile("/response/meta/count");
-			Double countDouble = (Double) expr.evaluate(searchResultContent, XPathConstants.NUMBER);
-			count = countDouble.intValue();
-		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			
-			count = null;
-		}
-		
-		return count;
 	}
 	
 	public Resource searchFromXML(String queryText) {
@@ -176,6 +136,10 @@ public class IEEEEngine extends Engine {
 		}
 	
 		return filteredArticleIdList;
+	}
+	
+	public Resource getArticleDetailsFromDefault(String articleId) {
+		return this.getArticleDetailsFromHTML(articleId);
 	}
 	
 	public Resource getArticleDetailsFromHTML(String articleId) {
