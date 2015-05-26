@@ -29,6 +29,8 @@ public class IEEESearchEngine extends SearchEngine {
 
 	@Override
 	public ArticleList search() {	
+		this.outputBasePath = "data/output/searches/" + this.name + "/" + this.searchIndex + "/";
+		
 		return this.searchAllPages();
 	}
 	

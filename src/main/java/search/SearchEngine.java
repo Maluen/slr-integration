@@ -38,13 +38,13 @@ public abstract class SearchEngine {
 	protected Integer numberOfResultsPerPage;
 	protected String queryText;
 	protected ParseTree originalQueryTree; // needed for the filtering
+	protected Integer searchIndex; // used in the saving
 	
 	public SearchEngine(String name) {
 		
 		this.name = name;
 		
 		this.inputBasePath = "data/engines/" + this.name + "/";
-		this.outputBasePath = "data/output/engines/" + this.name + "/";
 		
 		this.resourceSerializer = new ResourceSerializer();
 		this.resourceLoader = new ResourceLoader();
@@ -72,6 +72,14 @@ public abstract class SearchEngine {
 
 	public void setOriginalQueryTree(ParseTree originalQueryTree) {
 		this.originalQueryTree = originalQueryTree;
+	}
+
+	public Integer getSearchIndex() {
+		return this.searchIndex;
+	}
+
+	public void setSearchIndex(Integer searchIndex) {
+		this.searchIndex = searchIndex;
 	}
 
 	// TODO: add search input parameters

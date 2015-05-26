@@ -18,11 +18,14 @@ public abstract class SearchManager {
 		List<String> queryTextList = searchSplitter.execute();
 	
 		List<ArticleList> allSearchesArticleList = new ArrayList<ArticleList>();
-		for (String currentQueryText : queryTextList) {
+		for (int i=0; i<queryTextList.size(); i++) {
+			String currentQueryText = queryTextList.get(i);
+			
 			// search
 			SearchEngine currentSearchEngine = this.createEngine();
 			currentSearchEngine.setQueryText(currentQueryText);
 			currentSearchEngine.setOriginalQueryTree(this.queryTree);
+			currentSearchEngine.setSearchIndex(1+i); // start at 1
 			ArticleList currentSearchArticleList = currentSearchEngine.search();
 			
 			allSearchesArticleList.add(currentSearchArticleList);

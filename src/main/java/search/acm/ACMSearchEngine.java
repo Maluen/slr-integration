@@ -37,6 +37,8 @@ public class ACMSearchEngine extends SearchEngine {
 
 	@Override
 	public ArticleList search() {
+		this.outputBasePath = "data/output/searches/" + this.name + "/" + this.searchIndex + "/";
+		
 		Resource homeResource = this.home();
 		this.userData = this.getUserData(homeResource);
 		
