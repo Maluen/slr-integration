@@ -121,16 +121,6 @@ public class IEEESearchEngine extends SearchEngine {
 			// General conditions are in OR, thus here we can only filter any specific-field requirement, such as
 			// 'Abstract': 'term' and so on
 			filteredArticleIdList.add(id);
-			
-			/*		
-			// concatenate to consider all fields at once
-			// (otherwise for example the terms in an AND expression will have to be matched ALL by one single field)
-			String target = title + " " + abstractProp;
-				
-			if (this.doMatchQuery(target)) {
-				filteredArticleIdList.add(id);
-			}
-			*/
 		}
 	
 		return filteredArticleIdList;
@@ -171,51 +161,6 @@ public class IEEESearchEngine extends SearchEngine {
 		}
 		
 		return articleDetailsResource;
-	}
-	
-	public List<Resource> filterArticleDetails(List<Resource> articleDetailList, Resource searchResult) {
-		List<Resource> filteredArticleDetailList = new ArrayList<Resource>();
-
-		for (Resource articleDetail : articleDetailList) {
-			Document articleDetailContent = (Document) articleDetail.getContent();
-			
-			String id = this.getArticlePropertyFromDetails(articleDetail, "id");
-			
-			Element searchResultArticleEl = this.getArticleElementFromSearchResult(searchResult, id);
-			Element articleDetailEl;
-			try {
-				articleDetailEl = XMLParser.select("article", articleDetailContent.getDocumentElement()).get(0);
-			} catch (XPathExpressionException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-				
-				// wrong schema
-				return null;
-			}
-			
-			try {
-				String title = XMLParser.select("title", searchResultArticleEl).get(0).getTextContent().trim();
-				String abstractProp = XMLParser.select("abstract", searchResultArticleEl).get(0).getTextContent().trim();
-				String keywords = XMLParser.select("keywords", articleDetailEl).get(0).getTextContent().trim();
-				
-				// concatenate to consider all fields at once
-				// (otherwise for example the terms in an AND expression will have to be matched ALL by one single field)
-				String target = title + " " + abstractProp + " " + keywords;
-				
-				if (this.doMatchQuery(target)) {
-					filteredArticleDetailList.add(articleDetail);
-				}
-				
-			} catch (DOMException | XPathExpressionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				
-				// in doubt insert the element anyway
-				filteredArticleDetailList.add(articleDetail);
-			}
-		}
-		
-		return filteredArticleDetailList;
 	}
 	
 }

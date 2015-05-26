@@ -10,6 +10,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -131,7 +132,40 @@ public abstract class SearchEngine {
 	
 	public abstract Resource getArticleDetailsFromDefault(String articleId);
 	
-	public abstract List<Resource> filterArticleDetails(List<Resource> articleDetailList, Resource searchResult);
+	public List<Resource> filterArticleDetails(List<Resource> articleDetailList, Resource searchResult) {
+		List<Resource> filteredArticleDetailList = new ArrayList<Resource>();
+
+		for (Resource articleDetail : articleDetailList) {			
+			String id = this.getArticlePropertyFromDetails(articleDetail, "id");
+			Element searchResultArticleEl = this.getArticleElementFromSearchResult(searchResult, id);
+
+			String title = this.getArticlePropertyFromSearchResultArticleEl(searchResultArticleEl, "title");
+			if (title == null || title.isEmpty()) {
+				title = this.getArticlePropertyFromDetails(articleDetail, "title");
+			}
+			
+			String abstractProp = this.getArticlePropertyFromSearchResultArticleEl(searchResultArticleEl, "abstract");
+			if (abstractProp == null || abstractProp.isEmpty()) {
+				abstractProp = this.getArticlePropertyFromDetails(articleDetail, "abstract");
+			}				
+			
+			String keywords = this.getArticlePropertyFromSearchResultArticleEl(searchResultArticleEl, "keywords");
+			if (keywords == null || keywords.isEmpty()) {
+				keywords = this.getArticlePropertyFromDetails(articleDetail, "keywords");
+			}
+			
+			// concatenate to consider all fields at once
+			// (otherwise for example the terms in an AND expression will have to be matched ALL by one single field)
+			String target = title + " " + abstractProp + " " + keywords;
+			
+			if (this.doMatchQuery(target)) {
+				filteredArticleDetailList.add(articleDetail);
+			}
+
+		}
+		
+		return filteredArticleDetailList;
+	}
 	
 	public List<String> getArticlePropertiesFromSearchResult(Resource searchResult, String propertyName) {
 		List<String> articlePropertyList = new ArrayList<String>();
@@ -141,7 +175,7 @@ public abstract class SearchEngine {
 		try {
 			List<Element> articleList = XMLParser.select("articles/item", searchResultContent.getDocumentElement());
 			for (Element articleEl : articleList) {
-				String property = (String) XMLParser.getXpath().evaluate(propertyName, articleEl, XPathConstants.STRING);
+				String property = ( (String) XMLParser.getXpath().evaluate(propertyName, articleEl, XPathConstants.STRING) ).trim();
 				articlePropertyList.add(property);
 			}
 		} catch (XPathExpressionException e) {
@@ -159,13 +193,22 @@ public abstract class SearchEngine {
 
 		try {
 			Element articleEl = XMLParser.select("article", articleDetailsContent.getDocumentElement()).get(0);
-			property = (String) XMLParser.getXpath().evaluate(propertyName, articleEl, XPathConstants.STRING);
-		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			
+			property = ( (String) XMLParser.getXpath().evaluate(propertyName, articleEl, XPathConstants.STRING) ).trim();
+		} catch (XPathExpressionException e) {		
 			property = null;
 		}
+		
+		return property;
+	}
+	
+	public String getArticlePropertyFromSearchResultArticleEl(Element searchResultArticleEl, String propertyName) {
+		String property;
+		
+		try {
+			property = XMLParser.select(propertyName, searchResultArticleEl).get(0).getTextContent().trim();
+		} catch (Exception e) {
+			property = null;
+		}	
 		
 		return property;
 	}

@@ -84,13 +84,13 @@ public class ACMSearchEngine extends SearchEngine {
 		
 		try {
 			XPathExpression expr = XMLParser.getXpath().compile("/response/session/cfid");
-			cfid = (String) expr.evaluate(homeContent, XPathConstants.STRING);
+			cfid = ( (String) expr.evaluate(homeContent, XPathConstants.STRING) ).trim();
 			
 			XPathExpression expr2 = XMLParser.getXpath().compile("/response/session/cftoken");
-			cftoken = (String) expr2.evaluate(homeContent, XPathConstants.STRING);
+			cftoken = ( (String) expr2.evaluate(homeContent, XPathConstants.STRING) ).trim();
 			
 			XPathExpression expr3 = XMLParser.getXpath().compile("/response/session/atuvc");
-			atuvc = (String) expr3.evaluate(homeContent, XPathConstants.STRING);
+			atuvc = ( (String) expr3.evaluate(homeContent, XPathConstants.STRING) ).trim();
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -163,87 +163,9 @@ public class ACMSearchEngine extends SearchEngine {
 			// General conditions are in OR, thus here we can only filter any specific-field requirement, such as
 			// 'Abstract': 'term' and so on
 			filteredArticleIdList.add(id);
-
-			/*
-			
-			// concatenate to consider all fields at once
-			// (otherwise for example the terms in an AND expression will have to be matched ALL by one single field)
-			String target = title + " " + keywords;
-				
-			if (this.doMatchQuery(target)) {
-				filteredArticleIdList.add(id);
-			}
-			*/
 		}
 	
 		return filteredArticleIdList;
-	}
-	
-	/*
-	public List<Resource> filterArticleDetails(List<Resource> articleDetailList) {
-		List<Resource> filteredArticleDetailList = new ArrayList<Resource>();
-		
-		QueryMatcherVisitor visitor = new QueryMatcherVisitor();
-		for (Resource articleDetail : articleDetailList) {
-			String title = this.getArticlePropertyFromDetails(articleDetail, "title");
-			String abstractProp = this.getArticlePropertyFromDetails(articleDetail, "abstract");
-				
-			// concatenate to consider all fields at once
-			// (otherwise for example the terms in an AND expression will have to be matched ALL by one single field)
-			String target = title + " " + abstractProp;
-			
-			if (this.doMatchQuery(target)) {
-				filteredArticleDetailList.add(articleDetail);
-			}
-		}
-		
-		return filteredArticleDetailList;
-	}
-	*/
-	
-	public List<Resource> filterArticleDetails(List<Resource> articleDetailList, Resource searchResult) {
-		List<Resource> filteredArticleDetailList = new ArrayList<Resource>();
-
-		for (Resource articleDetail : articleDetailList) {
-			Document articleDetailContent = (Document) articleDetail.getContent();
-			
-			String id = this.getArticlePropertyFromDetails(articleDetail, "id");
-			
-			Element searchResultArticleEl = this.getArticleElementFromSearchResult(searchResult, id);
-			Element articleDetailEl;
-			try {
-				articleDetailEl = XMLParser.select("article", articleDetailContent.getDocumentElement()).get(0);
-			} catch (XPathExpressionException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-				
-				// wrong schema
-				return null;
-			}
-			
-			try {
-				String title = XMLParser.select("title", searchResultArticleEl).get(0).getTextContent().trim();
-				String abstractProp = XMLParser.select("abstract", articleDetailEl).get(0).getTextContent().trim();
-				String keywords = XMLParser.select("keywords", searchResultArticleEl).get(0).getTextContent().trim();
-				
-				// concatenate to consider all fields at once
-				// (otherwise for example the terms in an AND expression will have to be matched ALL by one single field)
-				String target = title + " " + abstractProp + " " + keywords;
-				
-				if (this.doMatchQuery(target)) {
-					filteredArticleDetailList.add(articleDetail);
-				}
-				
-			} catch (DOMException | XPathExpressionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				
-				// in doubt insert the element anyway
-				filteredArticleDetailList.add(articleDetail);
-			}
-		}
-		
-		return filteredArticleDetailList;
 	}
 	
 	public Resource getArticleDetailsFromDefault(String articleId) {
