@@ -122,8 +122,12 @@ public class IEEESearchEngine extends SearchEngine {
 			// 'Abstract': 'term' and so on
 			filteredArticleIdList.add(id);
 			
-			/*
-			if (this.doMatchQuery(title) || this.doMatchQuery(abstractProp) {
+			/*		
+			// concatenate to consider all fields at once
+			// (otherwise for example the terms in an AND expression will have to be matched ALL by one single field)
+			String target = title + " " + abstractProp;
+				
+			if (this.doMatchQuery(target)) {
 				filteredArticleIdList.add(id);
 			}
 			*/
@@ -194,7 +198,11 @@ public class IEEESearchEngine extends SearchEngine {
 				String abstractProp = XMLParser.select("abstract", searchResultArticleEl).get(0).getTextContent().trim();
 				String keywords = XMLParser.select("keywords", articleDetailEl).get(0).getTextContent().trim();
 				
-				if (this.doMatchQuery(title) || this.doMatchQuery(abstractProp) || this.doMatchQuery(keywords)) {
+				// concatenate to consider all fields at once
+				// (otherwise for example the terms in an AND expression will have to be matched ALL by one single field)
+				String target = title + " " + abstractProp + " " + keywords;
+				
+				if (this.doMatchQuery(target)) {
 					filteredArticleDetailList.add(articleDetail);
 				}
 				
