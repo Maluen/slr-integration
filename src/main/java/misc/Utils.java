@@ -86,4 +86,12 @@ public class Utils {
 		transformer.transform(input, output);
 	}
 	
+	public static String simplify(String target) {
+		return target
+			   .replaceAll("[^A-Za-z0-9\\s]", "") // remove any non-alphanumeric and non-whitespace character
+			   .toLowerCase()
+			   .replaceAll("\\s+", " ")
+			   .trim();
+	}
+	
 }

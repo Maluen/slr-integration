@@ -123,7 +123,7 @@ public class Main {
 		MixedSearch mixedSearch = new MixedSearch();
 		mixedSearch.setQueryTree(queryTree);
 		mixedSearch.setSites(new String[] {
-				//"acm",
+				"acm",
 				"ieee"
 		});
 		ArticleList articleList = mixedSearch.execute();

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import misc.Logger;
+import misc.Utils;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -36,11 +37,7 @@ public class QueryMatcherVisitor extends QueryBaseVisitor<Boolean> {
 	
 	public List<String> normalizePhrase(String phrase) {
 		return Arrays.asList(
-			phrase
-		 	.replaceAll("[^A-Za-z0-9\\s]", "") // remove any non-alphanumeric and non-whitespace character
-		 	.toLowerCase()
-			.trim()
-			.split("\\s+") 
+			Utils.simplify(phrase).split("\\s+") 
 		);
 	}
 	
