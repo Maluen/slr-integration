@@ -57,6 +57,11 @@ public class Utils {
 		return getFileContent(file, StandardCharsets.UTF_8);
 	}
 	
+	public static Boolean doFileExists(String path) {
+		File file = new File(path);
+		return file.exists() && !file.isDirectory();
+	}
+	
 	public static void saveText(String content, String path) throws FileNotFoundException, UnsupportedEncodingException {
 		PrintWriter writer = new PrintWriter(path, "UTF-8");
 		writer.write(content);
