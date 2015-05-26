@@ -1,4 +1,4 @@
-package engines;
+package search;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,8 +20,10 @@ import services.Service;
 import services.resources.Resource;
 import services.resources.ResourceLoader;
 import services.resources.ResourceSerializer;
+import data.Article;
+import data.ArticleList;
 
-public abstract class Engine {
+public abstract class SearchEngine {
 
 	// NOTE: name must have unix-names format
 	protected String name = "";
@@ -32,10 +34,11 @@ public abstract class Engine {
 	protected ResourceSerializer resourceSerializer;
 	protected ResourceLoader resourceLoader;
 	
-	protected Integer numberOfResultsPerPage;	
-	protected ParseTree queryTree;
+	protected Integer numberOfResultsPerPage;
+	protected String queryText;
+	protected ParseTree originalQueryTree; // needed for the filtering
 	
-	public Engine(String name) {
+	public SearchEngine(String name) {
 		
 		this.name = name;
 		
@@ -53,32 +56,55 @@ public abstract class Engine {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public ParseTree getQueryTree() {
-		return this.queryTree;
+	
+	public String getQueryText() {
+		return this.queryText;
 	}
 
-	public void setQueryTree(ParseTree queryTree) {
-		this.queryTree = queryTree;
+	public void setQueryText(String queryText) {
+		this.queryText = queryText;
+	}
+
+	public ParseTree getOriginalQueryTree() {
+		return this.originalQueryTree;
+	}
+
+	public void setOriginalQueryTree(ParseTree originalQueryTree) {
+		this.originalQueryTree = originalQueryTree;
 	}
 
 	// TODO: add search input parameters
-	public abstract void search(ParseTree queryTree);
+	// Returns a list of output resources
+	public abstract ArticleList search();
 	
-	protected void searchAllPages(String queryText) {
+	protected ArticleList searchAllPages() {
+		List<Resource> outputResourceList = new ArrayList<Resource>();
+		
 		// get first page
-		Resource outputResource = this.searchPage(queryText, 1);
-		Integer count = this.getCount(outputResource);
-		Integer numberOfPages = this.calculateNumberOfPages(count, this.numberOfResultsPerPage);
+		Resource firstOutputResource = this.searchPage(1);
+		outputResourceList.add(firstOutputResource);
+		
 		// get remaining pages
+		Integer count = this.getCount(firstOutputResource);
+		Integer numberOfPages = this.calculateNumberOfPages(count, this.numberOfResultsPerPage);
 		for (int i=1; i<numberOfPages; i++) {
-			this.searchPage(queryText, i);
+			Resource pageOutputResource = this.searchPage(i);
+			outputResourceList.add(pageOutputResource);
 		}
+		
+		// convert output resources from all pages into a single list of articles
+		ArticleList allPagesArticleList = new ArticleList();
+		for (Resource outputResource : outputResourceList) {
+			ArticleList outputArticleList = this.createArticlesFromOutput(outputResource);
+			allPagesArticleList.addAll(outputArticleList);
+		}
+		
+		return allPagesArticleList;
 	}
 	
-	public Resource searchPage(String queryText, Integer pageNumber) {
-		Resource searchResult = this.searchFromDefault(queryText, pageNumber);
-		//Resource searchResult = this.searchFromXML(queryText);
+	public Resource searchPage(Integer pageNumber) {
+		Resource searchResult = this.searchFromDefault(pageNumber);
+		//Resource searchResult = this.searchFromXML();
 		List<String> articleIdList = this.getArticleIdsFromSearchResult(searchResult);
 		
 		// first filtering with the information we have right now
@@ -99,7 +125,7 @@ public abstract class Engine {
 		return this.output(searchResult, validArticleDetailsList, validArticleIdList);
 	}
 	
-	public abstract Resource searchFromDefault(String queryText, Integer pageNumber);
+	public abstract Resource searchFromDefault(Integer pageNumber);
 	
 	public abstract List<String> filterArticleIdsBySearchResult(Resource searchResult, List<String> articleIdList);
 	
@@ -167,7 +193,7 @@ public abstract class Engine {
 
 		QueryMatcherVisitor visitor = new QueryMatcherVisitor();
 		visitor.setTarget(target);
-		Boolean passes = visitor.visit(this.queryTree);
+		Boolean passes = visitor.visit(this.originalQueryTree);
 		return passes;
 	}
 	
@@ -262,6 +288,36 @@ public abstract class Engine {
 	
 	public Integer calculateStartResult(Integer pageNumber, Integer numberOfResultsPerPage) {
 		return ((pageNumber-1) * numberOfResultsPerPage) + 1;
+	}
+	
+	public ArticleList createArticlesFromOutput(Resource outputResource) {
+		ArticleList articleList = new ArticleList();
+		
+		Document outputContent = (Document) outputResource.getContent();
+		
+		try {
+			List<Element> articleElList = XMLParser.select("articles/item", outputContent.getDocumentElement());
+			for (Element articleEl : articleElList) {
+				String currentTitle = XMLParser.select("title", articleEl).get(0).getTextContent().trim();
+				String currentAbstract = XMLParser.select("abstract", articleEl).get(0).getTextContent().trim();
+				String currentKeywords = XMLParser.select("keywords", articleEl).get(0).getTextContent().trim();
+				Integer currentYear = Integer.parseInt( XMLParser.select("year", articleEl).get(0).getTextContent().trim() );
+				
+				Article article = new Article();
+				article.setSource(this.name);
+				article.setTitle(currentTitle);
+				article.setAbstract(currentAbstract);
+				article.setKeywords(currentKeywords);
+				article.setYear(currentYear);
+				
+				articleList.add(article);
+			}
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return articleList;
 	}
 	
 }

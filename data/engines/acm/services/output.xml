@@ -26,6 +26,7 @@
                         <title el="title" mode="text" />
                         <abstract from="{{articleDetails}}" el="article/abstract" mode="text" />
                         <keywords el="keywords" mode="text" />
+                        <year el="year" mode="text" />
                     </value>
                 </item>
             </value>

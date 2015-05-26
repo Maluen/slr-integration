@@ -17,6 +17,7 @@ import org.supercsv.prefs.CsvPreference;
 
 import parsers.query.QueryParser;
 import query.QueryMatcherVisitor;
+import search.MixedSearch;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -24,8 +25,8 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.GetRequest;
 import com.owlike.genson.Genson;
 
-import engines.Engine;
-import engines.ieee.IEEEEngine;
+import data.Article;
+import data.ArticleList;
 
 /**
  * 
@@ -108,7 +109,8 @@ public class Main {
 		
 		//String queryText = "mde";
 		//String queryText = "(\"easy collaboration\") AND NOT easy OR collab*";
-		String queryText = Utils.getFileContent(new File("data/querystring.txt"));
+		String queryText = "mde AND uml AND robots"; // query meant to return only one page of results from every engine";
+		//String queryText = Utils.getFileContent(new File("data/querystring.txt"));
 		//System.out.println("Query string: " + queryText);
 		
 		QueryParser languageParser = new QueryParser();
@@ -117,11 +119,19 @@ public class Main {
 		QueryMatcherVisitor matcherVisitor = new QueryMatcherVisitor("easy  collaboration asd");
 		System.out.println( matcherVisitor.visit(queryTree) );
 		
-		Engine ieeeEngine = new IEEEEngine();
-		ieeeEngine.search(queryTree);
+		// do the global search
+		MixedSearch mixedSearch = new MixedSearch();
+		mixedSearch.setQueryTree(queryTree);
+		mixedSearch.setSites(new String[] {
+				"acm",
+				"ieee"
+		});
+		ArticleList articleList = mixedSearch.execute();
 		
-		//Engine acmEngine = new ACMEngine();
-		//acmEngine.search(queryTree);
+		// Print result
+		for (Article article : articleList) {
+			System.out.println("Article: " + article.getTitle());
+		}
 	}
 
 }

@@ -1,17 +1,12 @@
-package engines.ieee;
+package search.ieee;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -19,33 +14,29 @@ import org.xml.sax.SAXException;
 
 import parsers.xml.XMLParser;
 import query.QueryMatcherVisitor;
+import search.SearchEngine;
 import services.Service;
 import services.resources.Resource;
-import engines.Engine;
+import data.ArticleList;
 
-public class IEEEEngine extends Engine {
+public class IEEESearchEngine extends SearchEngine {
 	
-	public IEEEEngine() {
+	public IEEESearchEngine() {
 		super("ieee");
 		
 		this.numberOfResultsPerPage = 100;
 	}
 
 	@Override
-	public void search(ParseTree queryTree) {
-		this.setQueryTree(queryTree);
-		
-		// TODO: convert generic search input into engine-specific search input
-		String queryText = queryTree.getText();
-	
-		this.searchAllPages(queryText);
+	public ArticleList search() {	
+		return this.searchAllPages();
 	}
 	
-	public Resource searchFromDefault(String queryText, Integer pageNumber) {	
-		return this.searchFromHTML(queryText, pageNumber);
+	public Resource searchFromDefault(Integer pageNumber) {	
+		return this.searchFromHTML(pageNumber);
 	}
 	
-	public Resource searchFromHTML(String queryText, Integer pageNumber) {
+	public Resource searchFromHTML(Integer pageNumber) {
 		Resource searchResultResource;
 		String resourceFilename = this.outputBasePath + "resources/searchresult_" + pageNumber + "-html.xml";
 		
@@ -63,7 +54,7 @@ public class IEEEEngine extends Engine {
 		searchService.loadFromFile(new File(serviceFilename));
 		
 		// set any needed data
-		searchService.addData("queryText", queryText);
+		searchService.addData("queryText", this.queryText);
 		searchService.addData("pageNumber", pageNumber.toString());
 		searchService.addData("resultsPerPage", this.numberOfResultsPerPage.toString());
 		
@@ -80,7 +71,7 @@ public class IEEEEngine extends Engine {
 		return searchResultResource;
 	}
 	
-	public Resource searchFromXML(String queryText) {
+	public Resource searchFromXML() {
 		Resource searchResultResource;
 		String resourceFilename = this.outputBasePath + "resources/searchresult-xml.xml";
 		
@@ -98,7 +89,7 @@ public class IEEEEngine extends Engine {
 		searchService.loadFromFile(new File(serviceFilename));
 		
 		// set any needed data
-		searchService.addData("queryText", queryText);
+		searchService.addData("queryText", this.queryText);
 		searchService.addData("startNumber", "1");
 		searchService.addData("numberOfResults", "25"); // max 1000
 		
