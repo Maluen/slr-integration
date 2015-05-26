@@ -229,7 +229,6 @@ public class XMLtoDocument extends ToDocument {
 	protected ScriptEngine configureScriptEngine(ScriptEngine engine, Object contentEl) {
 		engine = super.configureScriptEngine(engine, contentEl);
 		
-		engine.put("el", contentEl);
 		engine.put("parser", this.xmlParser);
 		return engine;
 	}

@@ -7,6 +7,7 @@ import java.util.List;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
+import org.jsoup.Jsoup;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -237,6 +238,13 @@ public class HTMLtoDocument extends ToDocument {
 	public Element process(Element templateElement, ScriptEngine engine,
 			Data<String> data) throws UnsupportedOperationException, Exception {
 		throw new UnsupportedOperationException();
+	}
+	
+	protected ScriptEngine configureScriptEngine(ScriptEngine engine, Object contentEl) {
+		engine = super.configureScriptEngine(engine, contentEl);
+		
+		engine.put("htmlParser", this.htmlParser);
+		return engine;
 	}
 	
 }

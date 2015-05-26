@@ -118,11 +118,14 @@
                 </id>
 
                 <title el=".select input" mode="script">
-                    <!-- input text has the format 'Select this article: article title' -->
-                    var text = el.attr('title');
+                    // input title attribute has the format 'Select this article: article title'
+                    var title = el.attr('title');
                     var search = ': ';
-                    var start = text.indexOf(search);
-                    if (start !== -1) text.substr(start + search.length);
+                    var start = title.indexOf(search);
+                    if (start !== -1) title = title.substr(start + search.length);
+                    
+                    // title might contain html tags, strip them
+                    htmlParser.parse(title).text();
                 </title>
 
                 <authors el="#preferredName" mode="script">el.attr('class')</authors>
