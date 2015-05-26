@@ -13,8 +13,6 @@ public abstract class SearchMerger {
 	protected List<ArticleList> allArticleList;
 	
 	public ArticleList execute() {
-		ArticleList mergedArticleList = new ArticleList();
-
 		Map<String, Article> articlesMap = new HashMap<String, Article>();
 		
 		for (ArticleList articleList : this.allArticleList) {
@@ -28,13 +26,15 @@ public abstract class SearchMerger {
 				Article existingArticle = articlesMap.get(key);
 				if (existingArticle == null) {
 					// new article
-					mergedArticleList.add(article);
+					articlesMap.put(key, article);
 				} else {
 					// TODO: merge duplicate?
 				}
 			}
 		}
-
+		
+		ArticleList mergedArticleList = new ArticleList();
+		mergedArticleList.addAll(articlesMap.values());
 		return mergedArticleList;
 	}
 
