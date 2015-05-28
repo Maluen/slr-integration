@@ -75,7 +75,7 @@ public class MixedSearch {
 		// TODO: replace any previous search data with the new one
 		
 		// STUB
-		return null;
+		return this.execute();
 	}
 	
 	public ArticleList execute() {		

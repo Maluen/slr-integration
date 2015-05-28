@@ -1,1 +1,1 @@
-(collaborat* OR coordinat* OR cooperat* OR concur* OR global) AND (MDE OR MDD OR MDA OR MDS* OR EMF OR DSL OR DSML OR "model driven" OR "eclipse modeling framework" OR "domain specific language" OR "domain specific modeling language")
+uml AND (execut* OR translat* OR compilat* OR interpret* OR synthes* OR simulat* OR debug* OR (code AND generat*)) AND (mde OR mda OR mdsd OR mdd OR model* OR diagram OR specification) AND (software OR system OR tool OR framework)

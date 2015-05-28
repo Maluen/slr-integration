@@ -2,6 +2,7 @@
 target/classes
 target/test-classes
 target/*.jar
+target/data
 
 # Logging and caching
 

@@ -1,3 +1,4 @@
+package main;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -109,31 +110,28 @@ public class Main {
 		
 		//String queryText = "mde";
 		//String queryText = "(\"easy collaboration\") AND NOT easy OR collab*";
-		String queryText = "mde AND uml AND robot*"; // query meant to return only one page of results from every engine";
-		//String queryText = Utils.getFileContent(new File("data/querystring.txt"));
+		//String queryText = "mde AND uml AND robot*"; // query meant to return only one page of results from every engine";
+		String queryText = Utils.getFileContent(new File("data/querystring.txt"));
 		//System.out.println("Query string: " + queryText);
-		
-		QueryParser languageParser = new QueryParser();
-		ParseTree queryTree = languageParser.parse(queryText);
-		
-		QueryMatcherVisitor matcherVisitor = new QueryMatcherVisitor("easy  collaboration asd");
-		System.out.println( matcherVisitor.visit(queryTree) );
+
+		//QueryMatcherVisitor matcherVisitor = new QueryMatcherVisitor("easy  collaboration asd");
+		//System.out.println( matcherVisitor.visit(queryTree) );
 		
 		// do the global search
 		ArticleList articleList;
 		MixedSearch mixedSearch = new MixedSearch();
-		if (mixedSearch.isResumable()) {
-			System.out.println("Resuming");
-			articleList = mixedSearch.resume();
-		} else {
-			System.out.println("Starting new search");
+		//if (mixedSearch.isResumable()) {
+		//	System.out.println("Resuming");
+		//	articleList = mixedSearch.resume();
+		//} else {
+			//System.out.println("Starting new search");
 			mixedSearch.setQueryText(queryText);
 			mixedSearch.setSites(new String[] {
 					"acm",
-					"ieee"
+					//"ieee"
 			});
 			articleList = mixedSearch.newSearch();
-		}
+		//}
 
 		// Print result
 		for (Article article : articleList) {
