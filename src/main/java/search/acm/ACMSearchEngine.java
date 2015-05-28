@@ -39,26 +39,27 @@ public class ACMSearchEngine extends SearchEngine {
 	public ArticleList search() {
 		this.outputBasePath = "data/output/searches/" + this.name + "/" + this.searchIndex + "/";
 		
-		Resource homeResource = this.home();
+		// Home resource is not resumed since we want to always make a request
+		// to create the user session
+		Resource homeResource = this.home(false);
 		this.userData = this.getUserData(homeResource);
 		
 		return this.searchAllPages();
 	}
 	
-	/**
-	 * @return user data that can be passed to the service
-	 */
-	public Resource home() {
+	public Resource home(Boolean tryResume) {
 		Resource homeResource;
 		String resourceFilename = this.outputBasePath + "resources/home-html.xml";
 
-		try {
-			homeResource = this.resourceLoader.load(new File(resourceFilename));
-			System.out.println("Resumed: " + resourceFilename);
-			return homeResource;
-		} catch (SAXException | IOException e1) {
-			// proceed
-			System.out.println("Unable to resume " + resourceFilename);
+		if (tryResume) {
+			try {
+				homeResource = this.resourceLoader.load(new File(resourceFilename));
+				System.out.println("Resumed: " + resourceFilename);
+				return homeResource;
+			} catch (SAXException | IOException e1) {
+				// proceed
+				System.out.println("Unable to resume " + resourceFilename);
+			}
 		}
 		
 		Service homeService = new Service();
