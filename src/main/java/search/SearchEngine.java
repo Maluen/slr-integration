@@ -96,7 +96,7 @@ public abstract class SearchEngine {
 		// get remaining pages
 		Integer count = this.getCount(firstOutputResource);
 		Integer numberOfPages = this.calculateNumberOfPages(count, this.numberOfResultsPerPage);
-		for (int i=1; i<numberOfPages; i++) {
+		for (int i=2; i<=numberOfPages; i++) {
 			Resource pageOutputResource = this.searchPage(i);
 			outputResourceList.add(pageOutputResource);
 		}
@@ -349,17 +349,23 @@ public abstract class SearchEngine {
 		try {
 			List<Element> articleElList = XMLParser.select("articles/item", outputContent.getDocumentElement());
 			for (Element articleEl : articleElList) {
+				String currentId = XMLParser.select("id", articleEl).get(0).getTextContent().trim();
 				String currentTitle = XMLParser.select("title", articleEl).get(0).getTextContent().trim();
 				String currentAbstract = XMLParser.select("abstract", articleEl).get(0).getTextContent().trim();
 				String currentKeywords = XMLParser.select("keywords", articleEl).get(0).getTextContent().trim();
 				Integer currentYear = Integer.parseInt( XMLParser.select("year", articleEl).get(0).getTextContent().trim() );
+				String currentAuthors = XMLParser.select("authors", articleEl).get(0).getTextContent().trim();
+				String currentPublication = XMLParser.select("publication", articleEl).get(0).getTextContent().trim();
 				
 				Article article = new Article();
 				article.setSource(this.name);
+				article.setId(currentId);
 				article.setTitle(currentTitle);
 				article.setAbstract(currentAbstract);
 				article.setKeywords(currentKeywords);
 				article.setYear(currentYear);
+				article.setAuthors(currentAuthors);
+				article.setPublication(currentPublication);
 				
 				articleList.add(article);
 			}

@@ -23,10 +23,13 @@
                         </item>
                     </data>
                     <value>
+                        <id el="id" mode="text" />
                         <title el="title" mode="text" />
                         <abstract el="abstract" mode="text" />
                         <keywords from="{{articleDetails}}" el="article/keywords" mode="text" />
                         <year el="year" mode="text" />
+                        <authors el="authors" mode="text" />
+                        <publication el="publication" mode="text" />
                     </value>
                 </item>
             </value>

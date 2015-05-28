@@ -3,10 +3,13 @@ package data;
 public class Article {
 
 	protected String source = "";
+	protected String id = "";
 	protected String title = "";
 	protected String _abstract = "";
 	protected String keywords = "";
 	protected Integer year;
+	protected String authors = "";
+	protected String publication = "";
 	
 	public String getSource() {
 		return this.source;
@@ -14,6 +17,14 @@ public class Article {
 
 	public void setSource(String source) {
 		this.source = source;
+	}
+
+	public String getId() {
+		return this.id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getTitle() {
@@ -46,6 +57,22 @@ public class Article {
 
 	public void setYear(Integer year) {
 		this.year = year;
+	}
+
+	public String getAuthors() {
+		return this.authors;
+	}
+
+	public void setAuthors(String authors) {
+		this.authors = authors;
+	}
+
+	public String getPublication() {
+		return this.publication;
+	}
+
+	public void setPublication(String publication) {
+		this.publication = publication;
 	}
 	
 }
