@@ -8,6 +8,7 @@ import java.util.Map;
 import misc.Logger;
 import misc.Utils;
 
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -15,6 +16,8 @@ import org.supercsv.io.CsvListReader;
 import org.supercsv.io.ICsvListReader;
 import org.supercsv.prefs.CsvPreference;
 
+import parsers.query.QueryParser;
+import query.QueryMatcherVisitor;
 import search.MixedSearch;
 
 import com.mashape.unirest.http.HttpResponse;

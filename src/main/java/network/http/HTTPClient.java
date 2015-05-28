@@ -111,10 +111,18 @@ public class HTTPClient {
 		} catch (Exception e) {
 			e.printStackTrace();
 			
-			// immediate (and infinite) retry
+			// delayed and infinite retry
 			// TODO: employ a more configurable solution
-			System.out.println("Retrying http request...");
-			return this.request(url, method, contentType, cookies, body);
+			int seconds = 5;
+			try {
+				System.out.println("Retrying http request in " + seconds + " second(s)...");
+			    Thread.sleep(seconds*1000);
+			    return this.request(url, method, contentType, cookies, body);
+			    
+			} catch(InterruptedException ex) {
+			    Thread.currentThread().interrupt();
+			    return null;
+			}
 		}
 		
 		
