@@ -109,9 +109,12 @@ public class HTTPClient {
 		    return response;
 	
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null;
+			
+			// immediate (and infinite) retry
+			// TODO: employ a more configurable solution
+			System.out.println("Retrying http request...");
+			return this.request(url, method, contentType, cookies, body);
 		}
 		
 		
