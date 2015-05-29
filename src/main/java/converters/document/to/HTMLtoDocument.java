@@ -243,7 +243,7 @@ public class HTMLtoDocument extends ToDocument {
 	protected ScriptEngine configureScriptEngine(ScriptEngine engine, Object contentEl) {
 		engine = super.configureScriptEngine(engine, contentEl);
 		
-		engine.put("htmlParser", this.htmlParser);
+		engine.put("parser", this.htmlParser);
 		return engine;
 	}
 	
