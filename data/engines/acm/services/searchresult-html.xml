@@ -133,20 +133,10 @@
                         </value>
                     </year>
 
-                    <publication expand="true" mode="script">
+                    <publication expand="true" mode="text">
                         <el mode="script">
-                            el.parents().not(':not(table)').first().select('.addinfo strong')
+                            el.parents().not(':not(table)').first().select('.addinfo')
                         </el>
-                        <value>
-                            var value = el.text().trim();
-                            
-                            // some fields have a trailing ":", remove it
-                            // Note: we're using the Java String type here, not the JavaScript one
-                            if (value.endsWith(':')) {
-                              value = value.substring(0, value.length()-1);
-                            }
-                            value
-                        </value>
                     </publication>
 
                     <keywords expand="true" mode="script">
