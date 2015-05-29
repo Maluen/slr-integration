@@ -120,23 +120,25 @@ public class Main {
 		// do the global search
 		ArticleList articleList;
 		MixedSearch mixedSearch = new MixedSearch();
-		//if (mixedSearch.isResumable()) {
-		//	System.out.println("Resuming");
-		//	articleList = mixedSearch.resume();
-		//} else {
-			//System.out.println("Starting new search");
+		if (mixedSearch.isResumable()) {
+			System.out.println("Resuming");
+			articleList = mixedSearch.resume();
+		} else {
+			System.out.println("Starting new search");
 			mixedSearch.setQueryText(queryText);
 			mixedSearch.setSites(new String[] {
 					"acm",
 					//"ieee"
 			});
 			articleList = mixedSearch.newSearch();
-		//}
+		}
 
 		// Print result
-		for (Article article : articleList) {
+		/*for (Article article : articleList) {
 			System.out.println("Article: " + article.getTitle());
-		}
+		}*/
+		
+		articleList.saveAsCSV("data/output/searches/output.csv");
 	}
 
 }
