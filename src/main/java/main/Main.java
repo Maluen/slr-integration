@@ -17,7 +17,9 @@ import org.supercsv.io.ICsvListReader;
 import org.supercsv.prefs.CsvPreference;
 
 import parsers.query.QueryParser;
-import query.QueryMatcherVisitor;
+import query.QuerySplittedPart;
+import query.QuerySplittedPartList;
+import query.QuerySplitterVisitor;
 import search.MixedSearch;
 
 import com.mashape.unirest.http.HttpResponse;
@@ -26,7 +28,6 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.GetRequest;
 import com.owlike.genson.Genson;
 
-import data.Article;
 import data.ArticleList;
 
 /**
@@ -113,9 +114,21 @@ public class Main {
 		//String queryText = "mde AND uml AND robot*"; // query meant to return only one page of results from every engine";
 		String queryText = Utils.getFileContent(new File("data/querystring.txt"));
 		//System.out.println("Query string: " + queryText);
+		
+		QueryParser queryParser = new QueryParser();
+		ParseTree queryTree = queryParser.parse(queryText);
 
 		//QueryMatcherVisitor matcherVisitor = new QueryMatcherVisitor("easy  collaboration asd");
 		//System.out.println( matcherVisitor.visit(queryTree) );
+		
+		QuerySplitterVisitor splitterVisitor = new QuerySplitterVisitor();
+		splitterVisitor.setTarget(QuerySplitterVisitor.TargetType.WILDCARD);
+		splitterVisitor.setTargetMaxCount(5);
+		QuerySplittedPartList splittedQuery = splitterVisitor.visit(queryTree);
+		for (QuerySplittedPart splittedQueryPart : splittedQuery) {
+			System.out.println( splittedQueryPart.getScore() + ": "
+								+ splittedQueryPart.getQueryText() );
+		}
 		
 		// do the global search
 		ArticleList articleList;
@@ -127,8 +140,8 @@ public class Main {
 			System.out.println("Starting new search");
 			mixedSearch.setQueryText(queryText);
 			mixedSearch.setSites(new String[] {
-					"acm",
-					//"ieee"
+					//"acm",
+					"ieee"
 			});
 			articleList = mixedSearch.newSearch();
 		}
