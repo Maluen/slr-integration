@@ -270,7 +270,7 @@ public class QuerySplitterVisitor extends QueryBaseVisitor<QuerySplittedPartList
 		QuerySplittedPartList wildcardList = new QuerySplittedPartList( QuerySplittedPartList.Type.OR );
 		
 		String queryText = ctx.getText();
-		Integer targetCount = (this.target == TargetType.WILDCARD) ? 1 : 0;
+		Integer targetCount = (this.target == TargetType.WILDCARD || this.target == TargetType.WORD) ? 1 : 0;
 		
 		QuerySplittedPart wildcard = new QuerySplittedPart();
 		wildcard.setQueryText(queryText);
