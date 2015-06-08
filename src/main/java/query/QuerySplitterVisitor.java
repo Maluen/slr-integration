@@ -59,9 +59,11 @@ public class QuerySplitterVisitor extends QueryBaseVisitor<QuerySplittedPartList
 				} else if (joinedTargetCount <= this.targetMaxCount) {
 					// exprI and exprJ can be joined together
 					// => (exprI) AND (exprJ)
-					String joinedQueryText = "("+exprI.getQueryText()+")"
-										   + " AND "
-										   + "("+exprJ.getQueryText()+")";
+					String joinedQueryText = "(" 
+												+ exprI.getQueryText()
+												+ " AND "
+												+ exprJ.getQueryText() 
+										   + ")";
 					
 					// In the worst case, all the results of the "smaller" parameter
 					// will be returned, but it is very rare and we want to give
@@ -128,9 +130,11 @@ public class QuerySplitterVisitor extends QueryBaseVisitor<QuerySplittedPartList
 				} else if (joinedTargetCount <= this.targetMaxCount) {
 					// exprI and exprJ can be joined together
 					// => (exprI) OR (exprJ)
-					String joinedQueryText = "("+exprI.getQueryText()+")"
-										   + " OR "
-										   + "("+exprJ.getQueryText()+")";
+					String joinedQueryText = "(" 
+												+ exprI.getQueryText()
+												+ " OR "
+												+ exprJ.getQueryText() 
+										   + ")";
 					
 					Float joinedScore = exprI.getScore() + exprJ.getScore();
 					
@@ -369,7 +373,7 @@ public class QuerySplitterVisitor extends QueryBaseVisitor<QuerySplittedPartList
 	    phraseList.addAll(innerPhraseList);
 	    
 	    // will basically convert list of "WORD WORD WORD" 
-	    // into smaller (one-element) list of "(WORD) AND (WORD) AND (WORD)"
+	    // into smaller (one-element) list of "((WORD AND WORD) AND WORD)"
 	    // (where the order of the words is preserved)
 	    phraseList = this.groupAnd(phraseList);
 	    
