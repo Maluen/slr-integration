@@ -56,7 +56,7 @@ public class IEEESearchEngine extends SearchEngine {
 		searchService.loadFromFile(new File(serviceFilename));
 		
 		// set any needed data
-		searchService.addData("queryText", this.queryText);
+		searchService.addData("query", this.queryText);
 		searchService.addData("pageNumber", pageNumber.toString());
 		searchService.addData("resultsPerPage", this.numberOfResultsPerPage.toString());
 		
@@ -91,7 +91,7 @@ public class IEEESearchEngine extends SearchEngine {
 		searchService.loadFromFile(new File(serviceFilename));
 		
 		// set any needed data
-		searchService.addData("queryText", this.queryText);
+		searchService.addData("query", this.queryText);
 		searchService.addData("startNumber", "1");
 		searchService.addData("numberOfResults", "25"); // max 1000
 		

@@ -66,6 +66,7 @@
     <response from="response.body">
 
         <meta>
+            <query>{{query}}</query>
             <pageNumber>{{pageNumber}}</pageNumber>
 
             <count el="table > tbody > tr > td" expand="true" mode="script">

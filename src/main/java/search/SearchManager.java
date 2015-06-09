@@ -14,9 +14,8 @@ public abstract class SearchManager {
 	public ArticleList execute() {
 		// split
 		SearchSplitter searchSplitter = this.createSplitter();
-		searchSplitter.setQueryTree(this.queryTree);
-		List<String> queryTextList = searchSplitter.execute();
-	
+		List<String> queryTextList = searchSplitter.execute(this.queryTree);
+		
 		List<ArticleList> allSearchesArticleList = new ArrayList<ArticleList>();
 		for (int i=0; i<queryTextList.size(); i++) {
 			String currentQueryText = queryTextList.get(i);

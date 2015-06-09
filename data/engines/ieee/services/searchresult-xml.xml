@@ -8,13 +8,14 @@
     </resources>
     <request> <!-- Specifies how to retrieve/access service -->
         <url>
-            http://ieeexplore.ieee.org/gateway/ipsSearch.jsp?querytext={{{queryText}}}&amp;rs={{{startNumber}}}&amp;hc={{{numberOfResults}}}
+            http://ieeexplore.ieee.org/gateway/ipsSearch.jsp?querytext={{{query}}}&amp;rs={{{startNumber}}}&amp;hc={{{numberOfResults}}}
         </url>
         <method>GET</method> <!-- HTTP Method: GET, POST, etc. -->
     </request>
     <response from="response.body">
 
         <meta>
+            <query>{{query}}</query>
             <count el="totalfound" mode="text" />
         </meta>
 

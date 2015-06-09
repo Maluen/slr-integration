@@ -8,14 +8,15 @@
     </resources>
     <request> <!-- Specifies how to retrieve/access service -->
         <url>
-            <!--http://ieeexplore.ieee.org/search/searchresult.jsp?newsearch=true&amp;queryText={{{queryText}}}&amp;pageNumber={{{pageNumber}}}-->
-            http://ieeexplore.ieee.org/search/searchresult.jsp?action=search&amp;sortType=&amp;rowsPerPage=&amp;matchBoolean=true&amp;searchField=Search_All&amp;queryText={{{queryText}}}&amp;newsearch=true&amp;pageNumber={{{pageNumber}}}&amp;rowsPerPage={{{resultsPerPage}}}&amp;resultAction=ROWS_PER_PAGE
+            <!--http://ieeexplore.ieee.org/search/searchresult.jsp?newsearch=true&amp;queryText={{{query}}}&amp;pageNumber={{{pageNumber}}}-->
+            http://ieeexplore.ieee.org/search/searchresult.jsp?action=search&amp;sortType=&amp;matchBoolean=true&amp;searchField=Search_All&amp;queryText={{{query}}}&amp;newsearch=true&amp;pageNumber={{{pageNumber}}}&amp;rowsPerPage={{{resultsPerPage}}}&amp;resultAction=ROWS_PER_PAGE
         </url>
         <method>GET</method> <!-- HTTP Method: GET, POST, etc. -->
     </request>
     <response from="response.body">
 
         <meta>
+            <query>{{query}}</query>
             <pageNumber>{{pageNumber}}</pageNumber>
 
             <!-- number of results -->
@@ -168,11 +169,11 @@
 
                 <pagesRange>
                     <startPage mode="script">
-                      <!-- e.g. extract 71 from "Page(s): 71	- 76" -->
+                      <!-- e.g. extract 71 from "Page(s): 71    - 76" -->
                       el.text().match(/Page\(s\):\s*(\d+)\s*-\s*(\d+)/)[1]
                     </startPage>
                     <endPage mode="script">
-                      <!-- e.g. extract 76 from "Page(s): 71	- 76" -->
+                      <!-- e.g. extract 76 from "Page(s): 71    - 76" -->
                       el.text().match(/Page\(s\):\s*(\d+)\s*-\s*(\d+)/)[2]
                     </endPage>
                 </pagesRange>

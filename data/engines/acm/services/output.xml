@@ -3,6 +3,7 @@
     <response from="{{searchResult}}">
 
         <meta el="meta">
+            <query el="query" mode="text" />
             <count el="count" mode="text" />
         </meta>
 

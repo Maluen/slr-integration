@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +37,13 @@ public class Utils {
 	        vClass.cast(entry.getValue());
 	    }
 	    return (Map<K,V>) map;
+	}
+	
+	// create list with single element
+	public static <T> List<T> createList(T element) {
+		List<T> list = new ArrayList<T>();
+		list.add(element);
+		return list;
 	}
 	
 	// Get file from resources folder

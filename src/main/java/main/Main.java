@@ -8,7 +8,6 @@ import java.util.Map;
 import misc.Logger;
 import misc.Utils;
 
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -16,10 +15,6 @@ import org.supercsv.io.CsvListReader;
 import org.supercsv.io.ICsvListReader;
 import org.supercsv.prefs.CsvPreference;
 
-import parsers.query.QueryParser;
-import query.QuerySplittedPart;
-import query.QuerySplittedPartList;
-import query.QuerySplitterVisitor;
 import search.MixedSearch;
 
 import com.mashape.unirest.http.HttpResponse;
@@ -115,12 +110,15 @@ public class Main {
 		String queryText = Utils.getFileContent(new File("data/querystring.txt"));
 		//System.out.println("Query string: " + queryText);
 		
+		/*
 		QueryParser queryParser = new QueryParser();
 		ParseTree queryTree = queryParser.parse(queryText);
+		*/
 
 		//QueryMatcherVisitor matcherVisitor = new QueryMatcherVisitor("easy  collaboration asd");
 		//System.out.println( matcherVisitor.visit(queryTree) );
 		
+		/*
 		QuerySplitterVisitor splitterVisitor = new QuerySplitterVisitor();
 		splitterVisitor.setTarget(QuerySplitterVisitor.TargetType.WILDCARD);
 		splitterVisitor.setTargetMaxCount(5);
@@ -128,7 +126,7 @@ public class Main {
 		for (QuerySplittedPart splittedQueryPart : splittedQuery) {
 			System.out.println( splittedQueryPart.getScore() + ": "
 								+ splittedQueryPart.getQueryText() );
-		}
+		}*/
 		
 		// do the global search
 		ArticleList articleList;
