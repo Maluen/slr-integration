@@ -34,20 +34,16 @@ public class ACMSearchEngine extends SearchEngine {
 		
 		this.userData = new HashMap<String, String>();
 	}
-
+	
 	@Override
-	public ArticleList search() {
-		this.outputBasePath = "data/output/searches/" + this.name + "/" + this.searchIndex + "/";
-		
+	protected void login() {
 		// Home resource is not resumed since we want to always make a request
 		// to create the user session
 		Resource homeResource = this.home(false);
 		this.userData = this.getUserData(homeResource);
-		
-		return this.searchAllPages();
 	}
 	
-	public Resource home(Boolean tryResume) {
+	protected Resource home(Boolean tryResume) {
 		Resource homeResource;
 		String resourceFilename = this.outputBasePath + "resources/home-html.xml";
 
@@ -78,7 +74,7 @@ public class ACMSearchEngine extends SearchEngine {
 		return homeResource;
 	}
 	
-	public Map<String, String> getUserData(Resource homeResource) {
+	protected Map<String, String> getUserData(Resource homeResource) {
 		Document homeContent = (Document) homeResource.getContent();
 		
 		String cfid = null;
@@ -106,11 +102,8 @@ public class ACMSearchEngine extends SearchEngine {
 		return userData;
 	}
 
-	public Resource searchFromDefault(Integer pageNumber) {	
-		return this.searchFromHTML(pageNumber);
-	}
-	
-	public Resource searchFromHTML(Integer pageNumber) {	
+	@Override
+	protected Resource extractSearchResult(Integer pageNumber) {	
 		Resource searchResultResource;
 		String resourceFilename = this.outputBasePath + "resources/searchresult_" + pageNumber + "-html.xml";
 		
@@ -151,31 +144,19 @@ public class ACMSearchEngine extends SearchEngine {
 		return searchResultResource;
 	}
 	
-	public List<String> filterArticleIdsBySearchResult(Resource searchResult, List<String> articleIdList) {		
+	@Override
+	protected List<String> filterArticleIdsBySearchResult(List<String> articleIdList, Resource searchResult) {		
 		List<String> filteredArticleIdList = new ArrayList<String>();
 		
-		List<String> articleTitleList = this.getArticlePropertiesFromSearchResult(searchResult, "title");
-		List<String> articleKeywordsList = this.getArticlePropertiesFromSearchResult(searchResult, "keywords");
-		
-		QueryMatcherVisitor visitor = new QueryMatcherVisitor();
-		for (int i=0; i<articleIdList.size(); i++) {
-			String id = articleIdList.get(i);
-			String title = articleTitleList.get(i);
-			String keywords = articleKeywordsList.get(i);
-			
-			// General conditions are in OR, thus here we can only filter any specific-field requirement, such as
-			// 'Abstract': 'term' and so on
-			filteredArticleIdList.add(id);
-		}
+		// General conditions are in OR, thus here we can only filter any specific-field requirement, such as
+		// 'Abstract': 'term' and so on, which we don't support right now
+		filteredArticleIdList.addAll(articleIdList); // clone
 	
 		return filteredArticleIdList;
 	}
 	
-	public Resource getArticleDetailsFromDefault(String articleId) {
-		return this.getArticleDetailsFromHTML(articleId);
-	}
-	
-	public Resource getArticleDetailsFromHTML(String articleId) {
+	@Override
+	protected Resource extractArticleDetails(String articleId) {
 		Resource articleDetailsResource;
 		String resourceFilename = this.outputBasePath + "resources/articledetails-html_"+articleId+".xml";
 		

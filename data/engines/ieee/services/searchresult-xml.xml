@@ -1,5 +1,5 @@
 <service>
-    <name>searchResult</name>
+    <name>searchResult_{{pageNumber}}</name>
     <resources>
         <item>
             <name>response.body</name>
@@ -8,7 +8,7 @@
     </resources>
     <request> <!-- Specifies how to retrieve/access service -->
         <url>
-            http://ieeexplore.ieee.org/gateway/ipsSearch.jsp?querytext={{{query}}}&amp;rs={{{startNumber}}}&amp;hc={{{numberOfResults}}}
+            http://ieeexplore.ieee.org/gateway/ipsSearch.jsp?querytext={{{query}}}&amp;rs={{{startResult}}}&amp;hc={{{numberOfResults}}}
         </url>
         <method>GET</method> <!-- HTTP Method: GET, POST, etc. -->
     </request>
@@ -21,6 +21,7 @@
 
         <articles el="document" mode="list">
             <item>
+                <id el="arnumber" mode="text" />
                 <title el="title" mode="text" />
                 <authors el="authors" mode="text" />
                 <abstract el="abstract" mode="text" />
@@ -28,6 +29,22 @@
                 <publication el="pubtitle" mode="text" />
                 <doi el="doi" mode="text" />
                 <year el="py" mode="text" />
+
+                <keywords el="thesaurusterms" mode="script">
+                    <![CDATA[
+                    // extract list of terms
+                    var termList = [];
+                    var termElList = parser.select('term', el);
+                    for (var i=0, l=termElList.size(); i<l; i++) {
+                        var termEl = termElList.get(i);
+                        termList.push( termEl.getTextContent() );
+                    }
+
+                    var keywords = termList.join(', ');
+                    keywords // return
+                    ]]>
+                </keywords>
+                
                 <pagesRange>
                   <startPage el="spage" mode="text" />
                   <endPage el="epage" mode="text" />

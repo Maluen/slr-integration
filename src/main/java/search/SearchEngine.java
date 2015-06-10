@@ -31,17 +31,18 @@ public abstract class SearchEngine {
 	
 	protected String inputBasePath = "";
 	protected String outputBasePath = "";
+	protected String outputServicePrefix = "output";
 	
 	protected ResourceSerializer resourceSerializer;
 	protected ResourceLoader resourceLoader;
 	
 	protected Integer numberOfResultsPerPage;
+	
 	protected String queryText;
 	protected ParseTree originalQueryTree; // needed for the filtering
 	protected Integer searchIndex; // used in the saving
 	
 	public SearchEngine(String name) {
-		
 		this.name = name;
 		
 		this.inputBasePath = "data/engines/" + this.name + "/";
@@ -49,42 +50,19 @@ public abstract class SearchEngine {
 		this.resourceSerializer = new ResourceSerializer();
 		this.resourceLoader = new ResourceLoader();
 	}
+
+	public ArticleList execute() {
+		this.outputBasePath = "data/output/searches/" + this.name + "/" + this.searchIndex + "/";
+		
+		this.login();
+		
+		return this.searchAllPages();
+	}
 	
-	public String getName() {
-		return this.name;
+	protected void login() {
+		// default: no login needed
+		return;
 	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public String getQueryText() {
-		return this.queryText;
-	}
-
-	public void setQueryText(String queryText) {
-		this.queryText = queryText;
-	}
-
-	public ParseTree getOriginalQueryTree() {
-		return this.originalQueryTree;
-	}
-
-	public void setOriginalQueryTree(ParseTree originalQueryTree) {
-		this.originalQueryTree = originalQueryTree;
-	}
-
-	public Integer getSearchIndex() {
-		return this.searchIndex;
-	}
-
-	public void setSearchIndex(Integer searchIndex) {
-		this.searchIndex = searchIndex;
-	}
-
-	// TODO: add search input parameters
-	// Returns a list of output resources
-	public abstract ArticleList search();
 	
 	protected ArticleList searchAllPages() {
 		List<Resource> outputResourceList = new ArrayList<Resource>();
@@ -111,55 +89,85 @@ public abstract class SearchEngine {
 		return allPagesArticleList;
 	}
 	
-	public Resource searchPage(Integer pageNumber) {
-		Resource searchResult = this.searchFromDefault(pageNumber);
-		//Resource searchResult = this.searchFromXML();
-		List<String> articleIdList = this.getArticleIdsFromSearchResult(searchResult);
+	protected Resource searchPage(Integer pageNumber) {
+		Resource searchResult = this.extractSearchResult(pageNumber);
+		List<String> searchResultArticleIdList = this.getArticleIdsFromSearchResult(searchResult);
 		
 		// first filtering with the information we have right now
-		List<String> validArticleIdList = this.filterArticleIdsBySearchResult(searchResult, articleIdList);
+		List<String> validArticleIdList = this.filterArticleIdsBySearchResult(searchResultArticleIdList, searchResult);
 		
-		// get all valid article details
-		List<Resource> validArticleDetailsList = new ArrayList<Resource>();
-		for (String validArticleId : validArticleIdList) {
-			Resource validArticleDetails = this.getArticleDetailsFromDefault(validArticleId);
-			validArticleDetailsList.add(validArticleDetails);
+		// get needed valid article details (and related article ids)
+		List<Resource> validArticleDetailsList = this.extractNeededArticleDetails(validArticleIdList);
+		
+		// filter again with the new information
+		validArticleIdList = this.filterArticleIdsByArticleDetailsAndSearchResult(validArticleIdList, validArticleDetailsList, searchResult);
+		// update valid article details
+		for (int i=0; i<validArticleDetailsList.size(); i++) {
+			Resource validArticleDetails = validArticleDetailsList.get(i);
+			String validArticleDetailsId = this.getArticlePropertyFromDetails(validArticleDetails, "id");
+			if (!validArticleIdList.contains(validArticleDetailsId)) {
+				// not valid => remove
+				validArticleDetailsList.remove(i);
+				i--;
+			}
 		}
 		
-		// TODO: filter again with the new information
-		validArticleDetailsList = this.filterArticleDetails(validArticleDetailsList, searchResult);
-		// update the valid ids
-		validArticleIdList = this.getArticleIdsFromDetails(validArticleDetailsList);
-		
-		return this.output(searchResult, validArticleDetailsList, validArticleIdList);
+		return this.extractOutput(searchResult, validArticleDetailsList, validArticleIdList);
 	}
 	
-	public abstract Resource searchFromDefault(Integer pageNumber);
+	protected abstract Resource extractSearchResult(Integer pageNumber);
 	
-	public abstract List<String> filterArticleIdsBySearchResult(Resource searchResult, List<String> articleIdList);
+	protected abstract List<String> filterArticleIdsBySearchResult(List<String> articleIdList, Resource searchResult);
 	
-	public abstract Resource getArticleDetailsFromDefault(String articleId);
+	protected List<Resource> extractNeededArticleDetails(List<String> articleIdList) {
+		List<Resource> articleDetailsList = new ArrayList<Resource>();
+		
+		// default: get all article details
+		for (String articleID : articleIdList) {
+			Resource validArticleDetails = this.extractArticleDetails(articleID);
+			articleDetailsList.add(validArticleDetails);
+		}
+		
+		return articleDetailsList;
+	}
 	
-	public List<Resource> filterArticleDetails(List<Resource> articleDetailList, Resource searchResult) {
-		List<Resource> filteredArticleDetailList = new ArrayList<Resource>();
+	protected abstract Resource extractArticleDetails(String articleId);
+	
+	protected List<String> filterArticleIdsByArticleDetailsAndSearchResult(List<String> articleIdList, List<Resource> articleDetailList, Resource searchResult) {
+		List<String> filteredArticleIdList = new ArrayList<String>();
 
-		for (Resource articleDetail : articleDetailList) {			
-			String id = this.getArticlePropertyFromDetails(articleDetail, "id");
-			Element searchResultArticleEl = this.getArticleElementFromSearchResult(searchResult, id);
-
+		for (String articleId : articleIdList) {
+			
+			Element searchResultArticleEl = this.getArticleElementFromSearchResult(searchResult, articleId);
+			
+			// the articleDetail could either exist or not, try to find it
+			Resource articleDetail = null;
+			for (Resource currentArticleDetail : articleDetailList) {
+				String currentArticleDetailId = this.getArticlePropertyFromDetails(currentArticleDetail, "id");
+				if (currentArticleDetailId.equals(articleId)) {
+					articleDetail = currentArticleDetail;
+				}
+			}
+			
 			String title = this.getArticlePropertyFromSearchResultArticleEl(searchResultArticleEl, "title");
 			if (title == null || title.isEmpty()) {
-				title = this.getArticlePropertyFromDetails(articleDetail, "title");
+				if (articleDetail != null) {
+					title = this.getArticlePropertyFromDetails(articleDetail, "title");
+				}
 			}
 			
 			String abstractProp = this.getArticlePropertyFromSearchResultArticleEl(searchResultArticleEl, "abstract");
 			if (abstractProp == null || abstractProp.isEmpty()) {
-				abstractProp = this.getArticlePropertyFromDetails(articleDetail, "abstract");
+				if (articleDetail != null) {
+					abstractProp = this.getArticlePropertyFromDetails(articleDetail, "abstract");
+				}
 			}				
 			
 			String keywords = this.getArticlePropertyFromSearchResultArticleEl(searchResultArticleEl, "keywords");
 			if (keywords == null || keywords.isEmpty()) {
-				keywords = this.getArticlePropertyFromDetails(articleDetail, "keywords");
+				if (articleDetail != null) {
+					keywords = this.getArticlePropertyFromDetails(articleDetail, "keywords");
+				}
 			}
 			
 			// concatenate to consider all fields at once
@@ -167,113 +175,21 @@ public abstract class SearchEngine {
 			String target = title + " " + abstractProp + " " + keywords;
 			
 			if (this.doMatchQuery(target)) {
-				filteredArticleDetailList.add(articleDetail);
+				filteredArticleIdList.add(articleId);
 			}
-
+			
 		}
 		
-		return filteredArticleDetailList;
+		return filteredArticleIdList;
 	}
 	
-	public List<String> getArticlePropertiesFromSearchResult(Resource searchResult, String propertyName) {
-		List<String> articlePropertyList = new ArrayList<String>();
-		
-		Document searchResultContent = (Document) searchResult.getContent();
-		
-		try {
-			List<Element> articleList = XMLParser.select("articles/item", searchResultContent.getDocumentElement());
-			for (Element articleEl : articleList) {
-				String property = ( (String) XMLParser.getXpath().evaluate(propertyName, articleEl, XPathConstants.STRING) ).trim();
-				articlePropertyList.add(property);
-			}
-		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return articlePropertyList;
-	}
-	
-	public String getArticlePropertyFromDetails(Resource articleDetails, String propertyName) {
-		String property;
-		
-		Document articleDetailsContent = (Document) articleDetails.getContent();
-
-		try {
-			Element articleEl = XMLParser.select("article", articleDetailsContent.getDocumentElement()).get(0);
-			property = ( (String) XMLParser.getXpath().evaluate(propertyName, articleEl, XPathConstants.STRING) ).trim();
-		} catch (XPathExpressionException e) {		
-			property = null;
-		}
-		
-		return property;
-	}
-	
-	public String getArticlePropertyFromSearchResultArticleEl(Element searchResultArticleEl, String propertyName) {
-		String property;
-		
-		try {
-			property = XMLParser.select(propertyName, searchResultArticleEl).get(0).getTextContent().trim();
-		} catch (Exception e) {
-			property = null;
-		}	
-		
-		return property;
-	}
-	
-	public List<String> getArticleIdsFromSearchResult(Resource searchResult) {
-		return this.getArticlePropertiesFromSearchResult(searchResult, "id");
-	}
-	
-	public List<String> getArticleIdsFromDetails(List<Resource> articleDetailsList) {
-		List<String> articleIdList = new ArrayList<String>();
-		
-		for (Resource articleDetails : articleDetailsList) {
-			String id = this.getArticlePropertyFromDetails(articleDetails, "id");
-			articleIdList.add(id);
-		}
-		
-		return articleIdList;
-	}
-	
-	public Boolean doMatchQuery(String target) {
-		if (target == null || target.isEmpty()) {
-			// nothing can be said, in doubt keep it
-			return true;
-		}
-
-		QueryMatcherVisitor visitor = new QueryMatcherVisitor();
-		visitor.setTarget(target);
-		Boolean passes = visitor.visit(this.originalQueryTree);
-		return passes;
-	}
-	
-	public Element getArticleElementFromSearchResult(Resource searchResult, String articleId) {
-		Document searchResultContent = (Document) searchResult.getContent();
-		
-		try {
-			List<Element> articleList = XMLParser.select("articles/item", searchResultContent.getDocumentElement());
-			for (Element articleEl : articleList) {
-				String currentId = XMLParser.select("id", articleEl).get(0).getTextContent().trim();
-				if (currentId.equals(articleId)) {
-					return articleEl;
-				}
-			}
-		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return null;
-	}
-	
-	public Resource output(Resource searchResult, List<Resource> articleDetailsList, List<String> validArticleIdList) {
+	protected Resource extractOutput(Resource searchResult, List<Resource> articleDetailsList, List<String> validArticleIdList) {
 
 		// retrieve page number
 		String pageNumber = searchResult.getName().split("_")[1]; // name format is "searchResult_1"
 
 		Resource outputResource;
-		String resourceFilename = this.outputBasePath + "resources/output_" + pageNumber + ".xml";
+		String resourceFilename = this.outputBasePath + "resources/" + this.outputServicePrefix + "_" + pageNumber + ".xml";
 		
 		try {
 			outputResource = this.resourceLoader.load(new File(resourceFilename));
@@ -285,7 +201,7 @@ public abstract class SearchEngine {
 		}
 		
 		Service outputService = new Service();
-		String serviceFilename = this.inputBasePath + "services/output.xml";
+		String serviceFilename = this.inputBasePath + "services/" + this.outputServicePrefix + ".xml";
 		outputService.loadFromFile(new File(serviceFilename));
 		
 		// set the base engine scope
@@ -314,34 +230,7 @@ public abstract class SearchEngine {
 		return outputResource;
 	}
 	
-	public Integer getCount(Resource output) {
-		Integer count;
-		
-		Document searchResultContent = (Document) output.getContent();
-		
-		try {
-			XPathExpression expr = XMLParser.getXpath().compile("/response/meta/count");
-			Double countDouble = (Double) expr.evaluate(searchResultContent, XPathConstants.NUMBER);
-			count = countDouble.intValue();
-		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			
-			count = null;
-		}
-		
-		return count;
-	}
-	
-	public Integer calculateNumberOfPages(Integer count, Integer numberOfResultsPerPage) {
-		return (int) Math.ceil( ((float)count) / numberOfResultsPerPage);
-	}
-	
-	public Integer calculateStartResult(Integer pageNumber, Integer numberOfResultsPerPage) {
-		return ((pageNumber-1) * numberOfResultsPerPage) + 1;
-	}
-	
-	public ArticleList createArticlesFromOutput(Resource outputResource) {
+	protected ArticleList createArticlesFromOutput(Resource outputResource) {
 		ArticleList articleList = new ArticleList();
 		
 		Document outputContent = (Document) outputResource.getContent();
@@ -377,4 +266,156 @@ public abstract class SearchEngine {
 		return articleList;
 	}
 	
+
+	protected List<String> getArticlePropertiesFromSearchResult(Resource searchResult, String propertyName) {
+		List<String> articlePropertyList = new ArrayList<String>();
+		
+		Document searchResultContent = (Document) searchResult.getContent();
+		
+		try {
+			List<Element> articleList = XMLParser.select("articles/item", searchResultContent.getDocumentElement());
+			for (Element articleEl : articleList) {
+				String property = ( (String) XMLParser.getXpath().evaluate(propertyName, articleEl, XPathConstants.STRING) ).trim();
+				articlePropertyList.add(property);
+			}
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return articlePropertyList;
+	}
+	
+	protected String getArticlePropertyFromDetails(Resource articleDetails, String propertyName) {
+		String property;
+		
+		Document articleDetailsContent = (Document) articleDetails.getContent();
+
+		try {
+			Element articleEl = XMLParser.select("article", articleDetailsContent.getDocumentElement()).get(0);
+			property = ( (String) XMLParser.getXpath().evaluate(propertyName, articleEl, XPathConstants.STRING) ).trim();
+		} catch (XPathExpressionException e) {		
+			property = null;
+		}
+		
+		return property;
+	}
+	
+	protected String getArticlePropertyFromSearchResultArticleEl(Element searchResultArticleEl, String propertyName) {
+		String property;
+		
+		try {
+			property = XMLParser.select(propertyName, searchResultArticleEl).get(0).getTextContent().trim();
+		} catch (Exception e) {
+			property = null;
+		}	
+		
+		return property;
+	}
+	
+	protected List<String> getArticleIdsFromSearchResult(Resource searchResult) {
+		return this.getArticlePropertiesFromSearchResult(searchResult, "id");
+	}
+	
+	protected List<String> getArticleIdsFromDetails(List<Resource> articleDetailsList) {
+		List<String> articleIdList = new ArrayList<String>();
+		
+		for (Resource articleDetails : articleDetailsList) {
+			String id = this.getArticlePropertyFromDetails(articleDetails, "id");
+			articleIdList.add(id);
+		}
+		
+		return articleIdList;
+	}
+	
+	protected Boolean doMatchQuery(String target) {
+		if (target == null || target.isEmpty()) {
+			// nothing can be said, in doubt keep it
+			return true;
+		}
+
+		QueryMatcherVisitor visitor = new QueryMatcherVisitor();
+		visitor.setTarget(target);
+		Boolean passes = visitor.visit(this.originalQueryTree);
+		return passes;
+	}
+	
+	protected Element getArticleElementFromSearchResult(Resource searchResult, String articleId) {
+		Document searchResultContent = (Document) searchResult.getContent();
+		
+		try {
+			List<Element> articleList = XMLParser.select("articles/item", searchResultContent.getDocumentElement());
+			for (Element articleEl : articleList) {
+				String currentId = XMLParser.select("id", articleEl).get(0).getTextContent().trim();
+				if (currentId.equals(articleId)) {
+					return articleEl;
+				}
+			}
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	protected Integer getCount(Resource output) {
+		Integer count;
+		
+		Document searchResultContent = (Document) output.getContent();
+		
+		try {
+			XPathExpression expr = XMLParser.getXpath().compile("/response/meta/count");
+			Double countDouble = (Double) expr.evaluate(searchResultContent, XPathConstants.NUMBER);
+			count = countDouble.intValue();
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+			count = null;
+		}
+		
+		return count;
+	}
+	
+	protected Integer calculateNumberOfPages(Integer count, Integer numberOfResultsPerPage) {
+		return (int) Math.ceil( ((float)count) / numberOfResultsPerPage);
+	}
+	
+	protected Integer calculateStartResult(Integer pageNumber, Integer numberOfResultsPerPage) {
+		return ((pageNumber-1) * numberOfResultsPerPage) + 1;
+	}
+	
+	
+	public String getName() {
+		return this.name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public String getQueryText() {
+		return this.queryText;
+	}
+
+	public void setQueryText(String queryText) {
+		this.queryText = queryText;
+	}
+
+	public ParseTree getOriginalQueryTree() {
+		return this.originalQueryTree;
+	}
+
+	public void setOriginalQueryTree(ParseTree originalQueryTree) {
+		this.originalQueryTree = originalQueryTree;
+	}
+
+	public Integer getSearchIndex() {
+		return this.searchIndex;
+	}
+
+	public void setSearchIndex(Integer searchIndex) {
+		this.searchIndex = searchIndex;
+	}
 }

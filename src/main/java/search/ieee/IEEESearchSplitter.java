@@ -11,7 +11,7 @@ import search.SearchSplitter;
 
 public class IEEESearchSplitter extends SearchSplitter {
 
-	protected Integer MAX_WILDCARD = 2; // API
+	protected Integer MAX_WILDCARD = 2; // API (Scrape has 5 limit instead)	
 	protected Integer MAX_WORDS = 13;
 	
 	@Override

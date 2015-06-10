@@ -14,7 +14,7 @@ public class IEEESearchManager extends SearchManager {
 
 	@Override
 	public SearchEngine createEngine() {
-		return new IEEESearchEngine();
+		return new IEEESearchEngineAPI();
 	}
 
 	@Override
