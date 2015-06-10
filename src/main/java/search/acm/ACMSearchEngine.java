@@ -11,17 +11,13 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import parsers.xml.XMLParser;
-import query.QueryMatcherVisitor;
 import search.SearchEngine;
 import services.Service;
 import services.resources.Resource;
-import data.ArticleList;
 
 public class ACMSearchEngine extends SearchEngine {
 

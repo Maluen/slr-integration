@@ -7,7 +7,6 @@ import java.util.List;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
-import org.jsoup.Jsoup;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 public class QuerySplittedPartList extends ArrayList<QuerySplittedPart> {
 
+	private static final long serialVersionUID = -6653854545362458600L;
+
 	public static enum Type {
 		AND,
 		OR

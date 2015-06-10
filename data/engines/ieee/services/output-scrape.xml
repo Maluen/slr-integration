@@ -1,0 +1,40 @@
+<service>
+    <name>output_{{pageNumber}}</name>
+    <response from="{{searchResult}}">
+
+        <meta el="meta">
+            <query el="query" mode="text" />
+            <count el="count" mode="text" />
+        </meta>
+
+        <articles expand="true" el="articles/item" mode="list">
+            <condition mode="script">
+                var id = parser.select('id', el).get(0).getTextContent().trim();
+                validArticleIdList.contains(id);
+            </condition>
+            <value>
+                <item expand="true">
+                    <data>
+                        <item>
+                            <name>articleDetails</name>
+                            <value mode="script">
+                                var id = parser.select('id', el).get(0).getTextContent().trim();
+                                'articleDetails_'+id
+                            </value>
+                        </item>
+                    </data>
+                    <value>
+                        <id el="id" mode="text" />
+                        <title el="title" mode="text" />
+                        <abstract el="abstract" mode="text" />
+                        <keywords from="{{articleDetails}}" el="article/keywords" mode="text" />
+                        <year el="year" mode="text" />
+                        <authors el="authors" mode="text" />
+                        <publication el="publication" mode="text" />
+                    </value>
+                </item>
+            </value>
+        </articles>
+
+    </response>
+</service>
