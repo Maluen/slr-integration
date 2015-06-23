@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.xml.xpath.XPathExpressionException;
 
+import misc.Logger;
 import misc.Utils;
 import network.http.HTTPClient;
 import network.http.HTTPEncoder;
@@ -27,6 +28,8 @@ import converters.document.to.MixedToDocument;
 
 public class Service {
 
+	private Logger logger;
+	
 	private XMLParser xmlParser;
 	private HTTPClient httpClient;
 	private DocumentToForm documentToForm;
@@ -50,6 +53,8 @@ public class Service {
 	private Document template;
 		
 	public Service() {
+		this.logger = new Logger("Service");
+		
 		this.xmlParser = new XMLParser();
 		this.httpClient = new HTTPClient();
 		this.documentToForm = new DocumentToForm();
@@ -423,7 +428,7 @@ public class Service {
 
 		Document document = null;
 		try {
-			System.out.println("Converting " + name);
+			this.logger.log("\nConverting " + name);
 			document = converter.convert();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

@@ -93,12 +93,17 @@ public class Main {
 	public static void main(String[] args) throws IOException {		
 		
 		String[] logCategories = new String[]{
-				//"queryMatcherVisitor"
+				"Main",
+				"DocumentConverter",
+				"HTTPClient",
+				"Parser",
+				"SearchEngine",
+				"Service",
+				//"QueryMatcherVisitor"
 		};
 		Logger.setLogCategories(logCategories);
 		
-		// TODO Auto-generated method stub
-		//System.out.println("Hello, World!");
+		Logger logger = new Logger("Main");
 		
 		//Main.html("http://en.wikipedia.org/");
 		//Main.csv("csv/example.csv");
@@ -109,12 +114,12 @@ public class Main {
 		//String queryText = "(\"easy collaboration\") AND NOT easy OR collab*";
 		//String queryText = "mde AND uml AND robot*"; // query meant to return only one page of results from every engine";
 		String queryText = Utils.getFileContent(new File("data/querystring.txt"));
-		//System.out.println("Query string: " + queryText);
+		//logger.log("Query string: " + queryText);
 		
 		
 		//String[] sites = new String[] { "acm", "ieee" };
 		String[] sites = Utils.getFileContent(new File("data/sites.txt")).trim().split("\\s*,\\s*");
-		//System.out.println("Sites: " + StringUtils.join(sites, ", "));
+		//logger.log("Sites: " + StringUtils.join(sites, ", "));
 		
 		/*
 		QueryParser queryParser = new QueryParser();
@@ -122,7 +127,7 @@ public class Main {
 		*/
 
 		//QueryMatcherVisitor matcherVisitor = new QueryMatcherVisitor("easy  collaboration asd");
-		//System.out.println( matcherVisitor.visit(queryTree) );
+		//logger.log( matcherVisitor.visit(queryTree) );
 		
 		/*
 		QuerySplitterVisitor splitterVisitor = new QuerySplitterVisitor();
@@ -130,7 +135,7 @@ public class Main {
 		splitterVisitor.setTargetMaxCount(5);
 		QuerySplittedPartList splittedQuery = splitterVisitor.visit(queryTree);
 		for (QuerySplittedPart splittedQueryPart : splittedQuery) {
-			System.out.println( splittedQueryPart.getScore() + ": "
+			logger.log( splittedQueryPart.getScore() + ": "
 								+ splittedQueryPart.getQueryText() );
 		}*/
 		
@@ -141,10 +146,10 @@ public class Main {
 		ArticleList articleList;
 		MixedSearch mixedSearch = new MixedSearch();
 		if (!isNewSearchForced && mixedSearch.isResumable()) {
-			System.out.println("Resuming");
+			logger.log("Resuming");
 			articleList = mixedSearch.resume();
 		} else {
-			System.out.println("Starting new search");
+			logger.log("Starting new search");
 			mixedSearch.setQueryText(queryText);
 			mixedSearch.setSites(sites);
 			articleList = mixedSearch.newSearch();
@@ -152,7 +157,7 @@ public class Main {
 
 		// Print result
 		/*for (Article article : articleList) {
-			System.out.println("Article: " + article.getTitle());
+			logger.log("Article: " + article.getTitle());
 		}*/
 		
 		articleList.saveAsCSV("data/output/searches/output.csv");

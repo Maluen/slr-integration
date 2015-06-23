@@ -12,6 +12,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+import misc.Logger;
+
 import org.apache.commons.collections4.map.CaseInsensitiveMap;
 
 public class HTTPClient {
@@ -19,6 +21,12 @@ public class HTTPClient {
 	static { // on class load
 		// Enable cookies
 		CookieHandler.setDefault( new CookieManager( null, CookiePolicy.ACCEPT_ALL ) );
+	}
+	
+	protected Logger logger;
+	
+	public HTTPClient() {
+		this.logger = new Logger("HTTPClient");
 	}
 
 	// Returned string is the response (full or body only? Don't know yet).
@@ -28,7 +36,7 @@ public class HTTPClient {
 	
 		try {
 			
-			System.out.println(url);
+			this.logger.log("\nRequesting URL:\n" + url);
 			
 			URL urlParsed = new URL(url);
 			
@@ -75,7 +83,7 @@ public class HTTPClient {
 	           url = new URL(urlParsed, location).toExternalForm(); // see http://stackoverflow.com/a/26046079
 	           
 	           // do a simple GET request to the location
-	           System.out.println("Redirect: " + url);
+	           this.logger.log("Redirect:\n" + url);
 	           return this.request(url, "GET", "", cookies, "");
 		    }
 		    
@@ -115,7 +123,7 @@ public class HTTPClient {
 			// TODO: employ a more configurable solution
 			int seconds = 5;
 			try {
-				System.out.println("Retrying http request in " + seconds + " second(s)...");
+				this.logger.log("Retrying HTTP request in " + seconds + " second(s)...");
 			    Thread.sleep(seconds*1000);
 			    return this.request(url, method, contentType, cookies, body);
 			    

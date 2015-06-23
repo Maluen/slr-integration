@@ -9,6 +9,8 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 
+import misc.Logger;
+
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -25,6 +27,8 @@ import data.ArticleList;
 
 public abstract class SearchEngine {
 
+	protected Logger logger;
+	
 	// NOTE: name must have unix-names format
 	protected String name = "";
 	
@@ -42,6 +46,8 @@ public abstract class SearchEngine {
 	protected Integer searchIndex; // used in the saving
 	
 	public SearchEngine(String name) {
+		this.logger = new Logger("SearchEngine");
+		
 		this.name = name;
 		
 		this.inputBasePath = "data/engines/" + this.name + "/";
@@ -192,11 +198,11 @@ public abstract class SearchEngine {
 		
 		try {
 			outputResource = this.resourceLoader.load(new File(resourceFilename));
-			System.out.println("Resumed: " + resourceFilename);
+			this.logger.log("Resumed: " + resourceFilename);
 			return outputResource;
 		} catch (SAXException | IOException e1) {
 			// proceed
-			System.out.println("Unable to resume " + resourceFilename);
+			this.logger.log("Fetching new " + resourceFilename);
 		}
 		
 		Service outputService = new Service();

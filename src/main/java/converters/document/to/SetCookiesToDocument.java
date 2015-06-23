@@ -142,7 +142,7 @@ public class SetCookiesToDocument extends ToDocument {
 		}
 		
 		if (contentElList.isEmpty()) {
-			System.out.println("No matched elements for " + templateEl.getTagName());
+			this.logger.log("No matched elements for " + templateEl.getTagName());
 		}
 		
 		// get first content element
@@ -162,7 +162,7 @@ public class SetCookiesToDocument extends ToDocument {
 		
 		if (mode.equals("list")) {
 
-			System.out.println("Processing list " + templateEl.getTagName());
+			this.logger.log("Processing list " + templateEl.getTagName());
 			
 			// retrieve list item descriptor
 			Element valueListItemEl = Template.getListItemDescriptor(templateEl);
@@ -186,11 +186,11 @@ public class SetCookiesToDocument extends ToDocument {
 		        try {
 		        	String documentElText = (String) engine.eval(script);
 		        	documentEl.setTextContent(documentElText);
-					System.out.println(templateEl.getTagName() + ": " + documentElText + " (script)");
+		        	this.logger.log(templateEl.getTagName() + ": " + documentElText + " (script)");
 				} catch (ScriptException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					System.out.println(templateEl.getTagName() + ": script failed");
+					this.logger.log(templateEl.getTagName() + ": script failed");
 				}
 				
 			} else if (mode.equals("text")) {
@@ -206,7 +206,7 @@ public class SetCookiesToDocument extends ToDocument {
 				}
 				
 				documentEl.setTextContent(documentElText);
-				System.out.println(templateEl.getTagName() + ": " + documentElText + " (text)");
+				this.logger.log(templateEl.getTagName() + ": " + documentElText + " (text)");
 				
 			} else {
 				// defaults
@@ -218,13 +218,13 @@ public class SetCookiesToDocument extends ToDocument {
 						Element documentElChild = this.process(templateElNextLevelChild, cookies, data);
 						documentEl.appendChild(documentElChild);
 					}
-					System.out.println(templateEl.getTagName() + ": next level");
+					this.logger.log(templateEl.getTagName() + ": next level");
 					
 				} else {
 					// evaluate value (expected string)
 					String documentElText = (String) Template.evaluateValue(templateEl, engine, data);
 					documentEl.setTextContent(documentElText);
-					System.out.println(templateEl.getTagName() + ": " + documentElText + " (evaluate value)");
+					this.logger.log(templateEl.getTagName() + ": " + documentElText + " (evaluate value)");
 				}
 			}
 		}

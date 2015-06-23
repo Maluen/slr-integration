@@ -16,7 +16,7 @@ public class QueryMatcherVisitor extends QueryBaseVisitor<Boolean> {
 	private List<String> targetPartList;
 	
 	public QueryMatcherVisitor() {
-		this.logger = new Logger("queryMatcherVisitor");
+		this.logger = new Logger("QueryMatcherVisitor");
 	}
 	
 	public QueryMatcherVisitor(String target) {

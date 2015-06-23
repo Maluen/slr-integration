@@ -26,11 +26,11 @@ public class IEEESearchEngineScrape extends IEEESearchEngine {
 		
 		try {
 			searchResultResource = this.resourceLoader.load(new File(resourceFilename));
-			System.out.println("Resumed: " + resourceFilename);
+			this.logger.log("Resumed: " + resourceFilename);
 			return searchResultResource;
 		} catch (SAXException | IOException e1) {
 			// proceed
-			System.out.println("Unable to resume " + resourceFilename);
+			this.logger.log("Fetching new " + resourceFilename);
 		}
 		
 		Service searchService = new Service();
@@ -73,11 +73,11 @@ public class IEEESearchEngineScrape extends IEEESearchEngine {
 		
 		try {
 			articleDetailsResource = this.resourceLoader.load(new File(resourceFilename));
-			System.out.println("Resumed: " + resourceFilename);
+			this.logger.log("Resumed: " + resourceFilename);
 			return articleDetailsResource;
 		} catch (SAXException | IOException e1) {
 			// proceed
-			System.out.println("Unable to resume " + resourceFilename);
+			this.logger.log("Fetching new " + resourceFilename);
 		}
 		
 		Service articleDetailsService = new Service();

@@ -1,11 +1,15 @@
 package misc;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
+
 public class Logger {
 	
 	protected static boolean isEnabled = true;
 	protected static String[] logCategories;
 	
 	protected String category = "";
+	protected PrintStream printStream;
 	
 	public static boolean isEnabled() {
 		return isEnabled;
@@ -34,10 +38,12 @@ public class Logger {
 	}
 	
 	public Logger() {
-		
+		// default print stream
+		this.setPrintStream(System.out);
 	}
 	
 	public Logger(String category) {
+		this();
 		this.category = category;
 	}
 
@@ -49,9 +55,17 @@ public class Logger {
 		this.category = category;
 	}
 
+	public PrintStream getPrintStream() {
+		return this.printStream;
+	}
+
+	public void setPrintStream(PrintStream printStream) {
+		this.printStream = printStream;
+	}
+
 	public void log(String message) {
 		if (Logger.isEnabled && Logger.isLogCategory(this.category)) {
-			System.out.println(message);
+			this.printStream.println(message);
 		}
 	}
 	

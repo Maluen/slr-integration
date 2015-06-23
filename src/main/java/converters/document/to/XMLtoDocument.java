@@ -139,7 +139,7 @@ public class XMLtoDocument extends ToDocument {
 		}
 
 		if (contentElList.isEmpty()) {
-			System.out.println("Empty el for " + templateEl.getTagName());
+			this.logger.log("Empty el for " + templateEl.getTagName());
 		}
 		
 		// get first content element
@@ -159,7 +159,7 @@ public class XMLtoDocument extends ToDocument {
 		
 		if (mode.equals("list")) {
 
-			System.out.println("Processing list " + templateEl.getTagName());
+			this.logger.log("Processing list " + templateEl.getTagName());
 			
 			// retrieve list item descriptor
 			Element valueListItemEl = Template.getListItemDescriptor(templateEl);
@@ -179,11 +179,11 @@ public class XMLtoDocument extends ToDocument {
 		        try {
 		        	String documentElText = (String) engine.eval(script);
 		        	documentEl.setTextContent(documentElText);
-					System.out.println(templateEl.getTagName() + ": " + documentElText + " (script)");
+		        	this.logger.log(templateEl.getTagName() + ": " + documentElText + " (script)");
 				} catch (ScriptException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					System.out.println(templateEl.getTagName() + ": script failed");
+					this.logger.log(templateEl.getTagName() + ": script failed");
 				}
 				
 			} else if (mode.equals("text")) {
@@ -198,12 +198,12 @@ public class XMLtoDocument extends ToDocument {
 				}
 				
 				documentEl.setTextContent(documentElText);
-				System.out.println(templateEl.getTagName() + ": " + documentElText + " (text)");
+				this.logger.log(templateEl.getTagName() + ": " + documentElText + " (text)");
 				
 			} else {
 				// defaults
 				
-				System.out.println(templateEl.getTagName());
+				this.logger.log(templateEl.getTagName());
 				
 				List<Element> templateElNextLevel = Template.getNextLevel(templateEl);
 				if (templateElNextLevel.size() > 0) {
@@ -212,13 +212,13 @@ public class XMLtoDocument extends ToDocument {
 						Element documentElChild = this.process(templateElNextLevelChild, firstContentEl, data);
 						documentEl.appendChild(documentElChild);
 					}
-					System.out.println(templateEl.getTagName() + ": next level");
+					this.logger.log(templateEl.getTagName() + ": next level");
 					
 				} else {
 					// evaluate value (expected string)
 					String documentElText = (String) Template.evaluateValue(templateEl, engine, data);
 					documentEl.setTextContent(documentElText);
-					System.out.println(templateEl.getTagName() + ": " + documentElText + " (evaluate value)");
+					this.logger.log(templateEl.getTagName() + ": " + documentElText + " (evaluate value)");
 				}
 			}
 		}
