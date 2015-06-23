@@ -8,6 +8,7 @@ import java.util.Map;
 import misc.Logger;
 import misc.Utils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -110,6 +111,11 @@ public class Main {
 		String queryText = Utils.getFileContent(new File("data/querystring.txt"));
 		//System.out.println("Query string: " + queryText);
 		
+		
+		//String[] sites = new String[] { "acm", "ieee" };
+		String[] sites = Utils.getFileContent(new File("data/sites.txt")).trim().split("\\s*,\\s*");
+		//System.out.println("Sites: " + StringUtils.join(sites, ", "));
+		
 		/*
 		QueryParser queryParser = new QueryParser();
 		ParseTree queryTree = queryParser.parse(queryText);
@@ -140,10 +146,7 @@ public class Main {
 		} else {
 			System.out.println("Starting new search");
 			mixedSearch.setQueryText(queryText);
-			mixedSearch.setSites(new String[] {
-					"acm",
-					"ieee"
-			});
+			mixedSearch.setSites(sites);
 			articleList = mixedSearch.newSearch();
 		}
 
