@@ -128,17 +128,20 @@ public class Main {
 								+ splittedQueryPart.getQueryText() );
 		}*/
 		
+		// read "--newsearch" from command line
+		Boolean isNewSearchForced = ( args.length >= 1 && args[0].equals("--newsearch") );
+		
 		// do the global search
 		ArticleList articleList;
 		MixedSearch mixedSearch = new MixedSearch();
-		if (mixedSearch.isResumable()) {
+		if (!isNewSearchForced && mixedSearch.isResumable()) {
 			System.out.println("Resuming");
 			articleList = mixedSearch.resume();
 		} else {
 			System.out.println("Starting new search");
 			mixedSearch.setQueryText(queryText);
 			mixedSearch.setSites(new String[] {
-					//"acm",
+					"acm",
 					"ieee"
 			});
 			articleList = mixedSearch.newSearch();
