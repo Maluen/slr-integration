@@ -8,6 +8,7 @@ import javax.script.ScriptException;
 
 import network.http.HTTPCookie;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -190,8 +191,7 @@ public class SetCookiesToDocument extends ToDocument {
 		        	documentEl.setTextContent(documentElText);
 		        	this.logger.log(templateEl.getTagName() + ": " + documentElText + " (script)");
 				} catch (ScriptException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					this.logger.log(ExceptionUtils.getStackTrace(e));
 					this.logger.log(templateEl.getTagName() + ": script failed");
 				}
 				

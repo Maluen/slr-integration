@@ -38,7 +38,7 @@ public class XMLParser extends Parser {
 	    try {
 			return DocumentFactory.getDocBuilder().parse(is);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			// invalid xml
 			e.printStackTrace();
 			return null;
 		}

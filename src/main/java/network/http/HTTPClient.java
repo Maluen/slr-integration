@@ -15,6 +15,7 @@ import java.util.Map;
 import misc.Logger;
 
 import org.apache.commons.collections4.map.CaseInsensitiveMap;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 public class HTTPClient {
 
@@ -117,7 +118,7 @@ public class HTTPClient {
 		    return response;
 	
 		} catch (Exception e) {
-			e.printStackTrace();
+			this.logger.log(ExceptionUtils.getStackTrace(e));
 			
 			// delayed and infinite retry
 			// TODO: employ a more configurable solution

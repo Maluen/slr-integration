@@ -7,6 +7,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -99,7 +100,7 @@ public class XMLtoDocument extends ToDocument {
 					contentElList = XMLParser.select(selector, fromContentEl);
 				} catch (XPathExpressionException e) {
 					// selector error
-					e.printStackTrace();
+					this.logger.log(ExceptionUtils.getStackTrace(e));
 					contentElList = null;
 				}
 			}
@@ -184,7 +185,7 @@ public class XMLtoDocument extends ToDocument {
 		        	this.logger.log(templateEl.getTagName() + ": " + documentElText + " (script)");
 				} catch (ScriptException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					this.logger.log(ExceptionUtils.getStackTrace(e));
 					this.logger.log(templateEl.getTagName() + ": script failed");
 				}
 				
