@@ -39,6 +39,8 @@ public abstract class SearchEngine {
 	protected ResourceSerializer resourceSerializer;
 	protected ResourceLoader resourceLoader;
 	
+	QueryMatcherVisitor queryMatcherVisitor;
+	
 	protected Integer numberOfResultsPerPage;
 	
 	protected String queryText;
@@ -54,6 +56,8 @@ public abstract class SearchEngine {
 		
 		this.resourceSerializer = new ResourceSerializer();
 		this.resourceLoader = new ResourceLoader();
+		
+		this.queryMatcherVisitor = new QueryMatcherVisitor();
 	}
 
 	public ArticleList execute() {
@@ -339,9 +343,8 @@ public abstract class SearchEngine {
 			return true;
 		}
 
-		QueryMatcherVisitor visitor = new QueryMatcherVisitor();
-		visitor.setTarget(target);
-		Boolean passes = visitor.visit(this.originalQueryTree);
+		this.queryMatcherVisitor.setTarget(target);
+		Boolean passes = this.queryMatcherVisitor.visit(this.originalQueryTree);
 		return passes;
 	}
 	
