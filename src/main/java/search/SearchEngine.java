@@ -57,7 +57,7 @@ public abstract class SearchEngine {
 	}
 
 	public ArticleList execute() {
-		this.outputBasePath = "data/output/searches/" + this.name + "/" + this.searchIndex + "/";
+		this.outputBasePath = "data/output/" + this.name + "/" + this.searchIndex + "/";
 		
 		this.login();
 		

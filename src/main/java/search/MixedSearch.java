@@ -22,7 +22,7 @@ import data.ArticleList;
 
 public class MixedSearch {
 
-	protected String outputBasePath = "data/output/searches/";
+	protected String outputBasePath = "data/output/";
 	protected String configurationFilename = "search.xml";
 	protected XMLParser xmlParser;
 	

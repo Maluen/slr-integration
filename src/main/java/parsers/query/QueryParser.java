@@ -31,7 +31,7 @@ public class QueryParser extends Parser {
 		ParseTree tree = parser.init();
 
 		// DEBUG
-		this.logger.log(tree.toStringTree(parser));
+		//this.logger.log(tree.toStringTree(parser));
 
 		return tree;
 	}

@@ -160,7 +160,7 @@ public class Main {
 			logger.log("Article: " + article.getTitle());
 		}*/
 		
-		articleList.saveAsCSV("data/output/searches/output.csv");
+		articleList.saveAsCSV("data/output/output.csv");
 	}
 
 }

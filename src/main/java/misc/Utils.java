@@ -2,7 +2,9 @@ package misc;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -76,17 +78,23 @@ public class Utils {
 		writer.close();
 	}
 	
-	// http://stackoverflow.com/a/4561785
-	public static void saveDocument(Document document, String path) throws TransformerFactoryConfigurationError, TransformerException, IOException {
-
+	// Create path to file if it doesn't exist
+	protected static File createPathToFile(String path) throws IOException {
 		File file = new File(path);
 		
-		// create path to file if it does not exist
 		Path pathToFile = Paths.get(path);
 		Files.createDirectories(pathToFile.getParent());
 		if (!file.exists()) {
 			file.createNewFile();
 		}
+		
+		return file;
+	}
+	
+	// http://stackoverflow.com/a/4561785
+	public static void saveDocument(Document document, String path) throws TransformerFactoryConfigurationError, TransformerException, IOException {
+
+		Utils.createPathToFile(path);
 		
 		Transformer transformer = TransformerFactory.newInstance().newTransformer();
 		Result output = new StreamResult(new File(path));
@@ -97,6 +105,13 @@ public class Utils {
 		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
 
 		transformer.transform(input, output);
+	}
+	
+	// Create a PrintStream for the file specified by path, with
+	// append or auto-creation if it doesn't exist.
+	public static PrintStream createFilePrinter(String path) throws IOException {
+		File file = Utils.createPathToFile(path);
+		return new PrintStream(new FileOutputStream(file, true));
 	}
 	
 	public static String simplify(String target) {
