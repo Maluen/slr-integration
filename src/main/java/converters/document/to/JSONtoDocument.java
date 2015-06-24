@@ -26,6 +26,7 @@ public class JSONtoDocument extends ToDocument {
 		Document document = this.docBuilder.newDocument();
 		Element element = document.createElement("stub");
 		document.appendChild(element);
+		this.logger.log("\n");
 		return document;
 	}
 	

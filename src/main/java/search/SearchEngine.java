@@ -198,11 +198,11 @@ public abstract class SearchEngine {
 		
 		try {
 			outputResource = this.resourceLoader.load(new File(resourceFilename));
-			this.logger.log("Resumed: " + resourceFilename);
+			this.logger.log("\nResumed: " + resourceFilename);
 			return outputResource;
 		} catch (SAXException | IOException e1) {
 			// proceed
-			this.logger.log("Fetching new " + resourceFilename);
+			this.logger.log("\nFetching new " + resourceFilename);
 		}
 		
 		Service outputService = new Service();

@@ -56,6 +56,8 @@ public class HTMLtoDocument extends ToDocument {
 		Element documentRootEl = this.process(templateRootEl, contentRootEl, this.data);
 		document.appendChild(documentRootEl);
 		
+		this.logger.log("\n");
+		
 		return document;
 	}
 	

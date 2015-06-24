@@ -26,11 +26,11 @@ public class IEEESearchEngineAPI extends IEEESearchEngine {
 		
 		try {
 			searchResultResource = this.resourceLoader.load(new File(resourceFilename));
-			this.logger.log("Resumed: " + resourceFilename);
+			this.logger.log("\nResumed: " + resourceFilename);
 			return searchResultResource;
 		} catch (SAXException | IOException e1) {
 			// proceed
-			this.logger.log("Fetching new " + resourceFilename);
+			this.logger.log("\nFetching new " + resourceFilename);
 		}
 		
 		Service searchService = new Service();

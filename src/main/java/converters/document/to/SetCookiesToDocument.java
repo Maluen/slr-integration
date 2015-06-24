@@ -62,6 +62,8 @@ public class SetCookiesToDocument extends ToDocument {
 		Element documentRootEl = this.process(templateRootEl, parsedContent, this.data);
 		document.appendChild(documentRootEl);
 		
+		this.logger.log("\n");
+		
 		return document;
 	}
 	

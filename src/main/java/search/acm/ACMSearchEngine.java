@@ -46,11 +46,11 @@ public class ACMSearchEngine extends SearchEngine {
 		if (tryResume) {
 			try {
 				homeResource = this.resourceLoader.load(new File(resourceFilename));
-				this.logger.log("Resumed: " + resourceFilename);
+				this.logger.log("\nResumed: " + resourceFilename);
 				return homeResource;
 			} catch (SAXException | IOException e1) {
 				// proceed
-				this.logger.log("Fetching new " + resourceFilename);
+				this.logger.log("\nFetching new " + resourceFilename);
 			}
 		}
 		
@@ -105,11 +105,11 @@ public class ACMSearchEngine extends SearchEngine {
 		
 		try {
 			searchResultResource = this.resourceLoader.load(new File(resourceFilename));
-			this.logger.log("Resumed: " + resourceFilename);
+			this.logger.log("\nResumed: " + resourceFilename);
 			return searchResultResource;
 		} catch (SAXException | IOException e1) {
 			// proceed
-			this.logger.log("Fetching new " + resourceFilename);
+			this.logger.log("\nFetching new " + resourceFilename);
 		}
 		
 		Service searchService = new Service();
@@ -158,11 +158,11 @@ public class ACMSearchEngine extends SearchEngine {
 		
 		try {
 			articleDetailsResource = this.resourceLoader.load(new File(resourceFilename));
-			this.logger.log("Resumed: " + resourceFilename);
+			this.logger.log("\nResumed: " + resourceFilename);
 			return articleDetailsResource;
 		} catch (SAXException | IOException e1) {
 			// proceed
-			this.logger.log("Fetching new " + resourceFilename);
+			this.logger.log("\nFetching new " + resourceFilename);
 		}
 		
 		Service articleDetailsService = new Service();

@@ -156,7 +156,9 @@ public class Main {
 		}
 
 		// Print result
-		/*for (Article article : articleList) {
+		/*
+		logger.log('\n');
+		for (Article article : articleList) {
 			logger.log("Article: " + article.getTitle());
 		}*/
 		
