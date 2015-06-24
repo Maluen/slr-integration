@@ -16,7 +16,7 @@ public class IEEESearchEngineAPI extends IEEESearchEngine {
 	public IEEESearchEngineAPI() {
 		
 		this.outputServicePrefix = "output-api";
-		this.numberOfResultsPerPage = 1000;
+		this.numberOfResultsPerPage = 100;
 	}
 	
 	@Override
