@@ -117,7 +117,7 @@ public class Main {
 		//logger.log("Query string: " + queryText);
 		
 		
-		//String[] sites = new String[] { "acm", "ieee" };
+		//String[] sites = new String[] { "ieee", "acm" };
 		String[] sites = Utils.getFileContent(new File("data/sites.txt")).trim().split("\\s*,\\s*");
 		//logger.log("Sites: " + StringUtils.join(sites, ", "));
 		
