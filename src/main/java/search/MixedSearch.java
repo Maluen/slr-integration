@@ -61,7 +61,10 @@ public class MixedSearch {
 		
 		try {
 			// remove directory content
-			FileUtils.cleanDirectory(new File(this.outputBasePath));
+			File outputDirectory = new File(this.outputBasePath);
+			if (outputDirectory.exists()) { // (exists check avoids exceptions if directory is missing)
+				FileUtils.cleanDirectory(new File(this.outputBasePath));
+			}
 			// create new configuration file
 			this.saveConfiguration();
 			
