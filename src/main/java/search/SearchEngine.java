@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -39,8 +41,9 @@ public abstract class SearchEngine {
 	protected ResourceSerializer resourceSerializer;
 	protected ResourceLoader resourceLoader;
 	
-	QueryMatcherVisitor queryMatcherVisitor;
+	protected QueryMatcherVisitor queryMatcherVisitor;
 	
+	protected Integer loginDuration = 30*60*1000; // minutes
 	protected Integer numberOfResultsPerPage;
 	
 	protected String queryText;
@@ -64,6 +67,14 @@ public abstract class SearchEngine {
 		this.outputBasePath = "data/output/" + this.name + "/" + this.searchIndex + "/";
 		
 		this.login();
+		// re-login every time the login duration expires
+		final SearchEngine me = this;
+		new Timer().schedule(new TimerTask() {
+		    @Override
+		    public void run() {
+		    	me.login();
+		    }
+		}, this.loginDuration);
 		
 		return this.searchAllPages();
 	}
@@ -403,6 +414,22 @@ public abstract class SearchEngine {
 		this.name = name;
 	}
 	
+	public Integer getLoginDuration() {
+		return this.loginDuration;
+	}
+
+	public void setLoginDuration(Integer loginDuration) {
+		this.loginDuration = loginDuration;
+	}
+
+	public Integer getNumberOfResultsPerPage() {
+		return this.numberOfResultsPerPage;
+	}
+
+	public void setNumberOfResultsPerPage(Integer numberOfResultsPerPage) {
+		this.numberOfResultsPerPage = numberOfResultsPerPage;
+	}
+
 	public String getQueryText() {
 		return this.queryText;
 	}

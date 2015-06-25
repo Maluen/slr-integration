@@ -36,7 +36,19 @@ public class ACMSearchEngine extends SearchEngine {
 		// Home resource is not resumed since we want to always make a request
 		// to create the user session
 		Resource homeResource = this.home(false);
-		this.userData = this.getUserData(homeResource);
+		
+		// extend existing user data with the new one
+		// Note: empty data are skipped if we already have a previous value, since the server doesn't return
+		// cookies that we already have (applies if we are already/still logged in).
+		Map<String, String> newUserData = this.getUserData(homeResource);
+		for (Map.Entry<String, String> entry : newUserData.entrySet()) {
+			String newUserDataKey = entry.getKey();
+			String newUserDataValue = entry.getValue();
+			
+			if (!this.userData.containsKey(newUserDataKey) || (newUserDataValue != null && !newUserDataValue.isEmpty())) {
+				this.userData.put(newUserDataKey, newUserDataValue);
+			}
+		}
 	}
 	
 	protected Resource home(Boolean tryResume) {
