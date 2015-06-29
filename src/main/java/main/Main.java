@@ -112,7 +112,7 @@ public class Main {
 		
 		//String queryText = "mde";
 		//String queryText = "(\"easy collaboration\") AND NOT easy OR collab*";
-		//String queryText = "mde AND uml AND robot*"; // query meant to return only one page of results from every engine";
+		//String queryText = "mde AND uml AND robot*"; // query meant to return only about one page of results from every engine";
 		String queryText = Utils.getFileContent(new File("data/querystring.txt"));
 		//logger.log("Query string: " + queryText);
 		

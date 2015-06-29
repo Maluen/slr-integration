@@ -69,14 +69,20 @@ public abstract class SearchEngine {
 		this.login();
 		// re-login every time the login duration expires
 		final SearchEngine me = this;
-		new Timer().schedule(new TimerTask() {
+		final Timer loginTimer = new Timer();
+		loginTimer.schedule(new TimerTask() {
 		    @Override
 		    public void run() {
 		    	me.login();
 		    }
 		}, this.loginDuration);
 		
-		return this.searchAllPages();
+		ArticleList articleList = this.searchAllPages();
+		
+		// stop timer before returning
+		loginTimer.cancel(); // Terminates this timer, discarding any currently scheduled tasks.
+		loginTimer.purge(); // Removes all cancelled tasks from this timer's task queue.
+		return articleList;
 	}
 	
 	protected void login() {
