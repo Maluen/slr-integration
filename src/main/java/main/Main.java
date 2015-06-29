@@ -162,7 +162,10 @@ public class Main {
 			logger.log("Article: " + article.getTitle());
 		}*/
 		
+		logger.log("Saving output csv");
 		articleList.saveAsCSV("data/output/output.csv");
+		
+		logger.log("Done.");
 	}
 
 }

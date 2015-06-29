@@ -23,6 +23,7 @@ public class JSONtoDocument extends ToDocument {
 	@Override
 	public Document convert() {
 		// STUB
+		this.logger.log("Converting " + this.resource.getName());
 		Document document = this.docBuilder.newDocument();
 		Element element = document.createElement("stub");
 		document.appendChild(element);

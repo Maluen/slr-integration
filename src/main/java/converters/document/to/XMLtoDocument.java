@@ -40,6 +40,7 @@ public class XMLtoDocument extends ToDocument {
 	
 	@Override
 	public Document convert() throws Exception {
+		this.logger.log("Converting " + this.resource.getName());
 		
 		// create output document
 		Document document = this.docBuilder.newDocument();
