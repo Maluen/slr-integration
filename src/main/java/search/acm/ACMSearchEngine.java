@@ -33,6 +33,8 @@ public class ACMSearchEngine extends SearchEngine {
 	
 	@Override
 	protected void login() {
+		this.logger.log("\n"+this.name.toUpperCase()+": login start");
+		
 		// Home resource is not resumed since we want to always make a request
 		// to create the user session
 		Resource homeResource = this.home(false);
@@ -49,6 +51,8 @@ public class ACMSearchEngine extends SearchEngine {
 				this.userData.put(newUserDataKey, newUserDataValue);
 			}
 		}
+		
+		this.logger.log("\n"+this.name.toUpperCase()+": login done");
 	}
 	
 	protected Resource home(Boolean tryResume) {

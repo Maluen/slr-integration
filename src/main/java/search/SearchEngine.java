@@ -66,6 +66,8 @@ public abstract class SearchEngine {
 	public ArticleList execute() {
 		this.outputBasePath = "data/output/" + this.name + "/" + this.searchIndex + "/";
 		
+		this.logger.log("\n"+this.name.toUpperCase()+": search started");
+		
 		this.login();
 		// re-login every time the login duration expires
 		final SearchEngine me = this;
@@ -116,6 +118,7 @@ public abstract class SearchEngine {
 	}
 	
 	protected Resource searchPage(Integer pageNumber) {
+		
 		Resource searchResult = this.extractSearchResult(pageNumber);
 		List<String> searchResultArticleIdList = this.getArticleIdsFromSearchResult(searchResult);
 		
@@ -138,7 +141,18 @@ public abstract class SearchEngine {
 			}
 		}
 		
-		return this.extractOutput(searchResult, validArticleDetailsList, validArticleIdList);
+		Resource outputResource = this.extractOutput(searchResult, validArticleDetailsList, validArticleIdList);
+
+		// print some statistics on current progress
+		Integer count = this.getCount(searchResult);
+		Integer processed = this.calculateStartResult(pageNumber+1, this.numberOfResultsPerPage) - 1;
+		if (processed > count) { // last page
+			processed = count;
+		}
+		Integer percent = (int) Math.floor( ((float)processed / count) * 100 );
+		this.logger.log("\n"+this.name.toUpperCase()+": processed "+processed+"/"+count+" ("+percent+"%)");
+		
+		return outputResource;
 	}
 	
 	protected abstract Resource extractSearchResult(Integer pageNumber);

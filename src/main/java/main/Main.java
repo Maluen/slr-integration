@@ -146,7 +146,7 @@ public class Main {
 		ArticleList articleList;
 		MixedSearch mixedSearch = new MixedSearch();
 		if (!isNewSearchForced && mixedSearch.isResumable()) {
-			logger.log("Resuming");
+			logger.log("Resuming search");
 			articleList = mixedSearch.resume();
 		} else {
 			logger.log("Starting new search");
@@ -162,7 +162,7 @@ public class Main {
 			logger.log("Article: " + article.getTitle());
 		}*/
 		
-		logger.log("Saving output csv");
+		logger.log("\nSaving output csv");
 		articleList.saveAsCSV("data/output/output.csv");
 		
 		logger.log("Done.");
