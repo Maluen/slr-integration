@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<search>
+    <query>mde AND uml AND robot*</query>
+    <sites>
+        <item>ieee</item>
+        <item>acm</item>
+    </sites>
+    <outputpath>data/output/output.csv</outputpath>
+</search>

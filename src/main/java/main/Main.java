@@ -8,7 +8,6 @@ import java.util.Map;
 import misc.Logger;
 import misc.Utils;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -25,6 +24,8 @@ import com.mashape.unirest.request.GetRequest;
 import com.owlike.genson.Genson;
 
 import data.ArticleList;
+import frontend.UI;
+import frontend.cli.CommandLineUI;
 
 /**
  * 
@@ -97,6 +98,7 @@ public class Main {
 				"DocumentConverter",
 				"HTTPClient",
 				"Parser",
+				"MixedSearch",
 				"SearchEngine",
 				"Service",
 				//"QueryMatcherVisitor"
@@ -109,6 +111,10 @@ public class Main {
 		//Main.csv("csv/example.csv");
 		//Main.json("json/example.json");
 		//Main.http("http://www.google.com/");
+		
+		UI ui = new CommandLineUI();
+		ui.setArgs(args);
+		ui.execute();
 		
 		//String queryText = "mde";
 		//String queryText = "(\"easy collaboration\") AND NOT easy OR collab*";
@@ -139,6 +145,7 @@ public class Main {
 								+ splittedQueryPart.getQueryText() );
 		}*/
 		
+		/*
 		// read "--newsearch" from command line
 		Boolean isNewSearchForced = ( args.length >= 1 && args[0].equals("--newsearch") );
 		
@@ -153,19 +160,8 @@ public class Main {
 			mixedSearch.setQueryText(queryText);
 			mixedSearch.setSites(sites);
 			articleList = mixedSearch.newSearch();
-		}
-
-		// Print result
-		/*
-		logger.log('\n');
-		for (Article article : articleList) {
-			logger.log("Article: " + article.getTitle());
 		}*/
 		
-		logger.log("\nSaving output csv");
-		articleList.saveAsCSV("data/output/output.csv");
-		
-		logger.log("Done.");
 	}
 
 }

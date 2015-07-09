@@ -8,6 +8,7 @@ import java.util.List;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 
+import misc.Logger;
 import misc.Utils;
 
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -22,6 +23,8 @@ import data.ArticleList;
 
 public class MixedSearch {
 
+	protected Logger logger;
+	
 	protected String outputBasePath = "data/output/";
 	protected String configurationFilename = "search.xml";
 	protected XMLParser xmlParser;
@@ -33,7 +36,11 @@ public class MixedSearch {
 	protected String queryText; // MANDATORY
 	protected ParseTree queryTree; // calculated from queryText
 	
+	protected String outputCSVFilename; // MANDATORY
+	
 	public MixedSearch() {
+		this.logger = new Logger("MixedSearch");
+		
 		this.xmlParser = new XMLParser();
 	}
 
@@ -43,8 +50,10 @@ public class MixedSearch {
 	}
 	
 	public ArticleList resume() {
+		this.logger.log("Resuming search");
 		
 		try {
+			// load resume configuration file
 			this.loadConfiguration();
 			
 		} catch (IOException e) {
@@ -57,7 +66,7 @@ public class MixedSearch {
 	};
 	
 	public ArticleList newSearch() {
-		// TODO: replace any previous search data with the new one
+		this.logger.log("Starting new search");
 		
 		try {
 			// remove directory content
@@ -65,7 +74,7 @@ public class MixedSearch {
 			if (outputDirectory.exists()) { // (exists check avoids exceptions if directory is missing)
 				FileUtils.cleanDirectory(new File(this.outputBasePath));
 			}
-			// create new configuration file
+			// create resume configuration file
 			this.saveConfiguration();
 			
 		} catch (IOException | TransformerFactoryConfigurationError | TransformerException e) {
@@ -92,14 +101,23 @@ public class MixedSearch {
 		MixedSearchMerger mixedSearchMerger = new MixedSearchMerger();
 		mixedSearchMerger.setAllArticleList(allSitesArticleList);
 		ArticleList searchResult = mixedSearchMerger.execute();
+		
+		// save results to file
+		this.logger.log("\nSaving output csv");
+		try {
+			searchResult.saveAsCSV(this.outputCSVFilename);
+			this.logger.log("Done.");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	
 		return searchResult;
 	}
 	
 	// Load configuration from XML file
-	public void loadConfiguration() throws IOException {
+	public void loadConfiguration(String path) throws IOException {
 		
-		String fileContent = Utils.getFileContent(new File(this.outputBasePath+this.configurationFilename));
+		String fileContent = Utils.getFileContent(new File(path));
 		Document document = this.xmlParser.parse(fileContent);
 		Element rootEl = document.getDocumentElement();
 		
@@ -116,13 +134,21 @@ public class MixedSearch {
 		}
 		String[] siteArray = siteList.toArray(new String[siteList.size()]);
 
+		// output CSV filename
+		String outputCSVFilename = XMLParser.getChildElementByTagName(rootEl, "outputpath").getTextContent().trim();
+		
 		// set configuration
 		this.setQueryText(queryText);
 		this.setSites(siteArray);		
+		this.setOutputCSVFilename(outputCSVFilename);
+	}
+	
+	public void loadConfiguration() throws IOException {
+		this.loadConfiguration(this.outputBasePath+this.configurationFilename);
 	}
 	
 	// Save current configuration to XML file
-	public void saveConfiguration() throws TransformerFactoryConfigurationError, TransformerException, IOException {
+	public void saveConfiguration(String path) throws TransformerFactoryConfigurationError, TransformerException, IOException {
 		
 		Document document = DocumentFactory.getDocBuilder().newDocument();
 
@@ -144,7 +170,16 @@ public class MixedSearch {
 		}
 		documentRootEl.appendChild(sitesEl);
 		
-		Utils.saveDocument(document, this.outputBasePath+this.configurationFilename);
+		// output CSV filename
+		Element outputpathEl = document.createElement("outputpath");
+		outputpathEl.setTextContent(this.outputCSVFilename);
+		documentRootEl.appendChild(outputpathEl);
+		
+		Utils.saveDocument(document, path);
+	}
+	
+	public void saveConfiguration() throws TransformerFactoryConfigurationError, TransformerException, IOException {
+		this.saveConfiguration(this.outputBasePath+this.configurationFilename);
 	}
 	
 	public String[] getSites() {
@@ -170,6 +205,14 @@ public class MixedSearch {
 
 	public void setQueryTree(ParseTree queryTree) {
 		this.queryTree = queryTree;
+	}
+
+	public String getOutputCSVFilename() {
+		return this.outputCSVFilename;
+	}
+
+	public void setOutputCSVFilename(String outputCSVFilename) {
+		this.outputCSVFilename = outputCSVFilename;
 	}
 	
 }
