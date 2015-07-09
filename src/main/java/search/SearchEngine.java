@@ -49,6 +49,7 @@ public abstract class SearchEngine {
 	protected String queryText;
 	protected ParseTree originalQueryTree; // needed for the filtering
 	protected Integer searchIndex; // used in the saving
+	protected Integer totalSearches; // needed for statistics
 	
 	public SearchEngine(String name) {
 		this.logger = new Logger("SearchEngine");
@@ -150,7 +151,8 @@ public abstract class SearchEngine {
 			processed = count;
 		}
 		Integer percent = (int) Math.floor( ((float)processed / count) * 100 );
-		this.logger.log("\n"+this.name.toUpperCase()+": processed "+processed+"/"+count+" ("+percent+"%)");
+		this.logger.log("\n"+this.name.toUpperCase()+": search "+this.searchIndex+"/"+this.totalSearches+", "
+						+ "processed "+processed+"/"+count+" ("+percent+"%)");
 		
 		return outputResource;
 	}
@@ -473,4 +475,13 @@ public abstract class SearchEngine {
 	public void setSearchIndex(Integer searchIndex) {
 		this.searchIndex = searchIndex;
 	}
+
+	public Integer getTotalSearches() {
+		return this.totalSearches;
+	}
+
+	public void setTotalSearches(Integer totalSearches) {
+		this.totalSearches = totalSearches;
+	}	
+	
 }

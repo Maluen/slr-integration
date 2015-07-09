@@ -25,6 +25,7 @@ public abstract class SearchManager {
 			currentSearchEngine.setQueryText(currentQueryText);
 			currentSearchEngine.setOriginalQueryTree(this.queryTree);
 			currentSearchEngine.setSearchIndex(1+i); // start at 1
+			currentSearchEngine.setTotalSearches(queryTextList.size());
 			ArticleList currentSearchArticleList = currentSearchEngine.execute();
 			
 			allSearchesArticleList.add(currentSearchArticleList);
