@@ -11,8 +11,12 @@ public class Data<T> extends HashMap<String, T> {
 
 	private static final long serialVersionUID = 3980218241538314470L;
 	
-	public static Pattern variablePattern = Pattern.compile("(\\{\\{\\{(.+?)\\}\\}\\})|(\\{\\{(.+?)\\}\\})"); // formats: {{{name}}} or {{name}}
-
+	// formats: {{{name}}} or {{name}}
+	public static Pattern variablePattern = Pattern.compile("(\\{\\{\\{(.+?)\\}\\}\\})|(\\{\\{(.+?)\\}\\})");
+	// formats: {{#name}}body{{/name}} (\1 refers to name)
+	// Note: the dot will also match newlines, since the body could contain them
+	public static Pattern ifPattern = Pattern.compile("\\{\\{#(.+?)\\}\\}(.*?)\\{\\{/\\1\\}\\}", Pattern.DOTALL);
+	
 	public String apply(String target) {
 		// default encoding
 		return this.apply(target, HTTPEncoder.EncodeMode.FORM_DATA);
@@ -20,9 +24,48 @@ public class Data<T> extends HashMap<String, T> {
 	
 	public String apply(String target, HTTPEncoder.EncodeMode encodeMode) {
 		
+		target = this.applyIf(target, encodeMode);
 		target = this.applyVariables(target, encodeMode);
 		
 		return target;
+	}
+	
+	// Note: doesn't support nested if-expressions with same name
+	public String applyIf(String target, HTTPEncoder.EncodeMode encodeMode) {
+		StringBuffer newTargetBuffer = new StringBuffer();
+				
+		Matcher ifMatcher = Data.ifPattern.matcher(target);
+		while (ifMatcher.find()) {
+			//System.out.println(ifMatcher.group());
+			
+			String variableName = ifMatcher.group(1);
+			String body = ifMatcher.group(2);
+			
+			String variableValue = null;
+			if (this.containsKey(variableName)) {
+				T thisValue = this.get(variableName);
+				if (thisValue != null) variableValue = thisValue.toString();
+			}
+			
+			String replacement;
+			Boolean isTrue = (variableValue != null && !variableValue.isEmpty());
+			if (isTrue) {
+				// keep body
+				if (body != null && !body.isEmpty()) {
+					// recursive call to process nested if-expressions in body (if any)
+					body = this.applyIf(body, encodeMode);
+				}
+				replacement = body;
+			} else {
+				replacement = "";
+			}
+			
+			if (replacement == null) replacement = "";
+			ifMatcher.appendReplacement(newTargetBuffer, Matcher.quoteReplacement(replacement));
+		}
+		ifMatcher.appendTail(newTargetBuffer);
+		
+		return newTargetBuffer.toString();
 	}
 	
 	public String applyVariables(String target, HTTPEncoder.EncodeMode encodeMode) {
@@ -42,12 +85,18 @@ public class Data<T> extends HashMap<String, T> {
 				variableName = variableMatcher.group(4);
 			}	
 			
-			String variableValue = this.containsKey(variableName) ? this.get(variableName).toString() : "";
-			if (variableMatcher.group(1) != null && !variableValue.isEmpty()) {
+			String variableValue = null;
+			if (this.containsKey(variableName)) {
+				T thisValue = this.get(variableName);
+				if (thisValue != null) variableValue = thisValue.toString();
+			}
+			
+			if (variableMatcher.group(1) != null && variableValue != null && !variableValue.isEmpty()) {
 				// encode value in 3-brackets version
 				variableValue = HTTPEncoder.encode(variableValue, encodeMode);
 			}
 			
+			if (variableValue == null) variableValue = "";
 			variableMatcher.appendReplacement(newTargetBuffer, Matcher.quoteReplacement(variableValue));
 		}
 		variableMatcher.appendTail(newTargetBuffer);
