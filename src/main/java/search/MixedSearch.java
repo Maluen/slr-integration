@@ -32,10 +32,10 @@ public class MixedSearch {
 	protected String[] sites = new String[]{
 			"acm", "ieee"
 	};
-	
 	protected String queryText; // MANDATORY
 	protected ParseTree queryTree; // calculated from queryText
-	
+	protected Integer startYear = null; // optional
+	protected Integer endYear = null; // optional
 	protected String outputCSVFilename; // MANDATORY
 	
 	public MixedSearch() {
@@ -92,6 +92,8 @@ public class MixedSearch {
 		for (int i=0; i<this.sites.length; i++) {
 			SearchManager searchManager = SearchManagerFactory.create(this.sites[i]);
 			searchManager.setQueryTree(this.queryTree);
+			searchManager.setStartYear(this.startYear);
+			searchManager.setEndYear(this.endYear);
 			ArticleList siteArticles = searchManager.execute();
 			
 			allSitesArticleList.add(siteArticles);
@@ -133,6 +135,22 @@ public class MixedSearch {
 			siteList.add(siteName);
 		}
 		String[] siteArray = siteList.toArray(new String[siteList.size()]);
+		
+		// start year (optional)
+		Integer startYear = null;
+		Element startyearEl = XMLParser.getChildElementByTagName(rootEl, "startyear");
+		if (startyearEl != null) {
+			String startYearString = startyearEl.getTextContent().trim();
+			if (!startYearString.isEmpty()) startYear = Integer.parseInt(startYearString); // (ignore empty element)
+		}
+		
+		// end year (optional)
+		Integer endYear = null;
+		Element endyearEl = XMLParser.getChildElementByTagName(rootEl, "endyear");
+		if (endyearEl != null) {
+			String endYearString = endyearEl.getTextContent().trim();
+			if (!endYearString.isEmpty()) endYear = Integer.parseInt(endYearString); // (ignore empty element)
+		}
 
 		// output CSV filename
 		String outputCSVFilename = XMLParser.getChildElementByTagName(rootEl, "outputpath").getTextContent().trim();
@@ -140,6 +158,8 @@ public class MixedSearch {
 		// set configuration
 		this.setQueryText(queryText);
 		this.setSites(siteArray);		
+		this.setStartYear(startYear);
+		this.setEndYear(endYear);
 		this.setOutputCSVFilename(outputCSVFilename);
 	}
 	
@@ -169,6 +189,20 @@ public class MixedSearch {
 			sitesEl.appendChild(siteEl);	
 		}
 		documentRootEl.appendChild(sitesEl);
+		
+		// start year (optional)
+		if (this.startYear != null) {
+			Element startyearEl = document.createElement("startyear");
+			startyearEl.setTextContent(this.startYear.toString());
+			documentRootEl.appendChild(startyearEl);
+		}
+		
+		// end year (optional)
+		if (this.endYear != null) {
+			Element endyearEl = document.createElement("endyear");
+			endyearEl.setTextContent(this.endYear.toString());
+			documentRootEl.appendChild(endyearEl);
+		}
 		
 		// output CSV filename
 		Element outputpathEl = document.createElement("outputpath");
@@ -205,6 +239,22 @@ public class MixedSearch {
 
 	public void setQueryTree(ParseTree queryTree) {
 		this.queryTree = queryTree;
+	}
+	
+	public Integer getStartYear() {
+		return this.startYear;
+	}
+
+	public void setStartYear(Integer startYear) {
+		this.startYear = startYear;
+	}
+
+	public Integer getEndYear() {
+		return this.endYear;
+	}
+
+	public void setEndYear(Integer endYear) {
+		this.endYear = endYear;
 	}
 
 	public String getOutputCSVFilename() {

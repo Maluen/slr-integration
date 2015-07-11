@@ -37,7 +37,7 @@ public class ACMSearchEngine extends SearchEngine {
 		
 		// Home resource is not resumed since we want to always make a request
 		// to create the user session
-		Resource homeResource = this.home(false);
+		Resource homeResource = this.extractHome(false);
 		
 		// extend existing user data with the new one
 		// Note: empty data are skipped if we already have a previous value, since the server doesn't return
@@ -55,7 +55,7 @@ public class ACMSearchEngine extends SearchEngine {
 		this.logger.log("\n"+this.name.toUpperCase()+": login done");
 	}
 	
-	protected Resource home(Boolean tryResume) {
+	protected Resource extractHome(Boolean tryResume) {
 		Resource homeResource;
 		String resourceFilename = this.outputBasePath + "resources/home-html.xml";
 
@@ -143,6 +143,9 @@ public class ACMSearchEngine extends SearchEngine {
 		Integer startResult = this.calculateStartResult(pageNumber, this.numberOfResultsPerPage);
 		searchService.addData("startResult", startResult.toString());
 		
+		if (this.startYear != null) searchService.addData("startYear", this.startYear.toString());
+		if (this.endYear != null) searchService.addData("endYear", this.endYear.toString());
+		
 		searchResultResource = searchService.execute(); // TODO: make this async?
 		
 		// save resource
@@ -154,17 +157,6 @@ public class ACMSearchEngine extends SearchEngine {
 		}
 		
 		return searchResultResource;
-	}
-	
-	@Override
-	protected List<String> filterArticleIdsBySearchResult(List<String> articleIdList, Resource searchResult) {		
-		List<String> filteredArticleIdList = new ArrayList<String>();
-		
-		// General conditions are in OR, thus here we can only filter any specific-field requirement, such as
-		// 'Abstract': 'term' and so on, which we don't support right now
-		filteredArticleIdList.addAll(articleIdList); // clone
-	
-		return filteredArticleIdList;
 	}
 	
 	@Override

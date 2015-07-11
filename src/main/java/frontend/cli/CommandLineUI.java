@@ -113,6 +113,10 @@ public class CommandLineUI extends UI {
 			String[] sites = cmd.getOptionValue("sites").trim().split("\\s*,\\s*");
 			mixedSearch.setSites(sites);
 		}
+		
+		if (cmd.hasOption("startyear")) mixedSearch.setStartYear( Integer.parseInt(cmd.getOptionValue("startyear")) );
+		if (cmd.hasOption("endyear")) mixedSearch.setEndYear( Integer.parseInt(cmd.getOptionValue("endyear")) );
+		
 	}
 	
 }

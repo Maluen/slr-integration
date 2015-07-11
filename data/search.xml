@@ -5,5 +5,10 @@
         <item>ieee</item>
         <item>acm</item>
     </sites>
+    
+    <!-- Optional -->
+    <startyear></startyear>
+    <endyear></endyear>
+
     <outputpath>data/output/output.csv</outputpath>
 </search>

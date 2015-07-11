@@ -4,6 +4,10 @@
 
         <meta el="meta">
             <query el="query" mode="text" />
+            <pageNumber el="pageNumber" mode="text" />
+            <startYear el="startYear" mode="text" />
+            <endYear el="endYear" mode="text" />
+            
             <count el="count" mode="text" />
         </meta>
 

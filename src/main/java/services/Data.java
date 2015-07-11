@@ -30,7 +30,7 @@ public class Data<T> extends HashMap<String, T> {
 		return target;
 	}
 	
-	// Note: doesn't support nested if-expressions with same name
+	// Note: doesn't support nested if-statements with same name
 	public String applyIf(String target, HTTPEncoder.EncodeMode encodeMode) {
 		StringBuffer newTargetBuffer = new StringBuffer();
 				
@@ -52,7 +52,7 @@ public class Data<T> extends HashMap<String, T> {
 			if (isTrue) {
 				// keep body
 				if (body != null && !body.isEmpty()) {
-					// recursive call to process nested if-expressions in body (if any)
+					// recursive call to process nested if-statements in body (if any)
 					body = this.applyIf(body, encodeMode);
 				}
 				replacement = body;

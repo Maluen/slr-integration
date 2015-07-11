@@ -45,6 +45,9 @@ public class IEEESearchEngineAPI extends IEEESearchEngine {
 		Integer startResult = this.calculateStartResult(pageNumber, this.numberOfResultsPerPage);
 		searchService.addData("startResult", startResult.toString());
 		
+		if (this.startYear != null) searchService.addData("startYear", this.startYear.toString());
+		if (this.endYear != null) searchService.addData("endYear", this.endYear.toString());
+		
 		searchResultResource = searchService.execute(); // TODO: make this async?
 
 		// save resource
@@ -57,32 +60,6 @@ public class IEEESearchEngineAPI extends IEEESearchEngine {
 		
 		return searchResultResource;
 	}
-
-	@Override
-	protected List<String> filterArticleIdsBySearchResult(List<String> articleIdList, Resource searchResult) {		
-		List<String> filteredArticleIdList = new ArrayList<String>();
-
-		// The search result contains all the required information, the whole filtering can be done right now.
-		for (String articleId : articleIdList) {
-			Element searchResultArticleEl = this.getArticleElementFromSearchResult(searchResult, articleId);
-
-			String title = this.getArticlePropertyFromSearchResultArticleEl(searchResultArticleEl, "title");
-			
-			String abstractProp = this.getArticlePropertyFromSearchResultArticleEl(searchResultArticleEl, "abstract");			
-			
-			String keywords = this.getArticlePropertyFromSearchResultArticleEl(searchResultArticleEl, "keywords");
-			
-			// concatenate to consider all fields at once
-			// (otherwise for example the terms in an AND expression will have to be matched ALL by one single field)
-			String target = title + " " + abstractProp + " " + keywords;
-			
-			if (this.doMatchQuery(target)) {
-				filteredArticleIdList.add(articleId);
-			}
-		}
-		
-		return filteredArticleIdList;
-	}
 	
 	@Override
 	protected List<Resource> extractNeededArticleDetails(List<String> articleIdList) {
@@ -92,16 +69,8 @@ public class IEEESearchEngineAPI extends IEEESearchEngine {
 	
 	@Override
 	protected Resource extractArticleDetails(String articleId) {
-		// details are neither used or needed in the API
-		return null;
+		// details are neither used or needed in the API version
+		throw new UnsupportedOperationException();
 	}
 	
-	@Override
-	protected List<String> filterArticleIdsByArticleDetailsAndSearchResult(List<String> articleIdList, List<Resource> articleDetailList, Resource searchResult) {
-		// everything has already been filtered, avoid another useless filtering
-		// to speed-up computation
-		List<String> filteredArticleIdList = new ArrayList<String>();
-		filteredArticleIdList.addAll(articleIdList); // clone
-		return filteredArticleIdList;
-	}
 }

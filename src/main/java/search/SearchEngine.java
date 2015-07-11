@@ -50,6 +50,8 @@ public abstract class SearchEngine {
 	protected ParseTree originalQueryTree; // needed for the filtering
 	protected Integer searchIndex; // used in the saving
 	protected Integer totalSearches; // needed for statistics
+	protected Integer startYear = null; // optional
+	protected Integer endYear = null; // optional
 	
 	public SearchEngine(String name) {
 		this.logger = new Logger("SearchEngine");
@@ -124,21 +126,24 @@ public abstract class SearchEngine {
 		List<String> searchResultArticleIdList = this.getArticleIdsFromSearchResult(searchResult);
 		
 		// first filtering with the information we have right now
-		List<String> validArticleIdList = this.filterArticleIdsBySearchResult(searchResultArticleIdList, searchResult);
+		List<String> validArticleIdList = this.filterArticleIds(searchResultArticleIdList, searchResult);
 		
 		// get needed valid article details (and related article ids)
 		List<Resource> validArticleDetailsList = this.extractNeededArticleDetails(validArticleIdList);
 		
-		// filter again with the new information
-		validArticleIdList = this.filterArticleIdsByArticleDetailsAndSearchResult(validArticleIdList, validArticleDetailsList, searchResult);
-		// update valid article details
-		for (int i=0; i<validArticleDetailsList.size(); i++) {
-			Resource validArticleDetails = validArticleDetailsList.get(i);
-			String validArticleDetailsId = this.getArticlePropertyFromDetails(validArticleDetails, "id");
-			if (!validArticleIdList.contains(validArticleDetailsId)) {
-				// not valid => remove
-				validArticleDetailsList.remove(i);
-				i--;
+		if (!validArticleDetailsList.isEmpty()) { // (the check avoids useless re-filtering if there aren't details)
+			// filter again with the new information
+			validArticleIdList = this.filterArticleIds(validArticleIdList, searchResult, validArticleDetailsList);
+
+			// update valid article details
+			for (int i=0; i<validArticleDetailsList.size(); i++) {
+				Resource validArticleDetails = validArticleDetailsList.get(i);
+				String validArticleDetailsId = this.getArticlePropertyFromDetails(validArticleDetails, "id");
+				if (!validArticleIdList.contains(validArticleDetailsId)) {
+					// not valid => remove
+					validArticleDetailsList.remove(i);
+					i--;
+				}
 			}
 		}
 		
@@ -159,8 +164,6 @@ public abstract class SearchEngine {
 	
 	protected abstract Resource extractSearchResult(Integer pageNumber);
 	
-	protected abstract List<String> filterArticleIdsBySearchResult(List<String> articleIdList, Resource searchResult);
-	
 	protected List<Resource> extractNeededArticleDetails(List<String> articleIdList) {
 		List<Resource> articleDetailsList = new ArrayList<Resource>();
 		
@@ -175,7 +178,9 @@ public abstract class SearchEngine {
 	
 	protected abstract Resource extractArticleDetails(String articleId);
 	
-	protected List<String> filterArticleIdsByArticleDetailsAndSearchResult(List<String> articleIdList, List<Resource> articleDetailList, Resource searchResult) {
+	// Note: articleDetailList is optional, pass it as null to filter by only using the searchResult (if possible).
+	// Note: whenever filtering an article is not possible since there are missing information, the article is kept.
+	protected List<String> filterArticleIds(List<String> articleIdList, Resource searchResult, List<Resource> articleDetailList) {
 		List<String> filteredArticleIdList = new ArrayList<String>();
 
 		for (String articleId : articleIdList) {
@@ -184,10 +189,12 @@ public abstract class SearchEngine {
 			
 			// the articleDetail could either exist or not, try to find it
 			Resource articleDetail = null;
-			for (Resource currentArticleDetail : articleDetailList) {
-				String currentArticleDetailId = this.getArticlePropertyFromDetails(currentArticleDetail, "id");
-				if (currentArticleDetailId.equals(articleId)) {
-					articleDetail = currentArticleDetail;
+			if (articleDetailList != null) {
+				for (Resource currentArticleDetail : articleDetailList) {
+					String currentArticleDetailId = this.getArticlePropertyFromDetails(currentArticleDetail, "id");
+					if (currentArticleDetailId.equals(articleId)) {
+						articleDetail = currentArticleDetail;
+					}
 				}
 			}
 			
@@ -212,17 +219,44 @@ public abstract class SearchEngine {
 				}
 			}
 			
+			String year = this.getArticlePropertyFromSearchResultArticleEl(searchResultArticleEl, "year");
+			if (year == null || year.isEmpty()) {
+				if (articleDetail != null) {
+					year = this.getArticlePropertyFromDetails(articleDetail, "year");
+				}
+			}
+			
+			// convert year to number (if possible)
+			Integer yearNumber;
+			try {
+				yearNumber = Integer.parseInt(year);
+			} catch (NumberFormatException e) {
+				yearNumber = null;
+			}
+			
 			// concatenate to consider all fields at once
 			// (otherwise for example the terms in an AND expression will have to be matched ALL by one single field)
-			String target = title + " " + abstractProp + " " + keywords;
+			String queryTarget = null;
+			Boolean canBuildTarget = title != null && !title.isEmpty() && abstractProp != null && !abstractProp.isEmpty() &&
+									keywords != null && !keywords.isEmpty();
+			if (canBuildTarget) {
+				queryTarget = title + " " + abstractProp + " " + keywords;
+			}
 			
-			if (this.doMatchQuery(target)) {
+			Boolean passes = (this.startYear == null || yearNumber == null || yearNumber >= this.startYear) &&
+							 (this.endYear == null || yearNumber == null || yearNumber <= this.endYear) &&
+							 (queryTarget == null || this.doMatchQuery(queryTarget));
+			if (passes) {
 				filteredArticleIdList.add(articleId);
 			}
 			
 		}
 		
 		return filteredArticleIdList;
+	}
+	
+	protected List<String> filterArticleIds(List<String> articleIdList, Resource searchResult) {
+		return this.filterArticleIds(articleIdList, searchResult, null);
 	}
 	
 	protected Resource extractOutput(Resource searchResult, List<Resource> articleDetailsList, List<String> validArticleIdList) {
@@ -252,7 +286,7 @@ public abstract class SearchEngine {
 		// set any needed data
 		outputService.addData("pageNumber", pageNumber);
 		outputService.addData("searchResult", searchResult.getName());
-		
+
 		// add any needed resource
 		outputService.getResourceList().add(searchResult);
 		for (Resource articleDetails : articleDetailsList) {
@@ -407,8 +441,8 @@ public abstract class SearchEngine {
 		
 		try {
 			XPathExpression expr = XMLParser.getXpath().compile("/response/meta/count");
-			Double countDouble = (Double) expr.evaluate(searchResultContent, XPathConstants.NUMBER);
-			count = countDouble.intValue();
+			Double countDouble = (Double) expr.evaluate(searchResultContent, XPathConstants.NUMBER); // (returns NaN if count is not a number (e.g. if it's empty))
+			count = countDouble.intValue(); // (an eventual NaN value is converted to 0)
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -482,6 +516,22 @@ public abstract class SearchEngine {
 
 	public void setTotalSearches(Integer totalSearches) {
 		this.totalSearches = totalSearches;
+	}
+
+	public Integer getStartYear() {
+		return this.startYear;
+	}
+
+	public void setStartYear(Integer startYear) {
+		this.startYear = startYear;
+	}
+
+	public Integer getEndYear() {
+		return this.endYear;
+	}
+
+	public void setEndYear(Integer endYear) {
+		this.endYear = endYear;
 	}	
 	
 }

@@ -9,7 +9,7 @@
     <request> <!-- Specifies how to retrieve/access service -->
         <url>
             <![CDATA[
-            http://dl.acm.org/results.cfm?within={{{query}}}&start={{{startResult}}}&CFID={{{cfid}}}&CFTOKEN={{{cftoken}}}&adv=1&COLL=DL&qrycnt=440462&DL=ACM&Go.x=52&Go.y=6&termzone=all&allofem=&anyofem=&noneofem=&peoplezone=Name&people=&peoplehow=and&keyword=&keywordhow=AND&affil=&affilhow=AND&pubin=&pubinhow=and&pubby=&pubbyhow=OR&since_year=&before_year=&pubashow=OR&sponsor=&sponsorhow=AND&confdate=&confdatehow=OR&confloc=&conflochow=OR&isbnhow=OR&isbn=&doi=&ccs=&subj=
+            http://dl.acm.org/results.cfm?within={{{query}}}&start={{{startResult}}}&CFID={{{cfid}}}&CFTOKEN={{{cftoken}}}&adv=1&COLL=DL&qrycnt=440462&DL=ACM&Go.x=52&Go.y=6&termzone=all&allofem=&anyofem=&noneofem=&peoplezone=Name&people=&peoplehow=and&keyword=&keywordhow=AND&affil=&affilhow=AND&pubin=&pubinhow=and&pubby=&pubbyhow=OR&since_year={{startYear}}&before_year={{endYear}}&pubashow=OR&sponsor=&sponsorhow=AND&confdate=&confdatehow=OR&confloc=&conflochow=OR&isbnhow=OR&isbn=&doi=&ccs=&subj=
             ]]>
             <!--
             http://dl.acm.org/results.cfm?h=1&amp;start={{{startResult}}}&amp;cfid={{{cfid}}}&amp;cftoken={{{cftoken}}}
@@ -68,9 +68,14 @@
         <meta>
             <query>{{query}}</query>
             <pageNumber>{{pageNumber}}</pageNumber>
+            <startYear>{{startYear}}</startYear>
+            <endYear>{{endYear}}</endYear>
 
             <count el="table > tbody > tr > td" expand="true" mode="script">
                 <condition mode="script">
+                    // TODO: also add check for "was not found." and
+                    // "Start a new search or use the navigation below to refine the total result set."
+
                     el.text().trim().match(/Results ([\s\S]*?) of ([\s\S]*?) /) != null
                 </condition>
                 <value>

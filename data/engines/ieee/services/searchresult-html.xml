@@ -18,6 +18,8 @@
         <meta>
             <query>{{query}}</query>
             <pageNumber>{{pageNumber}}</pageNumber>
+            <startYear>{{startYear}}</startYear>
+            <endYear>{{endYear}}</endYear>
 
             <!-- number of results -->
             <count el=".results-returned" mode="script">

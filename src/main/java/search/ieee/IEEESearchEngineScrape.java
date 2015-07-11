@@ -41,6 +41,8 @@ public class IEEESearchEngineScrape extends IEEESearchEngine {
 		searchService.addData("query", this.queryText);
 		searchService.addData("pageNumber", pageNumber.toString());
 		searchService.addData("resultsPerPage", this.numberOfResultsPerPage.toString());
+		if (this.startYear != null) searchService.addData("startYear", this.startYear.toString());
+		if (this.endYear != null) searchService.addData("endYear", this.endYear.toString());
 		
 		searchResultResource = searchService.execute(); // TODO: make this async?
 		
@@ -53,17 +55,6 @@ public class IEEESearchEngineScrape extends IEEESearchEngine {
 		}
 		
 		return searchResultResource;
-	}
-	
-	@Override
-	protected List<String> filterArticleIdsBySearchResult(List<String> articleIdList, Resource searchResult) {		
-		List<String> filteredArticleIdList = new ArrayList<String>();
-		
-		// General conditions are in OR, thus here we can only filter any specific-field requirement, such as
-		// 'Abstract': 'term' and so on, which we don't support right now
-		filteredArticleIdList.addAll(articleIdList); // clone
-	
-		return filteredArticleIdList;	
 	}
 	
 	@Override

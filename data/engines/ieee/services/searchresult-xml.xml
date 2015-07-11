@@ -8,7 +8,7 @@
     </resources>
     <request> <!-- Specifies how to retrieve/access service -->
         <url>
-            http://ieeexplore.ieee.org/gateway/ipsSearch.jsp?querytext={{{query}}}&amp;rs={{{startResult}}}&amp;hc={{{numberOfResults}}}
+            http://ieeexplore.ieee.org/gateway/ipsSearch.jsp?querytext={{{query}}}&amp;rs={{{startResult}}}&amp;hc={{{numberOfResults}}}{{#startYear}}&amp;pys={{{startYear}}}{{/startYear}}{{#endYear}}&amp;pye={{{endYear}}}{{/endYear}}
         </url>
         <method>GET</method> <!-- HTTP Method: GET, POST, etc. -->
     </request>
@@ -16,6 +16,10 @@
 
         <meta>
             <query>{{query}}</query>
+            <pageNumber>{{pageNumber}}</pageNumber>
+            <startYear>{{startYear}}</startYear>
+            <endYear>{{endYear}}</endYear>
+            
             <count el="totalfound" mode="text" />
         </meta>
 

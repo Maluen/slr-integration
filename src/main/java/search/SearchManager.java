@@ -10,6 +10,9 @@ import data.ArticleList;
 public abstract class SearchManager {
 
 	protected ParseTree queryTree;
+	
+	protected Integer startYear = null; // optional
+	protected Integer endYear = null; // optional
 
 	public ArticleList execute() {
 		// split
@@ -26,6 +29,8 @@ public abstract class SearchManager {
 			currentSearchEngine.setOriginalQueryTree(this.queryTree);
 			currentSearchEngine.setSearchIndex(1+i); // start at 1
 			currentSearchEngine.setTotalSearches(queryTextList.size());
+			currentSearchEngine.setStartYear(this.startYear);
+			currentSearchEngine.setEndYear(this.endYear);
 			ArticleList currentSearchArticleList = currentSearchEngine.execute();
 			
 			allSearchesArticleList.add(currentSearchArticleList);
@@ -50,5 +55,21 @@ public abstract class SearchManager {
 	public void setQueryTree(ParseTree queryTree) {
 		this.queryTree = queryTree;
 	}
+
+	public Integer getStartYear() {
+		return this.startYear;
+	}
+
+	public void setStartYear(Integer startYear) {
+		this.startYear = startYear;
+	}
+
+	public Integer getEndYear() {
+		return this.endYear;
+	}
+
+	public void setEndYear(Integer endYear) {
+		this.endYear = endYear;
+	}	
 	
 }
