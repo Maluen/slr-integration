@@ -73,12 +73,13 @@
 
             <count el="table > tbody > tr > td" expand="true" mode="script">
                 <condition mode="script">
-                    // TODO: also add check for "was not found." and
-                    // "Start a new search or use the navigation below to refine the total result set."
-
                     el.text().trim().match(/Results ([\s\S]*?) of ([\s\S]*?) /) != null
                 </condition>
                 <value>
+                    // TODO: if the text "was not found." and
+                    // "Start a new search or use the navigation below to refine the total result set."
+                    // exists on the page, than the results returned are fake, set count to 0 then.
+
                     var count = el.text().trim().match(/Results ([\s\S]*?) of ([\s\S]*?) /)[2]
                     // Remove all "," separators
                     count = count.replace(new RegExp(',', 'g'), '')

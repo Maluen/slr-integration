@@ -199,46 +199,43 @@ public abstract class SearchEngine {
 			}
 			
 			String title = this.getArticlePropertyFromSearchResultArticleEl(searchResultArticleEl, "title");
-			if (title == null || title.isEmpty()) {
-				if (articleDetail != null) {
-					title = this.getArticlePropertyFromDetails(articleDetail, "title");
-				}
+			if (title == null && articleDetail != null) {
+				title = this.getArticlePropertyFromDetails(articleDetail, "title");
 			}
 			
 			String abstractProp = this.getArticlePropertyFromSearchResultArticleEl(searchResultArticleEl, "abstract");
-			if (abstractProp == null || abstractProp.isEmpty()) {
-				if (articleDetail != null) {
-					abstractProp = this.getArticlePropertyFromDetails(articleDetail, "abstract");
-				}
+			if (abstractProp == null && articleDetail != null) {
+				abstractProp = this.getArticlePropertyFromDetails(articleDetail, "abstract");
 			}				
 			
 			String keywords = this.getArticlePropertyFromSearchResultArticleEl(searchResultArticleEl, "keywords");
-			if (keywords == null || keywords.isEmpty()) {
-				if (articleDetail != null) {
-					keywords = this.getArticlePropertyFromDetails(articleDetail, "keywords");
-				}
+			if (keywords == null && articleDetail != null) {
+				keywords = this.getArticlePropertyFromDetails(articleDetail, "keywords");
 			}
 			
 			String year = this.getArticlePropertyFromSearchResultArticleEl(searchResultArticleEl, "year");
-			if (year == null || year.isEmpty()) {
-				if (articleDetail != null) {
-					year = this.getArticlePropertyFromDetails(articleDetail, "year");
-				}
+			if (year == null && articleDetail != null) {
+				year = this.getArticlePropertyFromDetails(articleDetail, "year");
 			}
 			
 			// convert year to number (if possible)
-			Integer yearNumber;
-			try {
-				yearNumber = Integer.parseInt(year);
-			} catch (NumberFormatException e) {
-				yearNumber = null;
+			Integer yearNumber = null;
+			if (year != null) {
+				try {
+					yearNumber = Integer.parseInt(year);
+				} catch (NumberFormatException e) {
+					// keep number null
+					yearNumber = null;
+				}
 			}
 			
+			// check against the query only if we have all the required information
+			// (e.g. skip if the keywords aren't in the search result service, but does the check anyway
+			// if the details contains empty keywords for a specific article).
 			// concatenate to consider all fields at once
 			// (otherwise for example the terms in an AND expression will have to be matched ALL by one single field)
 			String queryTarget = null;
-			Boolean canBuildTarget = title != null && !title.isEmpty() && abstractProp != null && !abstractProp.isEmpty() &&
-									keywords != null && !keywords.isEmpty();
+			Boolean canBuildTarget = title != null && abstractProp != null && keywords != null;
 			if (canBuildTarget) {
 				queryTarget = title + " " + abstractProp + " " + keywords;
 			}
@@ -362,21 +359,22 @@ public abstract class SearchEngine {
 		return articlePropertyList;
 	}
 	
+	// Note: returns null if the property doesn't exist
 	protected String getArticlePropertyFromDetails(Resource articleDetails, String propertyName) {
 		String property;
 		
 		Document articleDetailsContent = (Document) articleDetails.getContent();
 
 		try {
-			Element articleEl = XMLParser.select("article", articleDetailsContent.getDocumentElement()).get(0);
-			property = ( (String) XMLParser.getXpath().evaluate(propertyName, articleEl, XPathConstants.STRING) ).trim();
-		} catch (XPathExpressionException e) {		
+			property = XMLParser.select("article/"+propertyName, articleDetailsContent.getDocumentElement()).get(0).getTextContent().trim();
+		} catch (Exception e) {
 			property = null;
 		}
 		
 		return property;
 	}
 	
+	// Note: returns null if the property doesn't exist
 	protected String getArticlePropertyFromSearchResultArticleEl(Element searchResultArticleEl, String propertyName) {
 		String property;
 		

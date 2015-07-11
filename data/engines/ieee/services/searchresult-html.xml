@@ -143,11 +143,6 @@
                     new String(text).replace(/View full abstract»[\s\S]*/, '');
                 </abstract>
 
-                <!-- TODO -->
-                <!-- Missing in result view, is in the article details -->
-                <affiliations>
-                </affiliations>
-
                 <publication el="a" expand="true" mode="text">
                     <!-- when expand is true we can set further options on the parent element, such as condition (xml characteristic: we can't set them as attributes if their structure is 'complex') -->
                     <condition mode="script">
