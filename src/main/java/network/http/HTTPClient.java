@@ -8,14 +8,20 @@ import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import misc.Logger;
 
 import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+
+import services.Data;
 
 public class HTTPClient {
 
@@ -80,8 +86,12 @@ public class HTTPClient {
 		    Integer responseCode = connection.getResponseCode();
 		    if (responseCode.equals(HttpURLConnection.HTTP_MOVED_PERM) || responseCode.equals(HttpURLConnection.HTTP_MOVED_TEMP)) {
 	           String location = connection.getHeaderField("Location"); 
+	           
 	           // location might be relative, reconstruct absolute url
 	           url = new URL(urlParsed, location).toExternalForm(); // see http://stackoverflow.com/a/26046079
+	           
+	           // location might contain unencoded parameter values (server misconfiguration?)
+	           url = this.fixUrlParameterValues(url);
 	           
 	           // do a simple GET request to the location
 	           this.logger.log("Redirect:\n" + url);
@@ -132,10 +142,35 @@ public class HTTPClient {
 			    Thread.currentThread().interrupt();
 			    return null;
 			}
+		}	
+	}
+	
+	// Fix urls with obvious unencoded parameter values by encoding them (partially)
+	protected String fixUrlParameterValues(String url) {
+		StringBuffer buffer = new StringBuffer();
+		
+		 // e.g. "&foo=value&" or "&foo=value" or "?foo=value", 
+		// the final & is not part of the match (lookahead), otherwise would compromise the next match
+		Pattern pattern = Pattern.compile("((?:\\?|&)(?:.+?)=)(.+?)(?=&|$)");
+		
+		Matcher matcher = pattern.matcher(url);
+		while (matcher.find()) {
+			
+			String start = matcher.group(1);
+			String value = matcher.group(2);
+			
+			// TODO: better and more complete encoder (without replacing already encoded characters!)
+			String encodedValue = value.replace(" ", "%20")
+									   .replace("\"", "%21")
+									   .replace("*", "%2A");
+			
+			String replacement = start + encodedValue;
+			
+			matcher.appendReplacement(buffer, Matcher.quoteReplacement(replacement));
 		}
+		matcher.appendTail(buffer);
 		
-		
-		
+		return buffer.toString();
 	}
 	
 }
