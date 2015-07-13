@@ -63,104 +63,135 @@
         </cookies>
         -->
     </request>
-    <response from="response.body">
+    <response expand="true" from="response.body">
+        <data>
+            <item>
+                <name>areFakeResults</name>
+                <value mode="script">
+                    <![CDATA[
+                    // if el is undefined, then is too early (called from MixedToConverter)
+                    if (el) {
+                        var bodyText = el.select('body').text();
 
-        <meta>
-            <query>{{query}}</query>
-            <pageNumber>{{pageNumber}}</pageNumber>
-            <startYear>{{startYear}}</startYear>
-            <endYear>{{endYear}}</endYear>
+                        // if the following is true,
+                        // then the obtained results are actually fake
+                        // (they don't come from the executed search, since actually it has no results)
+                        var result = bodyText.indexOf('was not found.') != -1 && bodyText.indexOf('Start a new search or use the navigation below to refine the total result set.') != -1;
 
-            <count el="table > tbody > tr > td" expand="true" mode="script">
+                        // (for now only string returns as supported in scripts)
+                        result ? "true" : "false"
+                    }
+                    ]]>
+                </value>
+            </item>
+        </data>
+        <value>
+
+            <meta>
+                <query>{{query}}</query>
+                <pageNumber>{{pageNumber}}</pageNumber>
+                <startYear>{{startYear}}</startYear>
+                <endYear>{{endYear}}</endYear>
+
+                <count el="table > tbody > tr > td" expand="true" mode="script">
+                    <condition mode="script">
+                        el.text().trim().match(/Results ([\s\S]*?) of ([\s\S]*?) /) != null
+                    </condition>
+                    <value>
+                        var count;
+
+                        var areFakeResults = "{{areFakeResults}}";
+                        if (areFakeResults == "true") {
+                            count = "0";
+
+                        } else {
+                            count = el.text().trim().match(/Results ([\s\S]*?) of ([\s\S]*?) /)[2];
+                            // Remove all "," separators
+                            count = count.replace(new RegExp(',', 'g'), '');
+                        }
+
+                        count
+                    </value>
+                </count>
+            </meta>
+
+            <articles el="a" expand="true" mode="list">
                 <condition mode="script">
-                    el.text().trim().match(/Results ([\s\S]*?) of ([\s\S]*?) /) != null
+                    <![CDATA[
+                    "{{areFakeResults}}" != "true" && el.attr('href').indexOf('citation.cfm') != -1
+                    ]]>
                 </condition>
                 <value>
-                    // TODO: if the text "was not found." and
-                    // "Start a new search or use the navigation below to refine the total result set."
-                    // exists on the page, than the results returned are fake, set count to 0 then.
+                    <item>
+                        <title mode="text" />
+                        <url mode="script">el.attr('href').trim()</url>
+                        <id mode="script">
+                          <!-- get 647583.730422 from id=647583.730422& -->
+                          <!-- Note: first item might have id 0 (INFORMS Journal on Computing: Volume 0) -->
+                          <![CDATA[
+                              el.attr('href').match(/id=([\s\S]*?)&/)[1]
+                          ]]>
+                        </id>
 
-                    var count = el.text().trim().match(/Results ([\s\S]*?) of ([\s\S]*?) /)[2]
-                    // Remove all "," separators
-                    count = count.replace(new RegExp(',', 'g'), '')
-                </value>
-            </count>
-        </meta>
-
-        <articles el="a" expand="true" mode="list">
-            <condition mode="script">
-                el.attr('href').indexOf('citation.cfm') != -1
-            </condition>
-            <value>
-                <item>
-                    <title mode="text" />
-                    <url mode="script">el.attr('href').trim()</url>
-                    <id mode="script">
-                      <!-- get 647583.730422 from id=647583.730422& -->
-                      <!-- Note: first item might have id 0 (INFORMS Journal on Computing: Volume 0) -->
-                      <![CDATA[
-                          el.attr('href').match(/id=([\s\S]*?)&/)[1]
-                      ]]>
-                    </id>
-
-                    <authors expand="true" mode="text">
-                        <el mode="script">
-                            // .authors element inside first parent table
-                            el.parents().not(':not(table)').first().select('.authors')
-                        </el>
-                    </authors>
-                    
-                    <year expand="true" mode="script">
-                        <el mode="script">
-                            el.parents().not(':not(table)').first()
-                                        .select("td[class*=small-text]")
-                        </el>
-                        <condition mode="script">
-                            <![CDATA[
-                            // Text (trimmed) should have format "October 2015"
-                            var months = ['January', 'February', 'March', 'April', 'May', 'June',
-                                         'July', 'August', 'September', 'October', 'November', 'December'];
-                            var articleMonth = el.text().trim().split(' ')[0];
-                            // Check if it is actually a month.
-                            // Note: we do an old-style for loop here, 
-                            // since indexOf on Array seem to don't work
-                            // in this javascript environment
-                            var found = false;
-                            for (var i=0; i<months.length; i++) {
-                                if (months[i] == articleMonth) {
-                                    found = true;
-                                    break;
+                        <authors expand="true" mode="text">
+                            <el mode="script">
+                                // .authors element inside first parent table
+                                el.parents().not(':not(table)').first().select('.authors')
+                            </el>
+                        </authors>
+                        
+                        <year expand="true" mode="script">
+                            <el mode="script">
+                                el.parents().not(':not(table)').first()
+                                            .select("td[class*=small-text]")
+                            </el>
+                            <condition mode="script">
+                                <![CDATA[
+                                // Text (trimmed) should have format "October 2015"
+                                var months = ['January', 'February', 'March', 'April', 'May', 'June',
+                                             'July', 'August', 'September', 'October', 'November', 'December'];
+                                var articleMonth = el.text().trim().split(' ')[0];
+                                // Check if it is actually a month.
+                                // Note: we do an old-style for loop here, 
+                                // since indexOf on Array seem to don't work
+                                // in this javascript environment
+                                var found = false;
+                                for (var i=0; i<months.length; i++) {
+                                    if (months[i] == articleMonth) {
+                                        found = true;
+                                        break;
+                                    }
                                 }
-                            }
-                            found
-                            ]]>
-                        </condition>
-                        <value>
-                            el.text().trim().split(' ')[1]
-                        </value>
-                    </year>
+                                found
+                                ]]>
+                            </condition>
+                            <value>
+                                el.text().trim().split(' ')[1]
+                            </value>
+                        </year>
 
-                    <publication expand="true" mode="text">
-                        <el mode="script">
-                            el.parents().not(':not(table)').first().select('.addinfo')
-                        </el>
-                    </publication>
+                        <publication expand="true" mode="text">
+                            <el mode="script">
+                                el.parents().not(':not(table)').first().select('.addinfo')
+                            </el>
+                        </publication>
 
-                    <keywords expand="true" mode="script">
-                        <el mode="script">
-                            el.parents().not(':not(table)').first().select('.abstract2')
-                        </el>
-                        <value>
-                            <![CDATA[
-                            // Take everything after the "Keywords: " text
-                            el.text().match(/Keywords: ([\s\S]+)/)[1].trim()
-                            ]]>
-                        </value>
-                    </keywords>
+                        <keywords expand="true" mode="script">
+                            <el mode="script">
+                                el.parents().not(':not(table)').first().select('.abstract2')
+                            </el>
+                            <value>
+                                <![CDATA[
+                                // Take everything after the "Keywords: " text
+                                el.text().match(/Keywords: ([\s\S]+)/)[1].trim()
+                                ]]>
+                            </value>
+                        </keywords>
 
-                </item>
-            </value>
-        </articles>
+                    </item>
+                </value>
+            </articles>
 
+        </value>
     </response>
 </service>
