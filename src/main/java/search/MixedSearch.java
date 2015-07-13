@@ -13,6 +13,7 @@ import misc.Utils;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -128,14 +129,8 @@ public class MixedSearch {
 		String queryText = XMLParser.getChildElementByTagName(rootEl, "query").getTextContent().trim();
 		
 		// read sites
-		List<String> siteList = new ArrayList<String>();
 		Element sitesEl = XMLParser.getChildElementByTagName(rootEl, "sites");
-		List<Element> siteElList = XMLParser.getChildElements(sitesEl);
-		for (Element siteEl : siteElList) {
-			String siteName = siteEl.getTextContent().trim();
-			siteList.add(siteName);
-		}
-		String[] siteArray = siteList.toArray(new String[siteList.size()]);
+		String[] sites = sitesEl.getTextContent().trim().split("\\s*,\\s*");
 		
 		// start year (optional)
 		Integer startYear = null;
@@ -165,7 +160,7 @@ public class MixedSearch {
 		
 		// set configuration
 		this.setQueryText(queryText);
-		this.setSites(siteArray);		
+		this.setSites(sites);		
 		this.setStartYear(startYear);
 		this.setEndYear(endYear);
 		this.setFastOutput(fastOutput);
@@ -192,11 +187,7 @@ public class MixedSearch {
 		
 		// sites
 		Element sitesEl = document.createElement("sites");
-		for (String site : this.sites) {
-			Element siteEl = document.createElement("item");
-			siteEl.setTextContent(site);
-			sitesEl.appendChild(siteEl);	
-		}
+		sitesEl.setTextContent(StringUtils.join(this.sites, ", "));
 		documentRootEl.appendChild(sitesEl);
 		
 		// start year (optional)
