@@ -10,5 +10,6 @@
     <startyear></startyear>
     <endyear></endyear>
 
+    <fastoutput>false</fastoutput>
     <outputpath>data/output/output.csv</outputpath>
 </search>

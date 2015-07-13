@@ -116,6 +116,8 @@ public class CommandLineUI extends UI {
 		
 		if (cmd.hasOption("startyear")) mixedSearch.setStartYear( Integer.parseInt(cmd.getOptionValue("startyear")) );
 		if (cmd.hasOption("endyear")) mixedSearch.setEndYear( Integer.parseInt(cmd.getOptionValue("endyear")) );
+	
+		if (cmd.hasOption("fastoutput")) mixedSearch.setFastOutput(true);
 		
 	}
 	
