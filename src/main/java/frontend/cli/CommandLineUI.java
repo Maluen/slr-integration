@@ -28,18 +28,18 @@ public class CommandLineUI extends UI {
 	protected Options createOptions() {
 		Options options = new Options();
 		
-		options.addOption("newsearch", false, "Start a new search");
+		options.addOption("n", "newsearch", false, "Start a new search");
 		
-		options.addOption("file", true, "Load configuration from file");
+		options.addOption("f", "file", true, "Load configuration from file");
 		
-		options.addOption("query", true, "Set the query to search for");
-		options.addOption("sites", true, "Set sites where to perform the search as a comma separated list");
-		options.addOption("startyear", true, "Set article publishing year start range");
-		options.addOption("endyear", true, "Set article publishing year end range");
-		options.addOption("fastoutput", false, "Display only the number of results for each database");
-		options.addOption("outputpath", true, "Set CSV output path");
+		options.addOption("q", "query", true, "Set the query to search for");
+		options.addOption("s", "sites", true, "Set sites where to perform the search as a comma separated list");
+		options.addOption("sy", "startyear", true, "Set article publishing year start range");
+		options.addOption("ey", "endyear", true, "Set article publishing year end range");
+		options.addOption("fo", "fastoutput", false, "Display only the number of results for each database");
+		options.addOption("o", "outputpath", true, "Set CSV output path");
 		
-		options.addOption("help", false, "Show this help");
+		options.addOption("h", "help", false, "Show this help");
 		
 		return options;
 	}
