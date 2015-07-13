@@ -162,7 +162,9 @@ public class HTTPClient {
 			// TODO: better and more complete encoder (without replacing already encoded characters!)
 			String encodedValue = value.replace(" ", "%20")
 									   .replace("\"", "%21")
-									   .replace("*", "%2A");
+									   .replace("*", "%2A")
+									   .replace("(", "%28")
+									   .replace(")", "%29");
 			
 			String replacement = start + encodedValue;
 			

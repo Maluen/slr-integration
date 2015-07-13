@@ -37,6 +37,7 @@ public class HTTPEncoder {
 		
 		URI uri = null;
 		try {
+			// BUGGED: won't convert characters like & or = since it thinks are part of the URL?
 			uri = new URI(null, null, null, "a="+target, null);
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
