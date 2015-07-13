@@ -155,7 +155,7 @@ public abstract class SearchEngine {
 		if (processed > count) { // last page
 			processed = count;
 		}
-		Integer percent = (int) Math.floor( ((float)processed / count) * 100 );
+		Integer percent = (count == 0) ? 100 : (int) Math.floor( ((float)processed / count) * 100 );
 		this.logger.log("\n"+this.name.toUpperCase()+": search "+this.searchIndex+"/"+this.totalSearches+", "
 						+ "processed "+processed+"/"+count+" ("+percent+"%)");
 		
