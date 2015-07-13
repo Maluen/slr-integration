@@ -10,11 +10,11 @@ import query.QuerySplittedPart;
 import query.QuerySplittedPartList;
 import query.QuerySplitterVisitor;
 
-public abstract class SearchSplitter {
+public abstract class SearchAdapter {
 
 	protected QueryParser queryParser;
 	
-	public SearchSplitter() {
+	public SearchAdapter() {
 		this.queryParser = new QueryParser();
 	}
 	

@@ -3,13 +3,13 @@ package search.ieee;
 import search.SearchEngine;
 import search.SearchManager;
 import search.SearchMerger;
-import search.SearchSplitter;
+import search.SearchAdapter;
 
 public class IEEESearchManager extends SearchManager {
 
 	@Override
-	public SearchSplitter createSplitter() {
-		return new IEEESearchSplitter();
+	public SearchAdapter createAdapter() {
+		return new IEEESearchAdapter();
 	}
 
 	@Override

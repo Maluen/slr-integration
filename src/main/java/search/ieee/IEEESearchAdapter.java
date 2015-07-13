@@ -7,9 +7,9 @@ import misc.Utils;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import query.QuerySplitterVisitor;
-import search.SearchSplitter;
+import search.SearchAdapter;
 
-public class IEEESearchSplitter extends SearchSplitter {
+public class IEEESearchAdapter extends SearchAdapter {
 
 	protected Integer MAX_WILDCARD = 2; // API (Scrape has 5 limit instead)	
 	protected Integer MAX_WORDS = 13;

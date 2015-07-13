@@ -3,13 +3,13 @@ package search.acm;
 import search.SearchEngine;
 import search.SearchManager;
 import search.SearchMerger;
-import search.SearchSplitter;
+import search.SearchAdapter;
 
 public class ACMSearchManager extends SearchManager {
 
 	@Override
-	public SearchSplitter createSplitter() {
-		return new ACMSearchSplitter();
+	public SearchAdapter createAdapter() {
+		return new ACMSearchAdapter();
 	}
 
 	@Override

@@ -15,9 +15,9 @@ public abstract class SearchManager {
 	protected Integer endYear = null; // optional
 
 	public ArticleList execute() {
-		// split
-		SearchSplitter searchSplitter = this.createSplitter();
-		List<String> queryTextList = searchSplitter.execute(this.queryTree);
+		// adapt
+		SearchAdapter searchAdapter = this.createAdapter();
+		List<String> queryTextList = searchAdapter.execute(this.queryTree);
 		
 		List<ArticleList> allSearchesArticleList = new ArrayList<ArticleList>();
 		for (int i=0; i<queryTextList.size(); i++) {
@@ -44,7 +44,7 @@ public abstract class SearchManager {
 		return siteArticleList;
 	}
 	
-	public abstract SearchSplitter createSplitter();
+	public abstract SearchAdapter createAdapter();
 	public abstract SearchEngine createEngine();
 	public abstract SearchMerger createMerger();
 	
