@@ -4,7 +4,7 @@ expr: 'NOT' expr			# Not
 	| expr 'AND' expr		# And
 	| expr 'OR' expr		# Or
 	| '(' expr ')'			# Parenthesis
-	| WORD '*'				# Wildcard
+	| (WORD)? '*' (WORD)?	# Wildcard
 	| '"' phrase '"'		# Strict
 	| WS expr				# SpacesLeft
 	| expr WS				# SpacesRight

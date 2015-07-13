@@ -2,6 +2,7 @@ package query;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import misc.Logger;
 import misc.Utils;
@@ -79,11 +80,16 @@ public class QueryMatcherVisitor extends QueryBaseVisitor<Boolean> {
 	@Override
 	public Boolean visitWildcard(QueryParser.WildcardContext ctx) {
 		this.logger.log("Visiting Wildcard: " + ctx.getText());
-		
-		String wordStart = ctx.WORD().getText();
+
+		String[] wordList = ctx.getText().split("\\*");
+		String wordStart = (wordList.length >= 1) ? wordList[0] : "";
+		String wordEnd = (wordList.length >= 2) ? wordList[1] : "";
 		
 		for (String targetPart : targetPartList) {
-			if (targetPart.startsWith(wordStart)) return true;
+			String wordStartPattern = (wordStart.isEmpty()) ? "" : Pattern.quote(wordStart);
+			String wordEndPattern = (wordEnd.isEmpty()) ? "" : Pattern.quote(wordEnd);
+			
+			if (targetPart.matches("^"+ wordStartPattern + "(.*?)" + wordEndPattern + "$")) return true;
 		}
 		
 		return false;
