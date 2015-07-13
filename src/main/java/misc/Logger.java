@@ -5,6 +5,11 @@ import java.io.PrintStream;
 
 public class Logger {
 	
+	public static enum Level {
+		NORMAL,
+		ERROR
+	};
+	
 	protected static boolean isEnabled = true;
 	protected static String[] logCategories;
 	
@@ -63,10 +68,20 @@ public class Logger {
 		this.printStream = printStream;
 	}
 
-	public void log(String message) {
+	public void log(String message, Logger.Level level) {
 		if (Logger.isEnabled && Logger.isLogCategory(this.category)) {
+			
 			this.printStream.println(message);
+			if (level == Logger.Level.ERROR && System.err != this.printStream && System.out != this.printStream) {
+				// also log to stderr (if isn't duplicate logging)
+				System.err.println(message);
+			}
+			
 		}
+	}
+	
+	public void log(String message) {
+		this.log(message, Logger.Level.NORMAL);
 	}
 	
 }

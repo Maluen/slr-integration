@@ -7,6 +7,8 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import javax.xml.xpath.XPathExpressionException;
 
+import misc.Logger;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -187,7 +189,7 @@ public class XMLtoDocument extends ToDocument {
 				} catch (ScriptException e) {
 					// TODO Auto-generated catch block
 					this.logger.log(ExceptionUtils.getStackTrace(e));
-					this.logger.log(templateEl.getTagName() + ": script failed");
+					this.logger.log(templateEl.getTagName() + ": script failed", Logger.Level.ERROR);
 				}
 				
 			} else if (mode.equals("text")) {

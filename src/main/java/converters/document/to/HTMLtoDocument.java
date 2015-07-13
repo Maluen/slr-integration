@@ -8,6 +8,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import misc.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -182,7 +183,7 @@ public class HTMLtoDocument extends ToDocument {
 		        	this.logger.log(templateEl.getTagName() + ": " + documentElText + " (script)");
 				} catch (ScriptException e) {
 					this.logger.log(ExceptionUtils.getStackTrace(e));
-					this.logger.log(templateEl.getTagName() + ": script failed");
+					this.logger.log(templateEl.getTagName() + ": script failed", Logger.Level.ERROR);
 				}
 				
 			} else if (mode.equals("text")) {

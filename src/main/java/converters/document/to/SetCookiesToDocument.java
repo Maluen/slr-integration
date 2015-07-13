@@ -6,6 +6,7 @@ import java.util.List;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
+import misc.Logger;
 import network.http.HTTPCookie;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -193,7 +194,7 @@ public class SetCookiesToDocument extends ToDocument {
 		        	this.logger.log(templateEl.getTagName() + ": " + documentElText + " (script)");
 				} catch (ScriptException e) {
 					this.logger.log(ExceptionUtils.getStackTrace(e));
-					this.logger.log(templateEl.getTagName() + ": script failed");
+					this.logger.log(templateEl.getTagName() + ": script failed", Logger.Level.ERROR);
 				}
 				
 			} else if (mode.equals("text")) {
