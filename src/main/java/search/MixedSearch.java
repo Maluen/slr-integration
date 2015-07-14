@@ -51,7 +51,7 @@ public class MixedSearch {
 		return Utils.doFileExists(this.outputBasePath+this.configurationFilename);
 	}
 	
-	public ArticleList resume() {
+	public void resume() {
 		this.logger.log("Resuming search");
 		
 		try {
@@ -61,13 +61,13 @@ public class MixedSearch {
 		} catch (IOException e) {
 			// configuration file does not exist or has errors
 			e.printStackTrace();
-			return null;
+			return;
 		}
 		
-		return this.execute();
+		this.execute();
 	};
 	
-	public ArticleList newSearch() {
+	public void newSearch() {
 		this.logger.log("Starting new search");
 		
 		try {
@@ -82,22 +82,59 @@ public class MixedSearch {
 		} catch (IOException | TransformerFactoryConfigurationError | TransformerException e) {
 			// Delete or save errors
 			e.printStackTrace();
-			return null;
+			return;
 		}
 		
-		return this.execute();
+		this.execute();
 	}
 	
-	public ArticleList execute() {		
+	public void execute() {
+		if (this.fastOutput) this.fastSearch();
+		else this.fullSearch();
+	}
+	
+	public void fastSearch() {
+		// search from all sites
+		List<List<Integer>> allSitesOutputCountList = new ArrayList<List<Integer>>();
+		for (int i=0; i<this.sites.length; i++) {
+			
+			SearchManager searchManager = SearchManagerFactory.create(this.sites[i]);
+			this.configureSearchManager(searchManager);
+			searchManager.execute();
+			
+			List<Integer> siteCountList = searchManager.getOutputCountList();
+			allSitesOutputCountList.add(siteCountList);
+		}
+		
+		// print fast search output to stdout
+		System.out.println("\nTotal number of results:");
+		for (int i=0; i<this.sites.length; i++) {
+			
+			Integer siteTotalCount = 0;
+			List<Integer> siteCountList = allSitesOutputCountList.get(i);
+			for (Integer siteCount : siteCountList) {
+				siteTotalCount += siteCount;
+			}
+			
+			String numOfSearchesDescription = siteCountList.size() + " search";
+			if (siteCountList.size() != 1) numOfSearchesDescription += "es"; // plural
+			
+			System.out.println("\t"+this.sites[i].toUpperCase()+": " + siteTotalCount + " ("+numOfSearchesDescription+")");
+		}
+		System.out.println("(Warning: the number of results may be overestimated since no local filtering has been performed yet, "
+						 + "this is true especially in case of multiple searches due to splitting)");
+	}
+	
+	public void fullSearch() {
 		// search from all sites
 		List<ArticleList> allSitesArticleList = new ArrayList<ArticleList>();
 		for (int i=0; i<this.sites.length; i++) {
-			SearchManager searchManager = SearchManagerFactory.create(this.sites[i]);
-			searchManager.setQueryTree(this.queryTree);
-			searchManager.setStartYear(this.startYear);
-			searchManager.setEndYear(this.endYear);
-			ArticleList siteArticles = searchManager.execute();
 			
+			SearchManager searchManager = SearchManagerFactory.create(this.sites[i]);
+			this.configureSearchManager(searchManager);
+			searchManager.execute();
+			
+			ArticleList siteArticles = searchManager.getOutputArticleList();
 			allSitesArticleList.add(siteArticles);
 		}
 		
@@ -114,8 +151,13 @@ public class MixedSearch {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
 	
-		return searchResult;
+	public void configureSearchManager(SearchManager searchManager) {
+		searchManager.setQueryTree(this.queryTree);
+		searchManager.setStartYear(this.startYear);
+		searchManager.setEndYear(this.endYear);
+		searchManager.setFastOutput(this.fastOutput);
 	}
 	
 	// Load configuration from XML file

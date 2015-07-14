@@ -67,7 +67,6 @@ public class CommandLineUI extends UI {
 			return;
 		}
 		
-		ArticleList articleList;
 		MixedSearch mixedSearch = new MixedSearch();
 		Boolean isResumable = mixedSearch.isResumable();
 		
@@ -80,11 +79,11 @@ public class CommandLineUI extends UI {
 		Boolean isNewSearch = !isResumable || cmd.hasOption("newsearch");
 		if (isNewSearch) {
 			this.configureNewSearch(mixedSearch, cmd);
-			articleList = mixedSearch.newSearch();
+			mixedSearch.newSearch();
 			
 		} else {
 			// Resume
-			articleList = mixedSearch.resume();
+			mixedSearch.resume();
 		}		
 	}
 	

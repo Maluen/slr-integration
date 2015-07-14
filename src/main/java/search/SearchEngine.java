@@ -52,6 +52,10 @@ public abstract class SearchEngine {
 	protected Integer totalSearches; // needed for statistics
 	protected Integer startYear = null; // optional
 	protected Integer endYear = null; // optional
+	protected Boolean fastOutput = false;
+
+	protected Integer outputCount;
+	protected ArticleList outputArticleList; // final articles from all pages
 	
 	public SearchEngine(String name) {
 		this.logger = new Logger("SearchEngine");
@@ -66,7 +70,7 @@ public abstract class SearchEngine {
 		this.queryMatcherVisitor = new QueryMatcherVisitor();
 	}
 
-	public ArticleList execute() {
+	public void execute() {
 		this.outputBasePath = "data/output/" + this.name + "/" + this.searchIndex + "/";
 		
 		this.logger.log("\n"+this.name.toUpperCase()+": search started");
@@ -82,12 +86,12 @@ public abstract class SearchEngine {
 		    }
 		}, this.loginDuration);
 		
-		ArticleList articleList = this.searchAllPages();
+		if (this.fastOutput) this.fastSearch();
+		else this.fullSearch();
 		
 		// stop timer before returning
 		loginTimer.cancel(); // Terminates this timer, discarding any currently scheduled tasks.
 		loginTimer.purge(); // Removes all cancelled tasks from this timer's task queue.
-		return articleList;
 	}
 	
 	protected void login() {
@@ -95,7 +99,16 @@ public abstract class SearchEngine {
 		return;
 	}
 	
-	protected ArticleList searchAllPages() {
+	// Only extract the unfiltered number of results (count)
+	protected void fastSearch() {
+		Resource searchResult = this.extractSearchResult(1);
+		Integer count = this.getCount(searchResult);
+		
+		this.setOutputCount(count);
+	}
+	
+	// Search in all pages, filter and merge the results.
+	protected void fullSearch() {
 		List<Resource> outputResourceList = new ArrayList<Resource>();
 		
 		// get first page
@@ -117,7 +130,8 @@ public abstract class SearchEngine {
 			allPagesArticleList.addAll(outputArticleList);
 		}
 		
-		return allPagesArticleList;
+		this.setOutputCount(count);
+		this.setOutputArticleList(allPagesArticleList);
 	}
 	
 	protected Resource searchPage(Integer pageNumber) {
@@ -530,6 +544,30 @@ public abstract class SearchEngine {
 
 	public void setEndYear(Integer endYear) {
 		this.endYear = endYear;
+	}
+
+	public Boolean isFastOutput() {
+		return this.fastOutput;
+	}
+
+	public void setFastOutput(Boolean fastOutput) {
+		this.fastOutput = fastOutput;
+	}
+
+	public Integer getOutputCount() {
+		return this.outputCount;
+	}
+
+	public void setOutputCount(Integer outputCount) {
+		this.outputCount = outputCount;
 	}	
+	
+	public ArticleList getOutputArticleList() {
+		return this.outputArticleList;
+	}
+
+	public void setOutputArticleList(ArticleList outputArticleList) {
+		this.outputArticleList = outputArticleList;
+	}
 	
 }
