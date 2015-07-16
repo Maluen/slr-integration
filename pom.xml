@@ -2,9 +2,9 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>it.univaq.disim.www</groupId>
   <artifactId>slr-integration</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.2.0</version>
   <name>SLR Integration</name>
-  <description>Advanced Software Engineering Project in Systematic Literature Review (SLR) integration script</description>
+  <description>Advanced Software Engineering Project in Systematic Literature Review (SLR) integration tool</description>
   <dependencies>
   	<dependency>
   		<groupId>org.jsoup</groupId>
