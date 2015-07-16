@@ -107,7 +107,8 @@ public class MixedSearch {
 		}
 		
 		// print fast search output to stdout
-		System.out.println("\nTotal number of results:");
+		System.out.println("\n#######################################################################");
+		System.out.println("Total number of results:\n");
 		for (int i=0; i<this.sites.length; i++) {
 			
 			Integer siteTotalCount = 0;
@@ -119,10 +120,12 @@ public class MixedSearch {
 			String numOfSearchesDescription = siteCountList.size() + " search";
 			if (siteCountList.size() != 1) numOfSearchesDescription += "es"; // plural
 			
-			System.out.println("\t"+this.sites[i].toUpperCase()+": " + siteTotalCount + " ("+numOfSearchesDescription+")");
+			System.out.println(this.sites[i].toUpperCase()+": " + siteTotalCount + " ("+numOfSearchesDescription+")");
 		}
-		System.out.println("(Warning: the number of results may be overestimated since no local filtering has been performed yet, "
+		System.out.println("\n(Warning: the number of results may be overestimated \n"
+						 + "since no local filtering has been performed yet, \n"
 						 + "this is true especially in case of multiple searches due to splitting)");
+		System.out.println("#######################################################################");
 	}
 	
 	public void fullSearch() {
