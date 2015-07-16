@@ -119,12 +119,12 @@ public class Main {
 		//String queryText = "mde";
 		//String queryText = "(\"easy collaboration\") AND NOT easy OR collab*";
 		//String queryText = "mde AND uml AND robot*"; // query meant to return only about one page of results from every engine";
-		String queryText = Utils.getFileContent(new File("data/querystring.txt"));
+		//String queryText = Utils.getFileContent(new File("data/querystring.txt"));
 		//logger.log("Query string: " + queryText);
 		
 		
 		//String[] sites = new String[] { "ieee", "acm" };
-		String[] sites = Utils.getFileContent(new File("data/sites.txt")).trim().split("\\s*,\\s*");
+		//String[] sites = Utils.getFileContent(new File("data/sites.txt")).trim().split("\\s*,\\s*");
 		//logger.log("Sites: " + StringUtils.join(sites, ", "));
 		
 		/*
@@ -143,23 +143,6 @@ public class Main {
 		for (QuerySplittedPart splittedQueryPart : splittedQuery) {
 			logger.log( splittedQueryPart.getScore() + ": "
 								+ splittedQueryPart.getQueryText() );
-		}*/
-		
-		/*
-		// read "--newsearch" from command line
-		Boolean isNewSearchForced = ( args.length >= 1 && args[0].equals("--newsearch") );
-		
-		// do the global search
-		ArticleList articleList;
-		MixedSearch mixedSearch = new MixedSearch();
-		if (!isNewSearchForced && mixedSearch.isResumable()) {
-			logger.log("Resuming search");
-			articleList = mixedSearch.resume();
-		} else {
-			logger.log("Starting new search");
-			mixedSearch.setQueryText(queryText);
-			mixedSearch.setSites(sites);
-			articleList = mixedSearch.newSearch();
 		}*/
 		
 	}
