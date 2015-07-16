@@ -147,7 +147,8 @@ public class MixedSearch {
 		ArticleList searchResult = mixedSearchMerger.execute();
 		
 		// save results to file
-		this.logger.log("\nSaving output csv to \"" + this.outputCSVFilename + "\".");
+		this.logger.log("\nFinal number of fetched articles: " + searchResult.size());
+		this.logger.log("Saving output csv to \"" + this.outputCSVFilename + "\".");
 		try {
 			searchResult.saveAsCSV(this.outputCSVFilename);
 			this.logger.log("Done.");
