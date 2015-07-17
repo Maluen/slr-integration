@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import misc.Logger;
 import misc.Utils;
 
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.lang3.StringUtils;
 
 public class QueryMatcherVisitor extends QueryBaseVisitor<Boolean> {
@@ -106,9 +107,13 @@ public class QueryMatcherVisitor extends QueryBaseVisitor<Boolean> {
 	
 	@Override
 	public Boolean visitWord(QueryParser.WordContext ctx) {
-		this.logger.log("Visiting Word: " + ctx.getText());
+		return this.processWordToken(ctx.WORD());
+	}
+	
+	public Boolean processWordToken(TerminalNode wordToken) {
+		this.logger.log("Visiting Word: " + wordToken.getText());
 		
-		String word = ctx.WORD().getText();
+		String word = wordToken.getText();
 		
 		return this.targetPartList.contains(word);
 	}
@@ -141,10 +146,16 @@ public class QueryMatcherVisitor extends QueryBaseVisitor<Boolean> {
 	}
 	*/
 	
+	@Override
 	public Boolean visitPhraseCase(QueryParser.PhraseCaseContext ctx) {
-		this.logger.log("Visiting Phrase Case: " + ctx.getText());
+		return this.visit( ctx.phrase() );
+	}
+	
+	@Override
+	public Boolean visitPhrase(QueryParser.PhraseContext ctx) {
+		this.logger.log("Visiting Phrase: " + ctx.getText());
 
-		String phrase = ctx.phrase().getText();
+		String phrase = ctx.getText();
 		
 		// true if all the words of the phrase appears in the target,
 		// regardless of their position
