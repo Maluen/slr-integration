@@ -384,7 +384,7 @@ public class QuerySplitterVisitor extends QueryBaseVisitor<QuerySplittedPartList
 	    	
 	    	String phraseText = phrase.getQueryText();
 	    	phraseText = phraseText.replaceAll(" AND ", " ")
-	    						   .replaceAll("[\\(|\\)]", ""); // parenthesis
+	    						   .replaceAll("[()]", ""); // parenthesis
 	    	
 	    	phrase.setQueryText(phraseText);
 	    }
