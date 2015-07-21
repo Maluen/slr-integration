@@ -95,7 +95,7 @@
 
                 <count el="table > tbody > tr > td" expand="true" mode="script">
                     <condition mode="script">
-                        el.text().trim().match(/Results ([\s\S]*?) of ([\s\S]*?) /) != null
+                        el.text().trim().match(/Results ([\d,]+?) - ([\d,]+?) of ([\d,]+?) /) != null
                     </condition>
                     <value>
                         var count;
@@ -105,7 +105,7 @@
                             count = "0";
 
                         } else {
-                            count = el.text().trim().match(/Results ([\s\S]*?) of ([\s\S]*?) /)[2];
+                            count = el.text().trim().match(/Results ([\d,]+?) - ([\d,]+?) of ([\d,]+?) /)[3];
                             // Remove all "," separators
                             count = count.replace(new RegExp(',', 'g'), '');
                         }
