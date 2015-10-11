@@ -1,9 +1,6 @@
 package frontend.cli;
 
-import java.io.File;
 import java.io.IOException;
-
-import misc.Utils;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -12,7 +9,6 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import data.ArticleList;
 import search.MixedSearch;
 import frontend.UI;
 

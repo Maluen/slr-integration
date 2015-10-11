@@ -19,41 +19,17 @@ public interface QueryListener extends ParseTreeListener {
 	 */
 	void exitInit(QueryParser.InitContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code Not}
+	 * Enter a parse tree produced by the {@code SpacesRight}
 	 * labeled alternative in {@link QueryParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void enterNot(QueryParser.NotContext ctx);
+	void enterSpacesRight(QueryParser.SpacesRightContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code Not}
+	 * Exit a parse tree produced by the {@code SpacesRight}
 	 * labeled alternative in {@link QueryParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void exitNot(QueryParser.NotContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code Parenthesis}
-	 * labeled alternative in {@link QueryParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterParenthesis(QueryParser.ParenthesisContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code Parenthesis}
-	 * labeled alternative in {@link QueryParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitParenthesis(QueryParser.ParenthesisContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code Strict}
-	 * labeled alternative in {@link QueryParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterStrict(QueryParser.StrictContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code Strict}
-	 * labeled alternative in {@link QueryParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitStrict(QueryParser.StrictContext ctx);
+	void exitSpacesRight(QueryParser.SpacesRightContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code Word}
 	 * labeled alternative in {@link QueryParser#expr}.
@@ -67,6 +43,18 @@ public interface QueryListener extends ParseTreeListener {
 	 */
 	void exitWord(QueryParser.WordContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code SpacesLeft}
+	 * labeled alternative in {@link QueryParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterSpacesLeft(QueryParser.SpacesLeftContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code SpacesLeft}
+	 * labeled alternative in {@link QueryParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitSpacesLeft(QueryParser.SpacesLeftContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code Or}
 	 * labeled alternative in {@link QueryParser#expr}.
 	 * @param ctx the parse tree
@@ -78,18 +66,6 @@ public interface QueryListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitOr(QueryParser.OrContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code Wildcard}
-	 * labeled alternative in {@link QueryParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterWildcard(QueryParser.WildcardContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code Wildcard}
-	 * labeled alternative in {@link QueryParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitWildcard(QueryParser.WildcardContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code PhraseCase}
 	 * labeled alternative in {@link QueryParser#expr}.
@@ -103,17 +79,17 @@ public interface QueryListener extends ParseTreeListener {
 	 */
 	void exitPhraseCase(QueryParser.PhraseCaseContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code And}
+	 * Enter a parse tree produced by the {@code Wildcard}
 	 * labeled alternative in {@link QueryParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void enterAnd(QueryParser.AndContext ctx);
+	void enterWildcard(QueryParser.WildcardContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code And}
+	 * Exit a parse tree produced by the {@code Wildcard}
 	 * labeled alternative in {@link QueryParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void exitAnd(QueryParser.AndContext ctx);
+	void exitWildcard(QueryParser.WildcardContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code Epsilon}
 	 * labeled alternative in {@link QueryParser#expr}.
@@ -127,29 +103,53 @@ public interface QueryListener extends ParseTreeListener {
 	 */
 	void exitEpsilon(QueryParser.EpsilonContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code SpacesLeft}
+	 * Enter a parse tree produced by the {@code Parenthesis}
 	 * labeled alternative in {@link QueryParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void enterSpacesLeft(QueryParser.SpacesLeftContext ctx);
+	void enterParenthesis(QueryParser.ParenthesisContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code SpacesLeft}
+	 * Exit a parse tree produced by the {@code Parenthesis}
 	 * labeled alternative in {@link QueryParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void exitSpacesLeft(QueryParser.SpacesLeftContext ctx);
+	void exitParenthesis(QueryParser.ParenthesisContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code SpacesRight}
+	 * Enter a parse tree produced by the {@code And}
 	 * labeled alternative in {@link QueryParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void enterSpacesRight(QueryParser.SpacesRightContext ctx);
+	void enterAnd(QueryParser.AndContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code SpacesRight}
+	 * Exit a parse tree produced by the {@code And}
 	 * labeled alternative in {@link QueryParser#expr}.
 	 * @param ctx the parse tree
 	 */
-	void exitSpacesRight(QueryParser.SpacesRightContext ctx);
+	void exitAnd(QueryParser.AndContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Strict}
+	 * labeled alternative in {@link QueryParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterStrict(QueryParser.StrictContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Strict}
+	 * labeled alternative in {@link QueryParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitStrict(QueryParser.StrictContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code Not}
+	 * labeled alternative in {@link QueryParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterNot(QueryParser.NotContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code Not}
+	 * labeled alternative in {@link QueryParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitNot(QueryParser.NotContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link QueryParser#phrase}.
 	 * @param ctx the parse tree

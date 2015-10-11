@@ -15,15 +15,12 @@ import org.supercsv.io.CsvListReader;
 import org.supercsv.io.ICsvListReader;
 import org.supercsv.prefs.CsvPreference;
 
-import search.MixedSearch;
-
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.GetRequest;
 import com.owlike.genson.Genson;
 
-import data.ArticleList;
 import frontend.UI;
 import frontend.cli.CommandLineUI;
 

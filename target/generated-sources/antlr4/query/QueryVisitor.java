@@ -18,26 +18,12 @@ public interface QueryVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitInit(QueryParser.InitContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code Not}
+	 * Visit a parse tree produced by the {@code SpacesRight}
 	 * labeled alternative in {@link QueryParser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitNot(QueryParser.NotContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code Parenthesis}
-	 * labeled alternative in {@link QueryParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitParenthesis(QueryParser.ParenthesisContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code Strict}
-	 * labeled alternative in {@link QueryParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStrict(QueryParser.StrictContext ctx);
+	T visitSpacesRight(QueryParser.SpacesRightContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code Word}
 	 * labeled alternative in {@link QueryParser#expr}.
@@ -46,19 +32,19 @@ public interface QueryVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitWord(QueryParser.WordContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code SpacesLeft}
+	 * labeled alternative in {@link QueryParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSpacesLeft(QueryParser.SpacesLeftContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code Or}
 	 * labeled alternative in {@link QueryParser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitOr(QueryParser.OrContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code Wildcard}
-	 * labeled alternative in {@link QueryParser#expr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitWildcard(QueryParser.WildcardContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code PhraseCase}
 	 * labeled alternative in {@link QueryParser#expr}.
@@ -67,12 +53,12 @@ public interface QueryVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitPhraseCase(QueryParser.PhraseCaseContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code And}
+	 * Visit a parse tree produced by the {@code Wildcard}
 	 * labeled alternative in {@link QueryParser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitAnd(QueryParser.AndContext ctx);
+	T visitWildcard(QueryParser.WildcardContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code Epsilon}
 	 * labeled alternative in {@link QueryParser#expr}.
@@ -81,19 +67,33 @@ public interface QueryVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitEpsilon(QueryParser.EpsilonContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code SpacesLeft}
+	 * Visit a parse tree produced by the {@code Parenthesis}
 	 * labeled alternative in {@link QueryParser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitSpacesLeft(QueryParser.SpacesLeftContext ctx);
+	T visitParenthesis(QueryParser.ParenthesisContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code SpacesRight}
+	 * Visit a parse tree produced by the {@code And}
 	 * labeled alternative in {@link QueryParser#expr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitSpacesRight(QueryParser.SpacesRightContext ctx);
+	T visitAnd(QueryParser.AndContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code Strict}
+	 * labeled alternative in {@link QueryParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStrict(QueryParser.StrictContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code Not}
+	 * labeled alternative in {@link QueryParser#expr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNot(QueryParser.NotContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link QueryParser#phrase}.
 	 * @param ctx the parse tree

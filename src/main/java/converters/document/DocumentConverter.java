@@ -1,9 +1,6 @@
 package converters.document;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 
 import misc.Logger;
 import misc.Utils;

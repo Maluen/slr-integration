@@ -28,6 +28,9 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import parsers.xml.DocumentFactory;
 
 
 public class Utils {
@@ -105,6 +108,30 @@ public class Utils {
 		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
 
 		transformer.transform(input, output);
+	}
+	
+	public static Document stringListMapToDocument(List<Map<String, String>> listMap, String rootElTagName, String entryElTagName) {
+		Document document = DocumentFactory.getDocBuilder().newDocument();
+		
+		Element rootEl = document.createElement(rootElTagName);
+		document.appendChild(rootEl);
+		
+		for (Map<String, String> map : listMap) {
+			Element entryEl = document.createElement(entryElTagName);
+			rootEl.appendChild(entryEl);
+			
+			for (Map.Entry<String, String> field : map.entrySet()) {
+				String key = field.getKey();
+				String value = field.getValue();
+				
+				Element fieldEl = document.createElement(key);
+				fieldEl.setTextContent(value);
+				
+				entryEl.appendChild(fieldEl);
+			}
+		}
+		
+		return document;
 	}
 	
 	// Create a PrintStream for the file specified by path, with
