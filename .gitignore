@@ -3,6 +3,7 @@ target/classes
 target/test-classes
 target/*.jar
 target/data
+target/maven-status
 
 # Logging and caching
 
