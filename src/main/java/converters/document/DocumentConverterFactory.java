@@ -3,6 +3,7 @@ package converters.document;
 import converters.document.from.DocumentToForm;
 import converters.document.from.DocumentToJSON;
 import converters.document.from.FromDocument;
+import converters.document.to.BibtexToDocument;
 import converters.document.to.HTMLtoDocument;
 import converters.document.to.JSONtoDocument;
 import converters.document.to.MixedToDocument;
@@ -23,6 +24,8 @@ public class DocumentConverterFactory {
 			return new SetCookiesToDocument();
 		} else if (fromContentType.equals("text/xml")) {
 			return new XMLtoDocument();
+		} else if (fromContentType.equals("application/x-bibtex")) {
+			return new BibtexToDocument();
 		}
 
 		return null;

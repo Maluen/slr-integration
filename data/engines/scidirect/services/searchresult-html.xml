@@ -1,0 +1,73 @@
+<service>
+    <name>searchResult_{{pageNumber}}</name>
+    <resources>
+        <item>
+            <name>response.body</name>
+            <contentType>application/x-bibtex</contentType>
+        </item>
+    </resources>
+    <request>
+        <url>
+        <![CDATA[
+            http://www.sciencedirect.com/science?_ob=ArticleListURL&_method=tag&searchtype=a&refSource=search&_st={{st}}&count={{count}}&sort=r&filterType=&_chunk={{chunk}}&hitCount={{hitCount}}{{#PREV_LIST}}&PREV_LIST={{PREV_LIST}}{{/PREV_LIST}}&NEXT_LIST={{NEXT_LIST}}&view=c&md5={{nextPageMD5}}&_ArticleListID={{ArticleListID}}&chunkSize=25&sisr_search=&TOTAL_PAGES={{TOTAL_PAGES}}&zone=exportDropDown&citation-type=BIBTEX&format=cite-abs&export=Export{{articleIdsQueryFragment}}&bottomPaginationBoxChanged=&displayPerPageFlag=f&resultsPerPage=25
+        ]]>
+        </url>
+        <method>GET</method>
+    </request>
+    <response expand="true" from="response.body">
+        <value>
+
+            <meta>
+                <query>{{query}}</query>
+                <pageNumber>{{pageNumber}}</pageNumber>
+                <startYear>{{startYear}}</startYear>
+                <endYear>{{endYear}}</endYear>
+
+                <count>{{realCount}}</count>
+            </meta>
+
+            <articles el="item" mode="list">
+              <item>
+                <id el="url" mode="script">
+                  // url format is "http://www.sciencedirect.com/science/article/pii/[ID]"
+                  // => extract everything after the last '/'
+                  el.getTextContent().trim().match(/.+\/(.+?)$/)[1]
+                </id>
+                <title el="title" mode="text" />
+                <authors el="author" mode="text" />
+                <abstract el="abstract" mode="text" />
+                <affiliations />
+                <publication el="journal" mode="text" />
+                <doi el="doi" mode="text" />
+                <year el="year" mode="text" />
+
+                <keywords el="keywords" mode="text" />
+                <!--
+                <keywords mode="script">
+                  <![CDATA[
+                  var keywords = '';
+
+                  var keywordsElList = parser.select('keywords', el);
+                  for (var i=0; i<keywordsElList.size(); i++) {
+                    keywords += keywordsElList.get(i).getTextContent().trim();
+                    if (i != keywordsElList.size() - 1) {
+                      keywords += ', ';
+                    }
+                  }
+
+                  keywords
+                  ]]>
+                </keywords>
+                -->
+              </item>
+            </articles>
+
+            <!--
+            <articles el="item" mode="list">
+              <item mode="clone" />
+            </articles>
+            -->
+
+        </value>
+    </response>
+</service>

@@ -1,0 +1,15 @@
+<service>
+    <name>home</name>
+    <resources>
+        <item>
+            <name>response.body</name>
+            <contentType>text/html</contentType>
+        </item>
+    </resources>
+    <request>
+        <url>http://www.sciencedirect.com/</url>
+        <method>GET</method>
+    </request>
+    <response from="response.body">
+    </response>
+</service>

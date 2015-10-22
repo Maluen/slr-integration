@@ -1,0 +1,63 @@
+<service>
+    <name>searchResultMeta_{{pageNumber}}</name>
+    <resources>
+        <item>
+            <name>response.body</name>
+            <contentType>text/html</contentType>
+        </item>
+    </resources>
+    <request>
+        <url>
+        <![CDATA[
+            {{#isFirstPage}}
+            http://www.sciencedirect.com/science?_ob=MiamiSearchURL&_method=submitForm&_acct=C000228598&_temp=all_boolSearch.tmpl&md5={{currentPageMD5}}&test_alid=&SearchText={{{query}}}&source=srcJrl&source=srcBk&srcSel=1&DateOpt=0&fromDate={{#startYear}}{{startYear}}{{/startYear}}{{^startYear}}1823{{/startYear}}&toDate={{#endYear}}{{endYear}}{{/endYear}}{{^endYear}}Present{{/endYear}}&RegularSearch=Search
+            {{/isFirstPage}}
+
+            {{^isFirstPage}}
+            http://www.sciencedirect.com/science?_ob=ArticleListURL&_method=tag&searchtype=a&refSource=search&_st={{st}}&count={{count}}&sort=r&filterType=&_chunk={{chunk}}&hitCount={{hitCount}}{{#PREV_LIST}}&PREV_LIST={{PREV_LIST}}{{/PREV_LIST}}&NEXT_LIST={{NEXT_LIST}}&view=c&md5={{currentPageMD5}}&_ArticleListID={{ArticleListID}}&chunkSize=25&sisr_search=&TOTAL_PAGES={{TOTAL_PAGES}}&zone=exportDropDown&citation-type=RIS&format=cite-abs&bottomPaginationBoxChanged=&bottomNext=Next+%3E%3E&displayPerPageFlag=f&resultsPerPage=25
+            {{/isFirstPage}}
+        ]]>
+        </url>
+        <method>GET</method>
+    </request>
+    <response expand="true" from="response.body">
+        <value>
+
+            <meta>
+                <query>{{query}}</query>
+                <pageNumber>{{pageNumber}}</pageNumber>
+                <startYear>{{startYear}}</startYear>
+                <endYear>{{endYear}}</endYear>
+
+                <count el=".amtResults" mode="script">
+                    var count = el.text().trim().match(/Search results: ([\d,]+?) /)[1];
+                    // Remove all "," separators
+                    count = count.replace(new RegExp(',', 'g'), '');
+                </count>
+            </meta>
+
+            <currentPage>
+                <md5>{{currentPageMD5}}</md5>
+            </currentPage>
+
+            <nextPage>
+                <md5 el="#sdBody form[name=Tag] input[name=md5]" mode="text" />
+                <ArticleListID el="#sdBody form[name=Tag] input[name=_ArticleListID]" mode="text" />
+                <st el="#sdBody form[name=Tag] input[name=_st]" mode="text" />
+                <count el="#sdBody form[name=Tag] input[name=count]" mode="text" />
+                <chunk el="#sdBody form[name=Tag] input[name=_chunk]" mode="text" />
+                <hitCount el="#sdBody form[name=Tag] input[name=hitCount]" mode="text" />
+                <PREV_LIST el="#sdBody form[name=Tag] input[name=PREV_LIST]" mode="text" />
+                <NEXT_LIST el="#sdBody form[name=Tag] input[name=NEXT_LIST]" mode="text" />
+                <TOTAL_PAGES el="#bodyResults input[name=TOTAL_PAGES]" mode="text" />
+            </nextPage>
+
+            <articles el=".articleList .detail" mode="list">
+                <item>
+                    <id el=".selection input" mode="text"></id>
+                </item>
+            </articles>
+
+        </value>
+    </response>
+</service>

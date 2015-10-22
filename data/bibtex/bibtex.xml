@@ -1,78 +1,332 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <entries>
     <item>
-        <abstract>Domestic piglets (Sus scrofa domesticus) establish relatively stable teat order after the first week postpartum. Formation of teat order is normally accompanied by intense competition between littermates. In this period, piglets’ behaviour and their distribution along the mammary complex is subject to various external influences. In the present study, time-dependent changes of suckling pattern in domestic piglets and the potential factors affecting piglets’ suckling distribution along the mammary complex were investigated. Eleven sows with their litters (110 piglets) were included in the analysis. Throughout the lactation period there were 27 observations per litter. In addition to milk intake and piglet body weight we focused on the impact of geometric constraints (physical limitation of the mammary complex), which has previously been disregarded in studies of piglet suckling behaviour but could play a crucial role, especially at the beginning of the lactation period. Changes in piglets’ distribution were analysed for correlation with changes in milk intake and body weight during lactation. The impact of geometric constraints was estimated using mid-domain effect (MDE) models. Analysis of the first two-weeks of lactation revealed that teat order stability increased after the first week, reaching a transition maximum by the second week (58%), when the effect of geometric constraints was still significant (r2 = 0.679; p &amp;lt; 0.05). Longer periods of lactation led to consistent suckling order, which was no longer affected by geometric constraints (p ≥ 0.05). Alteration of piglet distribution was not associated with the quantity of milk they consumed (r2 = 0.612; p &amp;gt; 0.05). Variation in milk intake was explained by piglet body weight (r2 = 0.701; p &amp;lt; 0.05). Results indicate that the physical limitation of the mammary complex was the only factor that directly affected piglets’ distribution, which was thereby subject to the MDE. The \{MDE\} model enabled precise estimation of the piglets’ behaviour on the mammary complex and provides novel information towards understanding of the suckling process. </abstract>
-        <keywords>Mid-domain effect (MDE) </keywords>
-        <issn>0168-1591</issn>
-        <pages>39 - 45</pages>
-        <number>1–2</number>
-        <url>http://www.sciencedirect.com/science/article/pii/S0168159112003668</url>
-        <journal>Applied Animal Behaviour Science </journal>
-        <author>Janko Skok and Dejan Škorjanc</author>
-        <title>Formation of teat order and estimation of piglets’ distribution along the mammary complex using mid-domain effect (MDE) model </title>
-        <volume>144</volume>
-        <year>2013</year>
-        <note/>
-        <doi>http://dx.doi.org/10.1016/j.applanim.2012.11.014</doi>
-    </item>
-    <item>
-        <abstract>Resumen Se analizan los beneficios que aporta el empleo de la metodología Model-Driven Engineering (MDE) cuando se utiliza como base y soporte de entornos de diseño de sistemas de tiempo real. Con esta metodología, se incrementa la facilidad de uso del entorno para el diseñador, ya que, en función del paradigma que utilice y de la fase del proceso de diseño que esté llevando a cabo, el entorno le ofrece una vista especializada del sistema, la cual presenta de una forma precisa y coherente la información sobre la que está decidiendo. Por otro lado, una infraestructura \{MDE\} facilita el desarrollo de herramientas y su integración en el entorno, ya que, a través de los mecanismos de gestión y transformación de modelos con los que está dotada, cada herramienta recibe únicamente la información que utiliza, estructurada de modo adecuado, y así mismo, puede generar sus resultados de la forma que le sea natural, ya que el entorno los sabe gestionar. Por último, la metodología \{MDE\} permite considerar el entorno de diseño de tiempo real como una vista especializada que se integra coherentemente en un entorno más general, el cual soporta las restantes fases del diseño del sistema. This paper analyses the benefits provided by the Model-Driven Engineering (MDE) methodology when it is used as the base support for real-time systems design environments. The application of \{MDE\} eases the environment usage by the designer, because depending on the chosen paradigm and on the stage of the development process, the environment offers a specialized view of the system, presenting in a precise and coherent fashion the information under decision. On the other hand, an \{MDE\} infrastructure facilitates the development of tools and their integration within the environment, as, through the model management and transformation mechanisms this infrastructure is equipped with, every tool receives as input the right information it uses, structured as it needs, and likewise, each tool can generate its results in its natural format, relying in that the environment is able to manage them. Finally, the \{MDE\} methodology allows considering the real-time design environment as a specialized view meant to be integrated in a more general framework that encompasses the remaining system design stages. </abstract>
-        <keywords>modelling and schedulability tools </keywords>
+        <abstract>Resumen Se analizan los beneficios que aporta el empleo de la metodologÃ­a Model-Driven Engineering (MDE) cuando se utiliza como base y soporte de entornos de diseÃ±o de sistemas de tiempo real. Con esta metodologÃ­a, se incrementa la facilidad de uso del entorno para el diseÃ±ador, ya que, en funciÃ³n del paradigma que utilice y de la fase del proceso de diseÃ±o que estÃ© llevando a cabo, el entorno le ofrece una vista especializada del sistema, la cual presenta de una forma precisa y coherente la informaciÃ³n sobre la que estÃ¡ decidiendo. Por otro lado, una infraestructura \{MDE\} facilita el desarrollo de herramientas y su integraciÃ³n en el entorno, ya que, a travÃ©s de los mecanismos de gestiÃ³n y transformaciÃ³n de modelos con los que estÃ¡ dotada, cada herramienta recibe Ãºnicamente la informaciÃ³n que utiliza, estructurada de modo adecuado, y asÃ­ mismo, puede generar sus resultados de la forma que le sea natural, ya que el entorno los sabe gestionar. Por Ãºltimo, la metodologÃ­a \{MDE\} permite considerar el entorno de diseÃ±o de tiempo real como una vista especializada que se integra coherentemente en un entorno mÃ¡s general, el cual soporta las restantes fases del diseÃ±o del sistema. This paper analyses the benefits provided by the Model-Driven Engineering (MDE) methodology when it is used as the base support for real-time systems design environments. The application of \{MDE\} eases the environment usage by the designer, because depending on the chosen paradigm and on the stage of the development process, the environment offers a specialized view of the system, presenting in a precise and coherent fashion the information under decision. On the other hand, an \{MDE\} infrastructure facilitates the development of tools and their integration within the environment, as, through the model management and transformation mechanisms this infrastructure is equipped with, every tool receives as input the right information it uses, structured as it needs, and likewise, each tool can generate its results in its natural format, relying in that the environment is able to manage them. Finally, the \{MDE\} methodology allows considering the real-time design environment as a specialized view meant to be integrated in a more general framework that encompasses the remaining system design stages. </abstract>
+        <keywords>Entorno de diseÃ±o, tiempo real, MDE, modelado, herramientas de planificaciÃ³n, reserva de recursos, Design environment, real-time, MDE, modelling and schedulability tools </keywords>
         <issn>1697-7912</issn>
         <pages>216 - 227</pages>
         <number>2</number>
         <url>http://www.sciencedirect.com/science/article/pii/S1697791213000137</url>
-        <journal>Revista Iberoamericana de Automática e Informática Industrial \{RIAI\} </journal>
-        <author>César Cuevas and Laura Barros and Patricia López Martínez and José M. Drake</author>
-        <title>Beneficios que aporta la metodología \{MDE\} a los entornos de desarrollo de sistemas de tiempo real </title>
+        <journal>Revista Iberoamericana de AutomÃ¡tica e InformÃ¡tica Industrial \{RIAI\} </journal>
+        <author>CÃ©sar Cuevas and Laura Barros and Patricia LÃ³pez MartÃ­nez and JosÃ© M. Drake</author>
+        <title>Beneficios que aporta la metodologÃ­a \{MDE\} a los entornos de desarrollo de sistemas de tiempo real </title>
         <volume>10</volume>
         <year>2013</year>
         <note/>
         <doi>http://dx.doi.org/10.1016/j.riai.2013.03.011</doi>
     </item>
     <item>
-        <abstract>Abstract In the domain of Human–Computer Interaction (HCI), recent advances in sensors, communication technologies, miniaturization and computing capabilities have led to new and advanced forms of interaction. Among them, Mixed Interactive Systems (MIS), form a class of interactive systems that comprises augmented reality, tangible interfaces and ambient computing; \{MIS\} aim to take advantage of physical and digital worlds to promote a more transparent integration of interactive systems with the user’s environment. Due to the constant change of technologies and the multiplicity of these interaction forms, specific development approaches have been developed. As a result, numerous taxonomies, frameworks, \{API\} and models have emerged, each one covering a specific and limited aspect of the development of MIS. To support a coherent use of these multiple development resources and contribute to the increasing popularity of MIS, we have developed a framework based on Model-Driven Engineering. The goal is to take advantage of Model-Driven Engineering (MDE) standards, methodology and tools to support the manipulation of complementary Domain Specific Languages (DSL), to organize and link the use of different design and implementation resources, and to ensure a rationalized implementation based on design choices. In this paper, we first summarize existing uses of \{MDE\} in \{HCI\} before focusing on five major benefits \{MDE\} can provide in a \{MIS\} development context. We then detail which \{MDE\} tools and resources support these benefits and thus form the pillars of the success of an MDE-based \{MIS\} development approach. Based on this analysis, we introduce our framework, called Guide-Me, and illustrate its use through a case study. This framework includes two design models. Model transformations are also included to link one model to another; as a result the frameworks coverage extends from the earliest design step to a software component-based prototyping platform. A toolset based on the Eclipse Modeling Framework (EMF) that supports the use of the framework is also presented. We finally assess our MDE-based development process for \{MIS\} based on the five major \{MDE\} benefits for MIS. </abstract>
-        <keywords>Flexible model transformation </keywords>
-        <issn>0167-6423</issn>
-        <pages>199 - 221</pages>
+        <abstract>Metadata are a key element for the development of information infrastructures because they facilitate the semantic description of contents and services. However, the diversity and heterogeneity of metadata standards have become a barrier for the generation of these metadata. Many metadata editors are not useful anymore because they do not support the latest version of metadata standards or the new profiles arisen in the market. Thus, this work proposes a model driven approach for the development of metadata editors, more focused on the generic treatment of metadata models than on the development of specific edition forms for a reduced set of metadata standards. This approach has been tested in the context of Spatial Data Infrastructures for the development of an Open Source tool called CatMDEdit. Additionally, the approach could be also applied to improve the efficiency of any metadata editor using a metamodeling development strategy. </abstract>
+        <keywords>Spatial Data Infrastructures, SDI, Metadata, Annotation, Model Driven Engineering, MDE, Model Driven Architecture, MDA, Metamodeling, SKOS </keywords>
+        <issn>0169-023X</issn>
+        <pages>118 - 139</pages>
         <number/>
-        <url>http://www.sciencedirect.com/science/article/pii/S0167642313000671</url>
-        <journal>Science of Computer Programming </journal>
-        <author>Emmanuel Dubois and Christophe Bortolaso and Damien Appert and Guillaume Gauffre</author>
-        <title>An MDE-based framework to support the development of Mixed Interactive Systems </title>
-        <volume>89, Part B</volume>
-        <year>2014</year>
-        <note>Special issue on Success Stories in Model Driven Engineering </note>
-        <doi>http://dx.doi.org/10.1016/j.scico.2013.03.007</doi>
+        <url>http://www.sciencedirect.com/science/article/pii/S0169023X12000845</url>
+        <journal>Data &amp; Knowledge Engineering </journal>
+        <author>Javier Nogueras-Iso and Miguel Ã�ngel Latre and RubÃ©n BÃ©jar and Pedro R. Muro-Medrano and F. Javier Zarazaga-Soria</author>
+        <title>A model driven approach for the development of metadata editors, applicability to the annotation of geographic information resources </title>
+        <volume>81â€“82</volume>
+        <year>2012</year>
+        <doi>http://dx.doi.org/10.1016/j.datak.2012.09.001</doi>
+        <note/>
     </item>
     <item>
-        <abstract>AbstractContext Model-driven Engineering (MDE) promotes the utilization of models as primary artifacts in all software engineering activities. Therefore, mechanisms to ensure model correctness become crucial, specially when applying \{MDE\} to the development of software, where software is the result of a chain of (semi)automatic model transformations that refine initial abstract models to lower level ones from which the final code is eventually generated. Clearly, in this context, an error in the model/s is propagated to the code endangering the soundness of the resulting software. Formal verification of software models is a promising approach that advocates the employment of formal methods to achieve model correctness, and it has received a considerable amount of attention in the last few years. Objective The objective of this paper is to analyze the state of the art in the field of formal verification of models, restricting the analysis to those approaches applied over static software models complemented or not with constraints expressed in textual languages, typically the Object Constraint Language (OCL). Method We have conducted a Systematic Literature Review (SLR) of the published works in this field, describing their main characteristics. Results The study is based on a set of 48 resources that have been grouped in 18 different approaches according to their affinity. For each of them we have analyzed, among other issues, the formalism used, the support given to OCL, the correctness properties addressed or the feedback yielded by the verification process. Conclusions One of the most important conclusions obtained is that current model verification approaches are strongly influenced by the support given to OCL. Another important finding is that in general, current verification tools present important flaws like the lack of integration into the model designer tool chain or the lack of efficiency when verifying large, real-life models. </abstract>
-        <keywords>Systematic literature review </keywords>
-        <issn>0950-5849</issn>
-        <pages>821 - 838</pages>
+        <abstract>Abstract: Over time, the Internet has become a corpus of interrelated content, viz. flat documents, dynamically generated documents and data, metadata, and multiple web services based on them. The hyper-linked structure of the web creates a dynamic relationship between context and content, making it difficult to get a complete picture of the conceptual mapping of the information. It can be difficult for a human reader to extract usable meaning. This human-understandable semantics can be achieved only when the conceptual structure of the content becomes an essential part of the posted material. Research studies have proved that UML-based ontologies can bring semantic coherence; their visual modeling can facilitate conceptual browsing and would be understandable to both machine and users. In this chapter, \{UML\} - the selected technology for framework development - is presented in detail. The chapter covers its evolution, development, features and components. It also summarizes the functioning of argoUML, a tool that can be used for the development of \{UML\} models. </abstract>
+        <edition/>
+        <keywords>Semantic Web, ontologies, UML, argoUML, meta-modeling approach </keywords>
+        <pages>109 - 126</pages>
+        <booktitle>From Knowledge Abstraction to Management </booktitle>
+        <url>http://www.sciencedirect.com/science/article/pii/B9781843347033500059</url>
+        <publisher>Chandos Publishing</publisher>
+        <author>Aparajita Suman</author>
+        <editor>Suman, Aparajita </editor>
+        <title>5 - Unified Modeling Language: untying the tangles </title>
+        <address/>
+        <isbn>978-1-84334-703-3</isbn>
+        <year>2014</year>
+        <doi>http://dx.doi.org/10.1533/9781780633695.109</doi>
+    </item>
+    <item>
+        <abstract>We present DiaSuite, a tool suite that uses a software design approach to drive the development process. DiaSuite focuses on a specific domain, namely Sense/Compute/Control (SCC) applications. It comprises a domain-specific design language, a compiler producing a Java programming framework, a 2D-renderer to simulate an application, and a deployment framework. We have validated our tool suite on a variety of concrete applications in areas including telecommunications, building automation, robotics and avionics. </abstract>
+        <keywords>Domain-specific design language, Tool-based development methodology, Generative programming, Pervasive computing </keywords>
+        <issn>0167-6423</issn>
+        <pages>39 - 51</pages>
+        <number/>
+        <url>http://www.sciencedirect.com/science/article/pii/S0167642312000652</url>
+        <journal>Science of Computer Programming </journal>
+        <author>Benjamin Bertran and Julien Bruneau and Damien Cassou and Nicolas Loriant and Emilie Balland and Charles Consel</author>
+        <title>DiaSuite: A tool suite to develop Sense/Compute/Control applications </title>
+        <volume>79</volume>
+        <year>2014</year>
+        <doi>http://dx.doi.org/10.1016/j.scico.2012.04.001</doi>
+        <note>Experimental Software and Toolkits (EST 4): A special issue of the Workshop on Academic Software Development Tools and Techniques (WASDeTT-3 2010) </note>
+    </item>
+    <item>
+        <abstract>Software product lines (SPLs) are used in industry to develop families of similar software systems. Legacy systems, either highly configurable or with a story of versions and local variations, are potential candidates for reconfiguration as \{SPLs\} using reengineering techniques. Existing \{SPLs\} can also be restructured using specific refactorings to improve their internal quality. Although many contributions (including industrial experiences) can be found in the literature, we lack a global vision covering the whole life cycle of an evolving product line. This study aims to survey existing research on the reengineering of legacy systems into \{SPLs\} and the refactoring of existing \{SPLs\} in order to identify proven approaches and pending challenges for future research in both subfields. We launched a systematic mapping study to find as much literature as possible, covering the diverse terms involved in the search string (restructuring, refactoring, reengineering, etc. always connected with SPLs) and filtering the papers using relevance criteria. The 74 papers selected were classified with respect to several dimensions: main focus, research and contribution type, academic or industrial validation if included, etc. We classified the research approaches and analyzed their feasibility for use in industry. The results of the study indicate that the initial works focused on the adaptation of generic reengineering processes to \{SPL\} extraction. Starting from that foundation, several trends have been detected in recent research: the integrated or guided reengineering of (typically object-oriented) legacy code and requirements; specific aspect-oriented or feature-oriented refactoring into SPLs, and more recently, refactoring for the evolution of existing product lines. A majority of papers include academic or industrial case studies, though only a few are based on quantitative data. The degree of maturity of both subfields is different: Industry examples for the reengineering of the legacy system subfield are abundant, although more evaluation research is needed to provide better evidence for adoption in industry. Product line evolution through refactoring is an emerging topic with some pending challenges. Although it has recently received some attention, the theoretical foundation is rather limited in this subfield and should be addressed in the near future. To sum up, the main contributions of this work are the classification of research approaches as well as the analysis of remaining challenges, open issues, and research opportunities. </abstract>
+        <keywords>Software product line, Evolution, Reengineering, Legacy system, Refactoring </keywords>
+        <issn>0167-6423</issn>
+        <pages>1010 - 1034</pages>
         <number>8</number>
-        <url>http://www.sciencedirect.com/science/article/pii/S0950584914000627</url>
+        <url>http://www.sciencedirect.com/science/article/pii/S0167642312000895</url>
+        <journal>Science of Computer Programming </journal>
+        <author>Miguel A. Laguna and Yania Crespo</author>
+        <title>A systematic mapping study on software product line evolution: From legacy system reengineering to product line refactoring </title>
+        <volume>78</volume>
+        <year>2013</year>
+        <doi>http://dx.doi.org/10.1016/j.scico.2012.05.003</doi>
+        <note>Special section on software evolution, adaptability, and maintenance &amp;amp; Special section on the Brazilian Symposium on Programming Languages </note>
+    </item>
+    <item>
+        <abstract>Abstract Capturing physical data in the context of measurement systems is a demanding process that often requires many repetitions with different settings. To assist in this activity, a domain-specific modeling language (DSML) called Sequencer has been developed to enable the improved definition of measurement procedures. With Sequencer, the level of abstraction has been raised and sophisticated changes in measurement procedures are now enabled. Although there are numerous \{DSMLs\} like Sequencer in the existing literature, there are some obstacles working against the more widespread adoption of \{DSMLs\} in practice. One challenge is the lack of supporting tools for DSMLs, which would improve the capabilities of end-users of such languages. For instance, support for debugging a model expressed in a \{DSML\} is often neglected. The lack of a debugger at the proper abstraction level limits the domain experts in discovering and locating bugs in a model. In this paper, Sequencer is presented together with debugging facilities (called Ladybird) that are integrated in a modeling environment. Ladybird supports different execution modes (e.g., steps, breakpoints, animations, variable views, and stack traces) that can be helpful during the debugging of a model. Ladybird's primary contribution is in showing the value of error detection in complicated industrial environments, such as data acquisition in automotive testing. The paper contributes to a discussion of the implementation details of \{DSML\} debugging facilities and how such a debugger can be reused to support domains other than the measurement context of Sequencer. </abstract>
+        <keywords>Debugging aid, Domain-specific modeling languages, Graphical environments, Usage experience </keywords>
+        <issn>0166-3615</issn>
+        <pages>622 - 635</pages>
+        <number>4</number>
+        <url>http://www.sciencedirect.com/science/article/pii/S0166361514000293</url>
+        <journal>Computers in Industry </journal>
+        <author>TomaÅ¾ Kosar and Marjan Mernik and Jeff Gray and TomaÅ¾ Kos</author>
+        <title>Debugging measurement systems using a domain-specific modeling language </title>
+        <volume>65</volume>
+        <year>2014</year>
+        <doi>http://dx.doi.org/10.1016/j.compind.2014.01.013</doi>
+        <note/>
+    </item>
+    <item>
+        <issn>0021-9673</issn>
+        <pages>B1 - B118</pages>
+        <number>1</number>
+        <url>http://www.sciencedirect.com/science/article/pii/S002196739188002J</url>
+        <journal>Journal of Chromatography A </journal>
+        <title>Bibliography Section </title>
+        <volume>940</volume>
+        <year>2001</year>
+        <key>tagkey2001B1</key>
+        <doi>http://dx.doi.org/10.1016/S0021-9673(91)88002-J</doi>
+        <note/>
+    </item>
+    <item>
+        <abstract>A formal requirements specification language plays an important role in software development. Not only can such language be used for stating requirements specification, but also can be used in many phases of software development life cycle. The \{FRORL\} project started from constructing a language with a solid logical foundation and further expanded to research in verification, validation, requirements analysis, debugging, and transformation. Research in this project aided in some industrial applications in which a code generation tool produced software for embedded systems. This article reports the experiences gained from this project and states the value of research in knowledge-based software engineering. </abstract>
+        <keywords>Formal specification language, Nonmonotonic logic, Formal verification, Automatic code generation, Knowledge-based software engineering </keywords>
+        <issn>0164-1212</issn>
+        <pages>1578 - 1587</pages>
+        <number>10</number>
+        <url>http://www.sciencedirect.com/science/article/pii/S0164121209000521</url>
+        <journal>Journal of Systems and Software </journal>
+        <author>Jeffrey J.P. Tsai and Alan Liu</author>
+        <title>Experience on knowledge-based software engineering: A logic-based requirements language and its industrial applications </title>
+        <volume>82</volume>
+        <year>2009</year>
+        <doi>http://dx.doi.org/10.1016/j.jss.2009.03.019</doi>
+        <note>SI: \{YAU\} </note>
+    </item>
+    <item>
+        <abstract>The modeling, analysis and design of systems is generally based on many formalisms to describe discrete and/or continuous behaviors, and to map these descriptions into a specific platform. In this context, the article proposes the concept of functional metamodeling to capture, then to integrate modeling languages. The concept offers an alternative to standard Model Driven Engineering (MDE) and is well adapted to mathematical descriptions such as the ones found in system modeling. As an application, a set of functional metamodels is proposed for dataflows (usable to model continuous behaviors), state-transition systems (usable to model discrete behaviors) and a metamodel for actions (to model interactions with a target platform and concurrent execution). A model of a control architecture for a legged robot is proposed as an application of these modeling languages. </abstract>
+        <keywords>System modeling, Functional metamodeling, Model Driven Engineering (MDE) </keywords>
+        <issn>0164-1212</issn>
+        <pages>1125 - 1136</pages>
+        <number>7</number>
+        <url>http://www.sciencedirect.com/science/article/pii/S0164121209000223</url>
+        <journal>Journal of Systems and Software </journal>
+        <author>Laurent Thiry and Bernard Thirion</author>
+        <title>Functional metamodels for systems and software </title>
+        <volume>82</volume>
+        <year>2009</year>
+        <doi>http://dx.doi.org/10.1016/j.jss.2009.01.042</doi>
+        <note/>
+    </item>
+    <item>
+        <abstract>Abstract This paper comprises a SysML-based approach to support the model-driven engineering (MDE) of Manufacturing Automation Software Projects (MASP). The Systems Modeling Language (SysML) is adapted to define the SysML-AT (SysML for automation), a specialized language profile that covers (non-)functional requirements, corresponding software applications and properties of proprietary hardware components. Furthermore, SysML-AT supports an automated software generation for run-time environments conforming to \{IEC\} 61131-3. A prototypical tool support was realized for adapted SysML Parametric Diagrams (PD) inside an industrial automation software development tool. Coupling the model editor and online data from the provided run-time environment enables direct debugging inside the model. The approach was evaluated by several case studies and additional usability experiments. With the latter, the suitability of the \{MDE\} approach for future users was proven. </abstract>
+        <keywords>Model-based system and software engineering, Distributed systems, Manufacturing automation system </keywords>
+        <issn>0957-4158</issn>
+        <pages>883 - 897</pages>
+        <number>7</number>
+        <url>http://www.sciencedirect.com/science/article/pii/S0957415814000853</url>
+        <journal>Mechatronics </journal>
+        <author>Birgit Vogel-Heuser and Daniel SchÃ¼tz and Timo Frank and Christoph Legat</author>
+        <title>Model-driven engineering of Manufacturing Automation Software Projects â€“ A SysML-based approach </title>
+        <volume>24</volume>
+        <year>2014</year>
+        <doi>http://dx.doi.org/10.1016/j.mechatronics.2014.05.003</doi>
+        <note>1. Model-Based Mechatronic System Design 2. Model Based Engineering </note>
+    </item>
+    <item>
+        <abstract>Abstract Recent advances in technology enable the creation of complex industrial systems comprising mechanical, electrical, and logical â€“ software â€“ components. It is clear that new project techniques are demanded to support the design of such systems. At design phase, it is extremely important to raise abstraction level in earlier stages of product development in order to deal with such a complexity in an efficient way. This paper discusses Model Driven Engineering (MDE) applied to design industrial mechatronics systems. An aspect-oriented \{MDE\} approach is presented by means of a real-world case study, comprising requirements engineering up to code generation. An assessment of two well-known high-level paradigms, namely Aspect- and Object-Oriented paradigms, is deeply presented. Their concepts are applied at every design step of an embedded and real-time mechatronics system, specifically for controlling a product assembler industrial cell. The handling of functional and non-functional requirements (at modeling level) using aspects and objects is further emphasized. Both designs are compared using a set of software engineering metrics, which were adapted to be applied at modeling level. Particularly, the achieved results show the suitability of each paradigm for the system specification in terms of reusability quality of model elements. Focused on the generated code for each case study, statistics depicted an improvement in number of lines using aspects. </abstract>
+        <keywords>Model-Driven Engineering (MDE), Aspect Oriented Software Development (AOSD), Embedded and real-time system, Industrial mechatronics system, Design automation, Code generation </keywords>
+        <issn>0957-4158</issn>
+        <pages>844 - 865</pages>
+        <number>7</number>
+        <url>http://www.sciencedirect.com/science/article/pii/S0957415813002420</url>
+        <journal>Mechatronics </journal>
+        <author>Marco AurÃ©lio Wehrmeister and Edison Pignaton de Freitas and AlÃ©cio Pedro Delazari Binotto and Carlos Eduardo Pereira</author>
+        <title>Combining aspects and object-orientation in model-driven engineering for distributed industrial mechatronics systems </title>
+        <volume>24</volume>
+        <year>2014</year>
+        <doi>http://dx.doi.org/10.1016/j.mechatronics.2013.12.008</doi>
+        <note>1. Model-Based Mechatronic System Design 2. Model Based Engineering </note>
+    </item>
+    <item>
+        <abstract>Abstract Multi-operation mode processes are often described through a hybrid model using well-known formal descriptions such as hybrid automata. A multi-controller architecture has been proposed in the literature for coping with different dynamics. It is composed by as many control algorithms as operation modes and a supervisor that tracks the systemâ€™s operation, switching to the appropriate control algorithm when a new operation mode is reached. This paper explores the advantages of model-based techniques to automate the implementation of the supervisor and its integration into the final real-time control system from the simulation dynamic model. In particular, the Model Driven Engineering approach has been followed in order to provide a framework to support the development cycle of the control system for mode switched processes. It uses information from the model of the process and from the control loops designed and using model transformation techniques the supervisor is automatically generated. In order to provide independency from the particular simulation tools used for defining the process model, meta-models are proposed for both, the process and the supervisor, as well as for the necessary transformations. A proof of concept framework has been designed for the target field of automation applications, generating the supervisor in \{PLCopen\} \{XML\} format for achieving vendor independency. </abstract>
+        <keywords>Automation systems, Mode switched systems, Supervision, Model Driven Engineering, Meta-modeling techniques, IEC 61131-3 standard </keywords>
+        <issn>0957-4158</issn>
+        <pages>866 - 882</pages>
+        <number>7</number>
+        <url>http://www.sciencedirect.com/science/article/pii/S0957415814000816</url>
+        <journal>Mechatronics </journal>
+        <author>Nagore Iriondo and Elisabet EstÃ©vez and DarÃ­o Orive and Marga Marcos</author>
+        <title>On the use of model-based techniques for achieving multi-mode control architectures </title>
+        <volume>24</volume>
+        <year>2014</year>
+        <doi>http://dx.doi.org/10.1016/j.mechatronics.2014.05.002</doi>
+        <note>1. Model-Based Mechatronic System Design 2. Model Based Engineering </note>
+    </item>
+    <item>
+        <abstract>Abstract The complexity of information systems is increasing in recent years, leading to increased effort for maintenance and configuration. Self-adaptive systems (SASs) address this issue. Due to new computing trends, such as pervasive computing, miniaturization of \{IT\} leads to mobile devices with the emerging need for context adaptation. Therefore, it is beneficial that devices are able to adapt context. Hence, we propose to extend the definition of \{SASs\} and include context adaptation. This paper presents a taxonomy of self-adaptation and a survey on engineering SASs. Based on the taxonomy and the survey, we motivate a new perspective on \{SAS\} including context adaptation. </abstract>
+        <keywords>Taxonomy, Self-adaptation, Survey, Self-adaptive systems, Context adaptation </keywords>
+        <issn>1574-1192</issn>
+        <pages>184 - 206</pages>
+        <number/>
+        <url>http://www.sciencedirect.com/science/article/pii/S157411921400162X</url>
+        <journal>Pervasive and Mobile Computing </journal>
+        <author>Christian Krupitzer and Felix Maximilian Roth and Sebastian VanSyckel and Gregor Schiele and Christian Becker</author>
+        <title>A survey on engineering approaches for self-adaptive systems </title>
+        <volume>17, Part B</volume>
+        <year>2015</year>
+        <doi>http://dx.doi.org/10.1016/j.pmcj.2014.09.009</doi>
+        <note>10 years of Pervasive Computing' In Honor of Chatschik Bisdikian </note>
+    </item>
+    <item>
+        <abstract>Feature Diagrams (FDs) are a family of popular modelling languages used to address the feature interaction problem, particularly in software product lines, \{FDs\} were first introduced by Kang as part of the \{FODA\} (Feature-Oriented Domain Analysis) method back in 1990. Afterwards, various extensions of \{FODA\} \{FDs\} were introduced to compensate for a purported ambiguity and lack of precision and expressiveness. However, they never received a formal semantics, which is the hallmark of precision and unambiguity and a prerequisite for efficient and safe tool automation. The reported work is intended to contribute a more rigorous approach to the definition, understanding, evaluation, selection and implementation of \{FD\} languages. First, we provide a survey of \{FD\} variants. Then, we give them a formal semantics, thanks to a generic construction that we call Free Feature Diagrams (FFDs). This demonstrates that \{FDs\} can be precise and unambiguous. This also defines their expressiveness. Many variants are expressively complete, and thus the endless quest for extensions actually cannot be justified by expressiveness. A finer notion is thus needed to compare these expressively complete languages. Two solutions are well-established: succinctness and embeddability, that express the naturalness of a language. We show that the expressively complete \{FDs\} fall into two succinctness classes, of which we of course recommend the most succinct. Among the succinct expressively complete languages, we suggest a new, simple one that is not harmfully redundant: Varied \{FD\} (VFD). Finally, we study the execution time that tools will need to solve useful problems in these languages. </abstract>
+        <keywords>Feature diagram, Survey, Formal semantics, Feature interaction, Software product lines </keywords>
+        <issn>1389-1286</issn>
+        <pages>456 - 479</pages>
+        <number>2</number>
+        <url>http://www.sciencedirect.com/science/article/pii/S1389128606002179</url>
+        <journal>Computer Networks </journal>
+        <author>Pierre-Yves Schobbens and Patrick Heymans and Jean-Christophe Trigaux and Yves Bontemps</author>
+        <title>Generic semantics of feature diagrams </title>
+        <volume>51</volume>
+        <year>2007</year>
+        <doi>http://dx.doi.org/10.1016/j.comnet.2006.08.008</doi>
+        <note>Feature Interaction </note>
+    </item>
+    <item>
+        <abstract>Abstract The consumer market is continuously pushing for smarter, faster, more durable and cheaper products with ever more complex and sophisticated functionality. Other fields such as safetyâ€“critical and dependable applications are not unaware of these requirements, and even impose others (e.g. certification). In the current multi-core era, industry and research entities are facing the important challenge of fulfilling all these requirements, which often impose the necessity for integrating components with different levels of dependability in a single hardware platform. In this scenario, new concerns appear with respect to safety certification of the resulting mixed-criticality systems (e.g. temporal and spatial isolation). This article describes the research effort that is being conducted within the \{FP7\} MultiPARTES project, which is one of the initiatives launched by the European Commission to explore new solutions for developing certifiable mixed-criticality systems using heterogeneous multi-cores. The article explains the proposed development toolset for such systems, presents a proof-of-concept implementation and shows its applicability in a real-world application that needs to be certified, namely a wind-power turbine. </abstract>
+        <keywords>Mixed-criticality, Multi-core, Partitioning, Hardware virtualization, Certification, Temporal and spatial separation </keywords>
+        <issn>0141-9331</issn>
+        <pages>921 - 932</pages>
+        <number>8, Part B</number>
+        <url>http://www.sciencedirect.com/science/article/pii/S0141933114001380</url>
+        <journal>Microprocessors and Microsystems </journal>
+        <author>Salvador Trujillo and Alfons Crespo and Alejandro Alonso and Jon PÃ©rez</author>
+        <title>MultiPARTES: Multi-core partitioning and virtualization for easing the certification of mixed-criticality systems </title>
+        <volume>38</volume>
+        <year>2014</year>
+        <doi>http://dx.doi.org/10.1016/j.micpro.2014.09.004</doi>
+        <note/>
+    </item>
+    <item>
+        <abstract>Context Traceability is one of the basic tenets of all safety standards and a key prerequisite for software safety certification. In the current state of practice, there is often a significant traceability gap between safety requirements and software design. Poor traceability, in addition to being a non-compliance issue on its own, makes it difficult to determine whether the design fulfills the safety requirements, mainly because the design aspects related to safety cannot be clearly identified. Objective The goal of this article is to develop a framework for specifying and automatically extracting design aspects relevant to safety requirements. This goal is realized through the combination of two components: (1) A methodology for establishing traceability between safety requirements and design, and (2) an algorithm that can extract for any given safety requirement a minimized fragment (slice) of the design that is sound, and yet easy to understand and inspect. Method We ground our framework on System Modeling Language (SysML). The framework includes a traceability information model, a methodology to establish traceability, and mechanisms for model slicing based on the recorded traceability information. The framework is implemented in a tool, named SafeSlice. Results We prove that our slicing algorithm is sound for temporal safety properties, and argue about the completeness of slices based on our practical experience. We report on the lessons learned from applying our approach to two case studies, one benchmark and one industrial case. Both studies indicate that our approach substantially reduces the amount of information that needs to be inspected for ensuring that a given (behavioral) safety requirement is met by the design. </abstract>
+        <keywords>Safety certification, SysML, Traceability, Model slicing </keywords>
+        <issn>0950-5849</issn>
+        <pages>569 - 590</pages>
+        <number>6</number>
+        <url>http://www.sciencedirect.com/science/article/pii/S095058491200016X</url>
         <journal>Information and Software Technology </journal>
-        <author>Carlos A. González and Jordi Cabot</author>
-        <title>Formal verification of static software models in MDE: A systematic review </title>
+        <author>Shiva Nejati and Mehrdad Sabetzadeh and Davide Falessi and Lionel Briand and Thierry Coq</author>
+        <title>A SysML-based approach to traceability management and design slicing in support of safety certification: Framework, tool support, and case studies </title>
+        <volume>54</volume>
+        <year>2012</year>
+        <doi>http://dx.doi.org/10.1016/j.infsof.2012.01.005</doi>
+        <note>Special Section: Engineering Complex Software Systems through Multi-Agent Systems and SimulationSpecial Section: Engineering Complex Software Systems through Multi-Agent Systems and Simulation </note>
+    </item>
+    <item>
+        <abstract>Context Model-Driven Engineering provides a new landscape for dealing with traceability in software development. Objective Our goal is to analyze the current state of the art in traceability management in the context of Model-Driven Engineering. Method We use the systematic literature review based on the guidelines proposed by Kitchenham. We propose five research questions and six quality assessments. Results Of the 157 relevant studies identified, 29 have been considered primary studies. These studies have resulted in 17 proposals. Conclusion The evaluation shows that the most addressed operations are storage, \{CRUD\} and visualization, while the most immature operations are exchange and analysis traceability information. </abstract>
+        <keywords>Traceability, Model-Driven Engineering, Systematic literature review </keywords>
+        <issn>0950-5849</issn>
+        <pages>1340 - 1356</pages>
+        <number>12</number>
+        <url>http://www.sciencedirect.com/science/article/pii/S0950584912001346</url>
+        <journal>Information and Software Technology </journal>
+        <author>IvÃ¡n Santiago and Ã�lvaro JimÃ©nez and Juan Manuel Vara and Valeria De Castro and VerÃ³nica A. Bollati and Esperanza Marcos</author>
+        <title>Model-Driven Engineering as a new landscape for traceability management: A systematic literature review </title>
+        <volume>54</volume>
+        <year>2012</year>
+        <doi>http://dx.doi.org/10.1016/j.infsof.2012.07.008</doi>
+        <note>Special Section on Software Reliability and Security </note>
+    </item>
+    <item>
+        <abstract>AbstractContext Critical systems in domains such as aviation, railway, and automotive are often subject to a formal process of safety certification. The goal of this process is to ensure that these systems will operate safely without posing undue risks to the user, the public, or the environment. Safety is typically ensured via complying with safety standards. Demonstrating compliance to these standards involves providing evidence to show that the safety criteria of the standards are met. Objective In order to cope with the complexity of large critical systems and subsequently the plethora of evidence information required for achieving compliance, safety professionals need in-depth knowledge to assist them in classifying different types of evidence, and in structuring and assessing the evidence. This paper is a step towards developing such a body of knowledge that is derived from a large-scale empirically rigorous literature review. Method We use a Systematic Literature Review (SLR) as the basis for our work. The \{SLR\} builds on 218 peer-reviewed studies, selected through a multi-stage process, from 4963 studies published between 1990 and 2012. Results We develop a taxonomy that classifies the information and artefacts considered as evidence for safety. We review the existing techniques for safety evidence structuring and assessment, and further study the relevant challenges that have been the target of investigation in the academic literature. We analyse commonalities in the results among different application domains and discuss implications of the results for both research and practice. Conclusion The paper is, to our knowledge, the largest existing study on the topic of safety evidence. The results are particularly relevant to practitioners seeking a better grasp on evidence requirements as well as to researchers in the area of system safety. As a major finding of the review, the results strongly suggest the need for more practitioner-oriented and industry-driven empirical studies in the area of safety certification. </abstract>
+        <keywords>Safetyâ€“critical systems, Safety standards, Safety compliance, Safety certification, Safety evidence, Systematic literature review </keywords>
+        <issn>0950-5849</issn>
+        <pages>689 - 717</pages>
+        <number>7</number>
+        <url>http://www.sciencedirect.com/science/article/pii/S0950584914000603</url>
+        <journal>Information and Software Technology </journal>
+        <author>Sunil Nair and Jose Luis de la Vara and Mehrdad Sabetzadeh and Lionel Briand</author>
+        <title>An extended systematic literature review on provision of evidence for safety certification </title>
         <volume>56</volume>
         <year>2014</year>
+        <doi>http://dx.doi.org/10.1016/j.infsof.2014.03.001</doi>
         <note/>
-        <doi>http://dx.doi.org/10.1016/j.infsof.2014.03.003</doi>
     </item>
     <item>
-        <abstract>Abstract The complex problems that computational science addresses are more and more benefiting from the progress of computing facilities (simulators, librairies, accessible languages,. .). Nevertheless, the actual solutions call for several improvements. Among those, we address in this paper the needs for leveraging on knowledge and expertise by focusing on Domain-Specific Modeling Languages application. In this vision paper we illustrate, through concrete experiments, how the last \{DSML\} research help getting closer the problem and implementation spaces. </abstract>
-        <keywords>Scientific Computing </keywords>
-        <issn>1877-0509</issn>
-        <pages>660 - 669</pages>
+        <abstract>Abstract The implementation and installation of today's service robot applications into industrial processes is a challenging and time taking task that is usually executed by domain experts. The aim of the \{PRACE\} EU-project is to bring a mobile dual arm service robot into small part assembly tasks, which should be used by regular workers. To fulfill this goal a model driven engineering (MDE) tool chain was developed that separates three different user roles in the development process of an industrial service robot application. For each of these roles, the spectrum of required knowledge is reduced, especially for the role of the end user. Based on the implementation of this separation, an evaluation during the development of the \{PRACE\} demonstration use case was done. </abstract>
+        <keywords>Service robotics, tool chain, model driven engineering </keywords>
+        <issn>2212-0173</issn>
+        <pages>605 - 612</pages>
         <number/>
-        <url>http://www.sciencedirect.com/science/article/pii/S1877050915009904</url>
-        <journal>Procedia Computer Science </journal>
-        <author>Jean-Michel Bruel and Benoit Combemale and Ileana Ober and Hélène Raynal</author>
-        <title>\{MDE\} in Practice for Computational Science </title>
-        <volume>51</volume>
+        <url>http://www.sciencedirect.com/science/article/pii/S2212017314001364</url>
+        <journal>Procedia Technology </journal>
+        <author>Alexander Bubeck and Benjamin Maidel and Felipe Garcia Lopez</author>
+        <title>Model Driven Engineering for the Implementation of User Roles in Industrial Service Robot Applications </title>
+        <volume>15</volume>
+        <year>2014</year>
+        <doi>http://dx.doi.org/10.1016/j.protcy.2014.09.021</doi>
+        <note>2nd International Conference on System-Integrated Intelligence: Challenges for Product and Production Engineering </note>
+    </item>
+    <item>
+        <abstract>Abstract Research into software design models in general, and into the \{UML\} in particular, focuses on answering the question how design models are used, completely ignoring the question if they are used. There is an assumption in the literature that the \{UML\} is the de facto standard, and that use of design models has had a profound and substantial effect on how software is designed by virtue of models giving the ability to do model-checking, code generation, or automated test generation. However for this assumption to be true, there has to be significant use of design models in practice by developers. This paper presents the results of a survey summarizing the answers of 3785 developers answering the simple question on the extent to which design models are used before coding. We relate their use of models with (i) total years of programming experience, (ii) open or closed development, (iii) educational level, (iv) programming language used, and (v) development type. The answer to our question was that design models are not used very extensively in industry, and where they are used, the use is informal and without tool support, and the notation is often not UML. The use of models decreased with an increase in experience and increased with higher level of qualification. Overall we found that models are used primarily as a communication and collaboration mechanism where there is a need to solve problems and/or get a joint understanding of the overall design in a group. We also conclude that models are seldom updated after initially created and are usually drawn on a whiteboard or on paper. </abstract>
+        <keywords>Software design models, Empirical industrial survey, Model-driven engineering (MDD, MDE, UML) </keywords>
+        <issn>0164-1212</issn>
+        <pages>176 - 193</pages>
+        <number/>
+        <url>http://www.sciencedirect.com/science/article/pii/S0164121214001022</url>
+        <journal>Journal of Systems and Software </journal>
+        <author>Tony Gorschek and Ewan Tempero and Lefteris Angelis</author>
+        <title>On the use of software design models in software development practice: An empirical investigation </title>
+        <volume>95</volume>
+        <year>2014</year>
+        <doi>http://dx.doi.org/10.1016/j.jss.2014.03.082</doi>
+        <note/>
+    </item>
+    <item>
+        <abstract>Model interchange approaches support the analysis of software architecture and design by enabling a variety of tools to exchange performance models using a common schema. This paper builds on the Software Performance Model Interchange Format (S-PMIF), extending it to support the analysis of real-time systems and adapting it to be suitable for implementation with modeling frameworks such as \{MOF\} or EMF. This enhances the model interchange process by making it possible to define model-to-model transformations from design models into software performance models. The paper addresses real-time system designs expressed in \{CCL\} and their transformation into the S-PMIF for additional performance analyses. </abstract>
+        <keywords>Software performance engineering, Performance model interchange, Model driven architecture analysis, Component based real-time systems, Model to model transformation </keywords>
+        <issn>0166-5316</issn>
+        <pages>612 - 633</pages>
+        <number>8</number>
+        <url>http://www.sciencedirect.com/science/article/pii/S0166531609001047</url>
+        <journal>Performance Evaluation </journal>
+        <author>Gabriel A. Moreno and Connie U. Smith</author>
+        <title>Performance analysis of real-time component architectures: An enhanced model interchange approach </title>
+        <volume>67</volume>
+        <year>2010</year>
+        <doi>http://dx.doi.org/10.1016/j.peva.2009.07.008</doi>
+        <note>Special Issue on Software and Performance </note>
+    </item>
+    <item>
+        <abstract>Abstract Coping with evolution in automated production systems implies a cross-disciplinary challenge along the system's life-cycle for variant-rich systems of high complexity. The authors from computer science and automation provide an interdisciplinary survey on challenges and state of the art in evolution of automated production systems. Selected challenges are illustrated on the case of a simple pick and place unit. In the first part of the paper, we discuss the development process of automated production systems as well as the different type of evolutions during the system's life-cycle on the case of a pick and place unit. In the second part, we survey the challenges associated with evolution in the different development phases and a couple of cross-cutting areas and review existing approaches addressing the challenges. We close with summarizing future research directions to address the challenges of evolution in automated production systems. </abstract>
+        <keywords>Evolution, Automation, Automated production systems, Software engineering </keywords>
+        <issn>0164-1212</issn>
+        <pages>54 - 84</pages>
+        <number/>
+        <url>http://www.sciencedirect.com/science/article/pii/S0164121215001818</url>
+        <journal>Journal of Systems and Software </journal>
+        <author>Birgit Vogel-Heuser and Alexander Fay and Ina Schaefer and Matthias Tichy</author>
+        <title>Evolution of software in automated production systems: Challenges and research directions </title>
+        <volume>110</volume>
         <year>2015</year>
-        <note>International Conference On Computational Science, \{ICCS\} 2015Computational Science at the Gates of Nature </note>
-        <doi>http://dx.doi.org/10.1016/j.procs.2015.05.182</doi>
+        <doi>http://dx.doi.org/10.1016/j.jss.2015.08.026</doi>
+        <note/>
     </item>
 </entries>

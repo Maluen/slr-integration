@@ -15,6 +15,8 @@ import org.supercsv.io.CsvListReader;
 import org.supercsv.io.ICsvListReader;
 import org.supercsv.prefs.CsvPreference;
 
+import parsers.bibtext.BibtexParser;
+
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -142,6 +144,9 @@ public class Main {
 								+ splittedQueryPart.getQueryText() );
 		}*/
 		
+		//BibtexParser bibtexParser = new BibtexParser();
+		//String fixedBibtex = bibtexParser.fixBibtexString(Utils.getFileContent(new File("data/bibtex/science.bib")));
+		//Utils.saveText(fixedBibtex, "data/bibtex/science-fixed.bib");
 	}
 
 }

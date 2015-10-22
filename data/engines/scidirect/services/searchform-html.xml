@@ -1,0 +1,26 @@
+<service>
+    <name>searchForm</name>
+    <resources>
+        <item>
+            <name>response.body</name>
+            <contentType>text/html</contentType>
+        </item>
+    </resources>
+    <request>
+        <url>
+        <![CDATA[
+            http://www.sciencedirect.com/science?_ob=MiamiSearchURL&_method=requestForm&_temp=all_boolSearch.tmpl&md5=052b06d957a9d8c82e07acf1d7eef1b7
+        ]]>
+        </url>
+        <method>GET</method>
+    </request>
+    <response expand="true" from="response.body">
+        <value>
+
+            <firstPage el=".searchBlk form[name=Form1]">
+                <md5 el="input[name=md5]" mode="text" />
+            </firstPage>
+
+        </value>
+    </response>
+</service>

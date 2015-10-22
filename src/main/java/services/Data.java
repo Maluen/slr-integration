@@ -13,9 +13,12 @@ public class Data<T> extends HashMap<String, T> {
 	
 	// formats: {{{name}}} or {{name}}
 	public static Pattern variablePattern = Pattern.compile("(\\{\\{\\{(.+?)\\}\\}\\})|(\\{\\{(.+?)\\}\\})");
-	// formats: {{#name}}body{{/name}} (\1 refers to name)
+	// 'if' formats: (\1 refers to name)
+	// - if not null: {{#name}}body{{/name}}
+	// - if null: {{^name}}body{{/name}}
 	// Note: the dot will also match newlines, since the body could contain them
-	public static Pattern ifPattern = Pattern.compile("\\{\\{#(.+?)\\}\\}(.*?)\\{\\{/\\1\\}\\}", Pattern.DOTALL);
+	public static Pattern ifNotNullPattern = Pattern.compile("\\{\\{#(.+?)\\}\\}(.*?)\\{\\{/\\1\\}\\}", Pattern.DOTALL);
+	public static Pattern ifNullPattern = Pattern.compile("\\{\\{\\^(.+?)\\}\\}(.*?)\\{\\{/\\1\\}\\}", Pattern.DOTALL);
 	
 	public String apply(String target) {
 		// default encoding
@@ -24,17 +27,20 @@ public class Data<T> extends HashMap<String, T> {
 	
 	public String apply(String target, HTTPEncoder.EncodeMode encodeMode) {
 		
-		target = this.applyIf(target, encodeMode);
+		target = this.applyIf(target, true, encodeMode);
+		target = this.applyIf(target, false, encodeMode);
 		target = this.applyVariables(target, encodeMode);
 		
 		return target;
 	}
 	
 	// Note: doesn't support nested if-statements with same name
-	public String applyIf(String target, HTTPEncoder.EncodeMode encodeMode) {
+	// Set isIfTrue to "false" to use an "if false".
+	public String applyIf(String target, Boolean isNotNullIf, HTTPEncoder.EncodeMode encodeMode) {
 		StringBuffer newTargetBuffer = new StringBuffer();
-				
-		Matcher ifMatcher = Data.ifPattern.matcher(target);
+		
+		Pattern ifPattern = (isNotNullIf) ? Data.ifNotNullPattern : Data.ifNullPattern;
+		Matcher ifMatcher = ifPattern.matcher(target);
 		while (ifMatcher.find()) {
 			//System.out.println(ifMatcher.group());
 			
@@ -48,12 +54,12 @@ public class Data<T> extends HashMap<String, T> {
 			}
 			
 			String replacement;
-			Boolean isTrue = (variableValue != null && !variableValue.isEmpty());
-			if (isTrue) {
+			Boolean isNotNull = (variableValue != null && !variableValue.isEmpty());
+			if (isNotNull == isNotNullIf) {
 				// keep body
 				if (body != null && !body.isEmpty()) {
 					// recursive call to process nested if-statements in body (if any)
-					body = this.applyIf(body, encodeMode);
+					body = this.applyIf(body, isNotNullIf, encodeMode);
 				}
 				replacement = body;
 			} else {
@@ -65,7 +71,8 @@ public class Data<T> extends HashMap<String, T> {
 		}
 		ifMatcher.appendTail(newTargetBuffer);
 		
-		return newTargetBuffer.toString();
+		// (the result is trimmed as whitespace borders might have been created by the replacements)
+		return newTargetBuffer.toString().trim();
 	}
 	
 	public String applyVariables(String target, HTTPEncoder.EncodeMode encodeMode) {

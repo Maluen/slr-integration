@@ -205,6 +205,16 @@ public class XMLtoDocument extends ToDocument {
 				
 				documentEl.setTextContent(documentElText);
 				this.logger.log(templateEl.getTagName() + ": " + documentElText + " (text)");
+			
+			} else if (mode.equals("clone")) {
+				
+				// clone the content element children as they are into the document element
+				if (firstContentEl != null) {
+					for (Element contentElChild : XMLParser.getChildElements(firstContentEl)) {
+						Element clonedContentElChild = (Element) this.document.importNode(contentElChild, true);
+						documentEl.appendChild(clonedContentElChild);
+					}
+				}
 				
 			} else {
 				// defaults

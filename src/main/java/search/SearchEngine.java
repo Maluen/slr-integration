@@ -446,6 +446,26 @@ public abstract class SearchEngine {
 		return null;
 	}
 	
+	protected String getResponseString(Resource resource, String path) {
+		Document resourceContent = (Document) resource.getContent();
+		
+		String string = null;
+		
+		try {
+			XPathExpression expr = XMLParser.getXpath().compile("/response/"+path);
+			string = ( (String) expr.evaluate(resourceContent, XPathConstants.STRING) ).trim();
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return string;
+	}
+	
+	protected String getMeta(Resource resource, String metaName) {
+		return this.getResponseString(resource, "meta/"+metaName);
+	}
+	
 	protected Integer getCount(Resource output) {
 		Integer count;
 		
