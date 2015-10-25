@@ -13,8 +13,8 @@ public class ACMSearchAdapter extends SearchAdapter {
 	public List<String> execute(ParseTree queryTree) {
 		
 		// optimization: only search in the fields we are interested in		
-		ACMQueryOptimizerVisitor acmOptimizerVisitor = new ACMQueryOptimizerVisitor();
-		String optimizedQueryText = acmOptimizerVisitor.visit(queryTree);
+		ACMQueryOptimizerVisitor optimizerVisitor = new ACMQueryOptimizerVisitor();
+		String optimizedQueryText = optimizerVisitor.visit(queryTree);
 		
 		// splitting isn't required
 		List<String> queryTextList = new ArrayList<String>();

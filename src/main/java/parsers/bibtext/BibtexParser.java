@@ -205,9 +205,9 @@ public class BibtexParser extends Parser {
 			try {
 				latexObjects = latexParser.parse(string);
 			} catch (TokenMgrException | ParseException e) {
-				// invalid latex
-				e.printStackTrace();
-				return null;
+				// invalid latex => last resort: return string as is
+				//e.printStackTrace();
+				return string;
 			}
 	    	LaTeXPrinter latexPrinter = new LaTeXPrinter();
 	    	string = latexPrinter.print(latexObjects);
