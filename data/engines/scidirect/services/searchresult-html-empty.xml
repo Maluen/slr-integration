@@ -1,0 +1,15 @@
+<service>
+    <name>searchResult_{{pageNumber}}</name>
+    <response from="{{searchResultMeta}}">
+      <meta>
+          <query>{{query}}</query>
+          <pageNumber>{{pageNumber}}</pageNumber>
+          <startYear>{{startYear}}</startYear>
+          <endYear>{{endYear}}</endYear>
+
+          <count>0</count>
+      </meta>
+
+      <articles />
+    </response>
+</service>

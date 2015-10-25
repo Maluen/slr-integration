@@ -1,11 +1,8 @@
 package parsers.bibtext;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
+import java.text.Normalizer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,11 +11,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-
-import misc.Utils;
-
+import org.apache.commons.lang3.StringUtils;
 import org.jbibtex.BibTeXDatabase;
 import org.jbibtex.BibTeXParser;
 import org.jbibtex.LaTeXObject;
@@ -50,7 +43,8 @@ public class BibtexParser extends Parser {
 			e1.printStackTrace();
 		}*/
 		
-		content = this.fixBibtexString(content);
+		content = this.fixBibtexMultipleFields(content);
+		content = this.fixBibtexSpecialChars(content);
 		
 		/*try {
 			Utils.saveText(content, "data/bibtex/bibtex-fixed.bib");
@@ -59,7 +53,9 @@ public class BibtexParser extends Parser {
 			e1.printStackTrace();
 		}*/
 		
-		Reader reader = new StringReader(content);		
+		// read content by skipping illegal characters
+		Reader reader = new org.jbibtex.CharacterFilterReader(new StringReader(content));
+		
 		BibTeXParser bibtexParser;
 		try {
 			bibtexParser = new BibTeXParser();
@@ -75,7 +71,7 @@ public class BibtexParser extends Parser {
 		//}
 
 		// Convert to XML document
-		Document document = this.bibtextDatabaseToDocument(database, false);
+		Document document = this.bibtextDatabaseToDocument(database, true);
 		
 		/*try {
 			Utils.saveDocument(document, "data/bibtex/bibtex.xml");
@@ -94,7 +90,7 @@ public class BibtexParser extends Parser {
 	// Assumptions:
 	// - field format: key = "value"
 	// - field ends with comma and newline, entry last field always ends without the comma.
-	public String fixBibtexString(String target) {
+	public String fixBibtexMultipleFields(String target) {
 		StringBuffer newTargetBuffer = new StringBuffer();
 		
 		Map<String, String> fieldsMap = new HashMap<String, String>();
@@ -154,6 +150,14 @@ public class BibtexParser extends Parser {
 		return newTargetBuffer.toString();
 	}
 	
+	// Get rid of accents and convert a whole string to regular letters
+	// http://stackoverflow.com/a/3322174
+	protected String fixBibtexSpecialChars(String target) {
+		target = Normalizer.normalize(target, Normalizer.Form.NFD);
+		target = target.replaceAll("\\p{M}", "");
+		return target;
+	}
+	
 	protected Document bibtextDatabaseToDocument(BibTeXDatabase database, Boolean convertLatex) {
 		Document document = DocumentFactory.getDocBuilder().newDocument();
 		
@@ -188,7 +192,7 @@ public class BibtexParser extends Parser {
 	    
 	    if ((string.indexOf('\\') > -1 || string.indexOf('{') > -1) && convertLatex) {
 	        // LaTeX string that needs to be translated to plain text string
-	    	// TODO: raises exception when latex is mixed with unicode!
+	    	// NOTE: raises exception when latex is mixed with unicode special characters!
 	    	LaTeXParser latexParser;
 			try {
 				latexParser = new LaTeXParser();

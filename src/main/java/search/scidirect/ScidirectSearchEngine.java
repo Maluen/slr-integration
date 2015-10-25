@@ -176,31 +176,40 @@ public class ScidirectSearchEngine extends SearchEngine {
 			this.logger.log("\nFetching new " + resourceFilename);
 		}
 		
-		Service searchService = new Service();
-		String serviceFilename = this.inputBasePath + "services/searchresult-html.xml";
-		searchService.loadFromFile(new File(serviceFilename));
-		
-		// set any needed data
+		// load resource and set any needed data
 		
 		Resource searchResultMetaResource = this.extractSearchResultMeta(pageNumber);
 		
-		searchService.addData("nextPageMD5", this.getResponseString(searchResultMetaResource, "nextPage/md5"));
-		searchService.addData("ArticleListID", this.getResponseString(searchResultMetaResource, "nextPage/ArticleListID"));
-		searchService.addData("st", this.getResponseString(searchResultMetaResource, "nextPage/st"));
-		searchService.addData("count", this.getResponseString(searchResultMetaResource, "nextPage/count"));
-		searchService.addData("chunk", this.getResponseString(searchResultMetaResource, "nextPage/chunk"));
-		searchService.addData("hitCount", this.getResponseString(searchResultMetaResource, "nextPage/hitCount"));
-		searchService.addData("PREV_LIST", this.getResponseString(searchResultMetaResource, "nextPage/PREV_LIST"));
-		searchService.addData("NEXT_LIST", this.getResponseString(searchResultMetaResource, "nextPage/NEXT_LIST"));
-		searchService.addData("TOTAL_PAGES", this.getResponseString(searchResultMetaResource, "nextPage/TOTAL_PAGES"));
+		Service searchService = new Service();
+		String serviceFilename;
 		
-		// list of articles to export
-		String articleIdsQueryFragment = "";
-		List<String> articleIdList = this.getArticlePropertiesFromSearchResult(searchResultMetaResource, "id");
-		for (String articleId : articleIdList) {
-			articleIdsQueryFragment += "&art=" + articleId;
+		Boolean areFakeResults = this.getResponseString(searchResultMetaResource, "areFakeResults").equals("true");
+		if (areFakeResults) {
+			// no results
+			serviceFilename = this.inputBasePath + "services/searchresult-html-empty.xml";
+			
+		} else {
+			serviceFilename = this.inputBasePath + "services/searchresult-html.xml";
+			
+			searchService.addData("nextPageMD5", this.getResponseString(searchResultMetaResource, "nextPage/md5"));
+			searchService.addData("ArticleListID", this.getResponseString(searchResultMetaResource, "nextPage/ArticleListID"));
+			searchService.addData("st", this.getResponseString(searchResultMetaResource, "nextPage/st"));
+			searchService.addData("count", this.getResponseString(searchResultMetaResource, "nextPage/count"));
+			searchService.addData("chunk", this.getResponseString(searchResultMetaResource, "nextPage/chunk"));
+			searchService.addData("hitCount", this.getResponseString(searchResultMetaResource, "nextPage/hitCount"));
+			searchService.addData("PREV_LIST", this.getResponseString(searchResultMetaResource, "nextPage/PREV_LIST"));
+			searchService.addData("NEXT_LIST", this.getResponseString(searchResultMetaResource, "nextPage/NEXT_LIST"));
+			searchService.addData("TOTAL_PAGES", this.getResponseString(searchResultMetaResource, "nextPage/TOTAL_PAGES"));
+			
+			// list of articles to export
+			String articleIdsQueryFragment = "";
+			List<String> articleIdList = this.getArticlePropertiesFromSearchResult(searchResultMetaResource, "id");
+			for (String articleId : articleIdList) {
+				articleIdsQueryFragment += "&art=" + articleId;
+			}
+			searchService.addData("articleIdsQueryFragment", articleIdsQueryFragment);
 		}
-		searchService.addData("articleIdsQueryFragment", articleIdsQueryFragment);
+		searchService.loadFromFile(new File(serviceFilename));
 		
 		searchService.addData("realCount", this.getResponseString(searchResultMetaResource, "meta/count"));
 
@@ -208,6 +217,10 @@ public class ScidirectSearchEngine extends SearchEngine {
 		searchService.addData("pageNumber", pageNumber.toString());
 		if (this.startYear != null) searchService.addData("startYear", this.startYear.toString());
 		if (this.endYear != null) searchService.addData("endYear", this.endYear.toString());
+		
+		searchService.addData("searchResultMeta", searchResultMetaResource.getName());
+		// add any needed resource
+		searchService.getResourceList().add(searchResultMetaResource);
 		
 		searchResultResource = searchService.execute(); // TODO: make this async?
 		

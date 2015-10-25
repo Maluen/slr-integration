@@ -1,0 +1,4 @@
+<service>
+    <name>output_{{pageNumber}}</name>
+    <response from="{{searchResult}}" mode="clone" />
+</service>
