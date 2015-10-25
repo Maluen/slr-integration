@@ -69,9 +69,40 @@ public class ScidirectSearchEngine extends SearchEngine {
 		return homeResource;
 	}
 	
+	protected Resource extractSearchFormMeta(Boolean tryResume) {
+		Resource searchFormMetaResource;
+		String resourceFilename = this.outputBasePath + "resources/searchformmeta-html.xml";
+		
+		if (tryResume) {
+			try {
+				searchFormMetaResource = this.resourceLoader.load(new File(resourceFilename));
+				this.logger.log("\nResumed: " + resourceFilename);
+				return searchFormMetaResource;
+			} catch (SAXException | IOException e1) {
+				// proceed
+				this.logger.log("\nFetching new " + resourceFilename);
+			}
+		}
+		
+		Service searchFormService = new Service();
+		String serviceFilename = this.inputBasePath + "services/searchformmeta-html.xml";
+		searchFormService.loadFromFile(new File(serviceFilename));
+		searchFormMetaResource = searchFormService.execute(); // TODO: make this async?
+		
+		// save resource
+		try {
+			this.resourceSerializer.serialize(searchFormMetaResource, resourceFilename);
+		} catch (Exception e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		
+		return searchFormMetaResource;
+	}
+	
 	protected Resource extractSearchForm(Boolean tryResume) {
 		Resource searchFormResource;
-		String resourceFilename = this.outputBasePath + "resources/searchForm-html.xml";
+		String resourceFilename = this.outputBasePath + "resources/searchform-html.xml";
 		
 		if (tryResume) {
 			try {
@@ -84,9 +115,15 @@ public class ScidirectSearchEngine extends SearchEngine {
 			}
 		}
 		
+		Resource searchFormMeta = this.extractSearchFormMeta(true);
+		
 		Service searchFormService = new Service();
-		String serviceFilename = this.inputBasePath + "services/searchForm-html.xml";
+		String serviceFilename = this.inputBasePath + "services/searchform-html.xml";
 		searchFormService.loadFromFile(new File(serviceFilename));
+		
+		// set any needed data
+		searchFormService.addData("searchFormMD5", this.getResponseString(searchFormMeta, "searchFormMD5"));
+		
 		searchFormResource = searchFormService.execute(); // TODO: make this async?
 		
 		// save resource
@@ -122,8 +159,7 @@ public class ScidirectSearchEngine extends SearchEngine {
 		if (pageNumber == 1) {
 			searchService.addData("isFirstPage", "true");
 			
-			// we want to get the (maybe updated) first page md5, thus resuming is disabled
-			Resource searchFormResource = this.extractSearchForm(false);
+			Resource searchFormResource = this.extractSearchForm(true);
 			String firstPageMD5 = this.getResponseString(searchFormResource, "firstPage/md5");
 			searchService.addData("currentPageMD5", firstPageMD5);
 			

@@ -1,5 +1,5 @@
 <service>
-    <name>searchForm</name>
+    <name>searchFormMeta</name>
     <resources>
         <item>
             <name>response.body</name>
@@ -9,7 +9,7 @@
     <request>
         <url>
         <![CDATA[
-            http://www.sciencedirect.com/science?_ob=MiamiSearchURL&_method=requestForm&_temp=all_boolSearch.tmpl&md5={{searchFormMD5}}
+            http://www.sciencedirect.com/science/search
         ]]>
         </url>
         <method>GET</method>
@@ -17,9 +17,11 @@
     <response expand="true" from="response.body">
         <value>
 
-            <firstPage el=".searchBlk form[name=Form1]">
-                <md5 el="input[name=md5]" mode="text" />
-            </firstPage>
+            <searchFormMD5 el=".advExpertLink a" mode="script">
+            <![CDATA[
+                el.attr('href').match(/&md5=([a-zA-Z0-9]+)/)[1]
+            ]]>
+            </searchFormMD5>
 
         </value>
     </response>
