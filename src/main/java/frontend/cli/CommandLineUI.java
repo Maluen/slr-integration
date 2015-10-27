@@ -1,6 +1,13 @@
 package frontend.cli;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.Scanner;
+
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+
+import misc.Settings;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -14,11 +21,14 @@ import frontend.UI;
 
 public class CommandLineUI extends UI {
 
-	String programName = "slr-integration";
+	protected String programName = "slr-integration";
 	protected Options options;
+	protected Settings settings;
 	
 	public CommandLineUI() {
 		this.options = this.createOptions();
+		
+		this.settings = Settings.getInstance();
 	}
 	
 	protected Options createOptions() {
@@ -26,7 +36,7 @@ public class CommandLineUI extends UI {
 		
 		options.addOption("n", "newsearch", false, "Start a new search");
 		
-		options.addOption("f", "file", true, "Load configuration from file");
+		options.addOption("f", "file", true, "Load search configuration from file");
 		
 		options.addOption("q", "query", true, "Set the query to search for");
 		options.addOption("s", "sites", true, "Set sites where to perform the search as a comma separated list");
@@ -35,9 +45,49 @@ public class CommandLineUI extends UI {
 		options.addOption("fo", "fastoutput", false, "Display only the number of results for each database");
 		options.addOption("o", "outputpath", true, "Set CSV output path");
 		
+		options.addOption("c", "configure", false, "Create or update settings file");
+		
 		options.addOption("h", "help", false, "Show this help");
 		
 		return options;
+	}
+	
+	public void createSettingsFileInteractively() {
+		System.out.println("== Interactive ettings file creation ==");
+		
+	    Scanner scanner = new Scanner(System.in);
+		for (Map.Entry<String, String> settingsDescriptionEntry : this.settings.settingsDescriptionMap.entrySet()) {
+			String settingsName = settingsDescriptionEntry.getKey();
+			String settingsDescription = settingsDescriptionEntry.getValue();
+			
+			// (in case this is an update)
+			String settingsDefaultValue = "";
+			if (this.settings.settingsMap.containsKey(settingsName)) {
+				settingsDefaultValue = this.settings.settingsMap.get(settingsName);
+			}
+			
+			// get setting value from user
+			System.out.print(settingsDescription + " ("+settingsDefaultValue+"): ");
+			String settingsValue = scanner.nextLine();
+			if (settingsValue == null || settingsValue.isEmpty()) {
+				settingsValue = settingsDefaultValue;
+			}
+			
+			this.settings.settingsMap.put(settingsName, settingsValue);
+		}
+		scanner.close();
+		
+		try {
+			this.settings.saveToFile();
+		} catch (TransformerFactoryConfigurationError | TransformerException
+				| IOException e) {
+			e.printStackTrace();
+			System.out.println("== ERROR: Ssettings file creation failed ==");
+			System.exit(1);
+			return;
+		}
+		
+		System.out.println("== Settings file created ==\n");
 	}
 	
 	@Override
@@ -53,6 +103,11 @@ public class CommandLineUI extends UI {
 			return;
 		}
 		
+		if (!this.settings.doFileExists() || cmd.hasOption("configure")) {
+			this.createSettingsFileInteractively();
+			System.exit(0);
+			return;
+		}
 		
 		if (cmd.hasOption("help")) {
 			// show help

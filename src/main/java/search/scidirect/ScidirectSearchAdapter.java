@@ -17,8 +17,6 @@ public class ScidirectSearchAdapter extends SearchAdapter {
 		ScidirectQueryOptimizerVisitor optimizerVisitor = new ScidirectQueryOptimizerVisitor();
 		String optimizedQueryText = optimizerVisitor.visit(queryTree);
 		
-		System.out.println(optimizedQueryText);
-		
 		// splitting isn't required
 		List<String> queryTextList = new ArrayList<String>();
 		queryTextList.add(optimizedQueryText);

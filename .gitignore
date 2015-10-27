@@ -6,5 +6,6 @@ target/data
 target/maven-status
 
 # Logging and caching
-
 /data/output
+
+data/settings.xml
