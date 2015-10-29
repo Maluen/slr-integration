@@ -62,8 +62,8 @@ public class CommandLineUI extends UI {
 			
 			// (in case this is an update)
 			String settingsDefaultValue = "";
-			if (this.settings.settingsMap.containsKey(settingsName)) {
-				settingsDefaultValue = this.settings.settingsMap.get(settingsName);
+			if (this.settings.has(settingsName)) {
+				settingsDefaultValue = this.settings.get(settingsName);
 			}
 			
 			// get setting value from user
@@ -73,7 +73,7 @@ public class CommandLineUI extends UI {
 				settingsValue = settingsDefaultValue;
 			}
 			
-			this.settings.settingsMap.put(settingsName, settingsValue);
+			this.settings.set(settingsName, settingsValue);
 		}
 		scanner.close();
 		

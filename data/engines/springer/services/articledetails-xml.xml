@@ -1,0 +1,39 @@
+<service>
+    <name>articleDetails_{{id}}</name>
+    <resources>
+        <item>
+            <name>response.body</name>
+            <contentType>text/xml</contentType>
+        </item>
+    </resources>
+    <request> <!-- Specifies how to retrieve/access service -->
+        <url>
+        <![CDATA[
+            http://api.springer.com/metadata/pam?q={{id}}&api_key={{apiKey}}
+        ]]>
+        </url>
+        <method>GET</method> <!-- HTTP Method: GET, POST, etc. -->
+    </request>
+    <response from="response.body">
+
+        <article>
+            <id>{{id}}</id>
+
+            <keywords el="//facet[@name='keyword']" mode="script">
+             <![CDATA[
+                // extract list of keywords
+                var keywordList = [];
+                var keywordElList = parser.select('facet-value', el);
+                for (var i=0, l=keywordElList.size(); i<l; i++) {
+                    var keywordEl = keywordElList.get(i);
+                    keywordList.push( keywordEl.getTextContent() );
+                }
+
+                var keywords = keywordList.join(', ');
+                keywords // return
+            ]]>
+            </keywords>
+        </article>
+
+    </response>
+</service>

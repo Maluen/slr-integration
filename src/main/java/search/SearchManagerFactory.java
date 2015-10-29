@@ -3,6 +3,7 @@ package search;
 import search.acm.ACMSearchManager;
 import search.ieee.IEEESearchManager;
 import search.scidirect.ScidirectSearchManager;
+import search.springer.SpringerSearchManager;
 
 public class SearchManagerFactory {
 	
@@ -13,6 +14,8 @@ public class SearchManagerFactory {
 			return new IEEESearchManager();
 		} else if (name.equals("scidirect")) {
 			return new ScidirectSearchManager();
+		} else if (name.equals("springer")) {
+			return new SpringerSearchManager();
 		}
 		
 		return null;

@@ -29,7 +29,7 @@ public class Settings {
 		this.settingsMap = new HashMap<String, String>();
 		
 		this.settingsDescriptionMap = new HashMap<String, String>();
-		this.settingsDescriptionMap.put("springerLinkApiKey", "SpringerLink API Key");
+		this.settingsDescriptionMap.put("springerApiKey", "Springer Link API Key");
 		
 		// load settings on init
 		if (this.doFileExists()) {
@@ -48,6 +48,22 @@ public class Settings {
 		}
 		
 		return Settings.instance;
+	}
+	
+	public boolean has(String settingsName) {
+		return this.settingsMap.containsKey(settingsName);
+	}
+	
+	public String get(String settingsName) {
+		if (this.settingsMap.containsKey(settingsName)) {
+			return this.settingsMap.get(settingsName);
+		}
+		
+		return null;
+	}
+	
+	public void set(String settingsName, String settingsValue) {
+		this.settingsMap.put(settingsName, settingsValue);
 	}
 	
 	public boolean doFileExists() {

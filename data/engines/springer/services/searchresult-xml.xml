@@ -1,0 +1,69 @@
+<service>
+    <name>searchResult_{{pageNumber}}</name>
+    <resources>
+        <item>
+            <name>response.body</name>
+            <contentType>text/xml</contentType>
+        </item>
+    </resources>
+    <request> <!-- Specifies how to retrieve/access service -->
+        <url>
+        <![CDATA[
+            http://api.springer.com/meta/v1/pam?api_key={{apiKey}}&q={{{query}}}&s={{startResult}}&p={{numberOfResults}}
+        ]]>
+        </url>
+        <method>GET</method> <!-- HTTP Method: GET, POST, etc. -->
+    </request>
+    <response from="response.body">
+
+        <meta el="result">
+            <query>{{query}}</query>
+            <pageNumber>{{pageNumber}}</pageNumber>
+            <startYear>{{startYear}}</startYear>
+            <endYear>{{endYear}}</endYear>
+            
+            <count el="total" mode="text" />
+        </meta>
+
+        <articles el="//*[name()='pam:message']" mode="list">
+            <item>
+
+                <id el=".//*[name()='dc:identifier']" mode="text" />
+                <title el=".//*[name()='dc:title']" mode="text" />
+                
+                <authors mode="script">
+                    <![CDATA[
+                    // extract list of creators
+                    var creatorList = [];
+                    var creatorElList = parser.select(".//*[name()='dc:creator']", el);
+                    for (var i=0, l=creatorElList.size(); i<l; i++) {
+                        var creatorEl = creatorElList.get(i);
+
+                        // creator format is "Surname, Name", replace it with "Surname Name"
+                        var creator = creatorEl.getTextContent().replace(', ', ' ');
+
+                        creatorList.push(creator);
+                    }
+
+                    var authors = creatorList.join(', ');
+                    authors // return
+                    ]]>
+                </authors>
+
+                <!-- TODO -->
+                <abstract el=".//*[name()='xhtml:body']/p" mode="text" />
+
+                <affiliations />
+
+                <publication el=".//*[name()='prism:publicationName']" mode="text" />
+                <doi el=".//*[name()='prism:doi']" mode="text" />
+
+                <year el=".//*[name()='prism:publicationDate']" mode="script">
+                    // 2016-01-01 => first digit sequence
+                    el.getTextContent().trim().match(/(\d+)/)[1]
+                </year>
+            </item>
+        </articles>
+
+    </response>
+</service>
