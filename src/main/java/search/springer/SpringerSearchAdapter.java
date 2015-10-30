@@ -36,7 +36,7 @@ public class SpringerSearchAdapter extends SearchAdapter {
 			} else {
 				newQueryText = "("+queryText+") AND ("+yearRangeConstraint+")";
 			}
-			if (newQueryText.length() < this.maxYearConstraintLength) {
+			if (newQueryText.length() <= this.maxYearConstraintLength) {
 				// (we are quite sure that the final url won't be too long => use the year constraint)
 				queryText = newQueryText;
 			}
