@@ -27,7 +27,7 @@ public abstract class SearchManager {
 	public void fastSearch() {
 		// adapt
 		SearchAdapter searchAdapter = this.createAdapter();
-		List<String> queryTextList = searchAdapter.execute(this.queryTree);
+		List<String> queryTextList = searchAdapter.execute(this.queryTree, this.startYear, this.endYear);
 		
 		List<Integer> allSearchesCount = new ArrayList<Integer>();
 		for (int i=0; i<queryTextList.size(); i++) {
@@ -48,7 +48,7 @@ public abstract class SearchManager {
 	public void fullSearch() {
 		// adapt
 		SearchAdapter searchAdapter = this.createAdapter();
-		List<String> queryTextList = searchAdapter.execute(this.queryTree);
+		List<String> queryTextList = searchAdapter.execute(this.queryTree, this.startYear, this.endYear);
 		
 		// search
 		List<ArticleList> allSearchesArticleList = new ArrayList<ArticleList>();

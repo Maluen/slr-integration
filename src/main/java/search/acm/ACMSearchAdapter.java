@@ -10,7 +10,8 @@ import search.SearchAdapter;
 
 public class ACMSearchAdapter extends SearchAdapter {
 	
-	public List<String> execute(ParseTree queryTree) {
+	@Override
+	public List<String> execute(ParseTree queryTree, Integer startYear, Integer endYear) {
 		
 		// optimization: only search in the fields we are interested in		
 		ACMQueryOptimizerVisitor optimizerVisitor = new ACMQueryOptimizerVisitor();

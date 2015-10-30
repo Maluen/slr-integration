@@ -15,7 +15,7 @@ public class IEEESearchAdapter extends SearchAdapter {
 	protected Integer MAX_WORDS = 13;
 	
 	@Override
-	public List<String> execute(ParseTree queryTree) {
+	public List<String> execute(ParseTree queryTree, Integer startYear, Integer endYear) {
 		
 		List<String> wildcardQueryTextList = this.splitForTarget(
 				Utils.createList(queryTree.getText()),

@@ -11,7 +11,7 @@ import search.SearchAdapter;
 public class ScidirectSearchAdapter extends SearchAdapter {
 
 	@Override
-	public List<String> execute(ParseTree queryTree) {
+	public List<String> execute(ParseTree queryTree, Integer startYear, Integer endYear) {
 		
 		// optimization: only search in the fields we are interested in		
 		ScidirectQueryOptimizerVisitor optimizerVisitor = new ScidirectQueryOptimizerVisitor();
@@ -27,7 +27,7 @@ public class ScidirectSearchAdapter extends SearchAdapter {
 			String newQueryText = queryText;
 			
 			// NOT => AND NOT
-			newQueryText = newQueryText.replaceAll("NOT", "AND NOT");
+			//newQueryText = newQueryText.replaceAll("NOT", "AND NOT");
 			// "phrase" => {phrase}
 			newQueryText = newQueryText.replaceAll("\"([\\s\\S]*?)\"", "{$1}");
 			

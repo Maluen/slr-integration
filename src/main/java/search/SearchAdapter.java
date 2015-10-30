@@ -19,7 +19,7 @@ public abstract class SearchAdapter {
 	}
 	
 	// TODO: convert generic search input into engine-specific search input(s)
-	public List<String> execute(ParseTree queryTree) {
+	public List<String> execute(ParseTree queryTree, Integer startYear, Integer endYear) {
 		// default implementation splits nothing
 		List<String> queryTextList = new ArrayList<String>();
 		queryTextList.add(queryTree.getText());
