@@ -61,6 +61,11 @@
                         count = el.text().trim().match(/Search results: ([\d,]+?) /)[1];
                         // Remove all "," separators
                         count = count.replace(new RegExp(',', 'g'), '');
+
+                        // HACK: handle results limit
+                        if (count > 1000) {
+                            count = "1000";
+                        }
                     }
 
                     count

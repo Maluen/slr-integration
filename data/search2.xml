@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <search>
     <query>(collaborat* OR coordinat* OR cooperat* OR concur* OR global) AND (MDE OR MDD OR MDA OR MDS* OR EMF OR DSL OR DSML OR "model driven" OR "eclipse modeling framework" OR "domain specific language" OR "domain specific modeling language")</query>
-    <sites>ieee</sites>
+    <sites>springer, scidirect</sites>
     
     <!-- Optional -->
     <startyear></startyear>
     <endyear></endyear>
 
-    <fastoutput>true</fastoutput>
+    <fastoutput>false</fastoutput>
     <outputpath>data/output/output.csv</outputpath>
 </search>
