@@ -53,7 +53,7 @@ public class CommandLineUI extends UI {
 	}
 	
 	public void createSettingsFileInteractively() {
-		System.out.println("== Interactive ettings file creation ==");
+		System.out.println("== Interactive settings file creation ==");
 		
 	    Scanner scanner = new Scanner(System.in);
 		for (Map.Entry<String, String> settingsDescriptionEntry : this.settings.settingsDescriptionMap.entrySet()) {
@@ -82,7 +82,7 @@ public class CommandLineUI extends UI {
 		} catch (TransformerFactoryConfigurationError | TransformerException
 				| IOException e) {
 			e.printStackTrace();
-			System.out.println("== ERROR: Ssettings file creation failed ==");
+			System.out.println("== ERROR: Settings file creation failed ==");
 			System.exit(1);
 			return;
 		}
