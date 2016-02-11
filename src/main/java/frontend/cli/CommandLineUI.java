@@ -8,6 +8,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 
 import misc.Settings;
+import network.websocket.WebSocketClient;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -17,6 +18,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import search.MixedSearch;
+import search.RemoteSearch;
 import frontend.UI;
 
 public class CommandLineUI extends UI {
@@ -46,6 +48,8 @@ public class CommandLineUI extends UI {
 		options.addOption("o", "outputpath", true, "Set CSV output path");
 		
 		options.addOption("c", "configure", false, "Create or update settings file");
+		
+		options.addOption("co", "connect", false, "Connect to the remote webapp (host:port)");
 		
 		options.addOption("h", "help", false, "Show this help");
 		
@@ -115,6 +119,46 @@ public class CommandLineUI extends UI {
 			formatter.setOptionComparator(null); // keep the options in the order they were declared.
 			formatter.printHelp(this.programName, this.options);
 			System.exit(0);
+			return;
+		}
+		
+		if (cmd.hasOption("connect")) {
+			String url;
+			String machineId;
+			String machineName;
+			String machinePassword;
+
+			/*
+			url = cmd.getOptionValue("connect");
+			if (url == null || url.isEmpty()) {
+				System.out.println("Missing connect hostname.");
+				System.exit(1);
+				return;
+			}
+
+			Scanner scanner = new Scanner(System.in);
+			System.out.print("Machine name: ");
+			machineId = scanner.nextLine();
+			System.out.print("Machine name: ");
+			machineName = scanner.nextLine();
+			System.out.print("Machine password: ");
+			machinePassword = scanner.nextLine();
+			scanner.close();*/
+			
+			// DEBUG
+			machineId = "56bc5291afc769d42517fc55";
+			machineName = "debug";
+			machinePassword = "always";
+			url = "ws://localhost:7667";
+
+			RemoteSearch remoteSearch = new RemoteSearch();
+			try {
+				remoteSearch.start(url, machineId, machineName, machinePassword);
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.exit(1);
+				return;
+			}
 			return;
 		}
 		
