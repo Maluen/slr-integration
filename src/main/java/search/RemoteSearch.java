@@ -1,18 +1,18 @@
 package search;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.URI;
-import java.util.Map;
+import java.util.Scanner;
 
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
-import javax.json.JsonValue;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 
@@ -21,6 +21,8 @@ import misc.JavaProcess;
 import misc.Utils;
 import network.websocket.WebSocketClient;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -68,30 +70,71 @@ public class RemoteSearch {
 			
 			JsonObject project = detail.getJsonObject("project");
 			JsonObject search = detail.getJsonObject("search");
+
+			Boolean resume = detail.getBoolean("resume");
 			
 			String searchId = search.getString("id");
 			
+			String workingDirectory = "data/remote/" + searchId;
+
+			String projectSettingsPath = workingDirectory + "/data/settings.xml";
+			String searchSettingsPath = workingDirectory + "/data/search.xml";
+			String outputPath = workingDirectory + "/data/output/output.csv";
+			
 			JsonArray projectSettings = project.getJsonArray("settings");
 			JsonArray searchSettings = search.getJsonArray("settings");
-
-			this.saveProjectSettings(searchId, projectSettings);
-			this.saveSearchSettings(searchId, searchSettings);
+			
+			this.saveProjectSettings(projectSettings, projectSettingsPath);
+			this.saveSearchSettings(searchSettings, searchSettingsPath, outputPath);
+			
+			// replace engines
+			try {
+				FileUtils.deleteDirectory(new File(workingDirectory + "/data/engines"));
+			} catch (IOException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+			try {
+				FileUtils.copyDirectory(new File("data/engines"), new File(workingDirectory + "/data/engines"));
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			
 			try {
 				System.out.println("Executing remote process...");
-				Process process = JavaProcess.exec(Main.class, "-h");
+
+				// new search
+				String[] args = new String[] {
+					!resume ? "-n" : "",
+					//"-h"
+				};
+				System.out.println(StringUtils.join(args, " "));
+				final Process process = JavaProcess.exec(Main.class, StringUtils.join(args, " "), new File(workingDirectory));
 				
-				InputStream stdout = process.getInputStream ();
+				this.sendSearchState("running");
+				
+				/*InputStream stdout = process.getInputStream ();
 				BufferedReader reader = new BufferedReader (new InputStreamReader(stdout));
 				String line;
 				while ((line = reader.readLine ()) != null) {
 					System.out.println ("Stdout: " + line);
 					this.sendOutputLine(line);
-				}
+				}*/
+				
+				// redirect stdout and stderr to websocket
+			    this.redirectIO(process.getInputStream());
+			    this.redirectIO(process.getErrorStream());
 				
 		        process.waitFor();
 		        int status = process.exitValue();
 				System.out.println("Remote process exited: " + status);
+				
+				if (status == 0) {
+					this.sendSearchState("success");
+				} else {
+					this.sendSearchState("failure");
+				}
 			} catch (IOException | InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -107,7 +150,7 @@ public class RemoteSearch {
         this.sendMessage("login", detail);
 	}
 	
-	private void saveProjectSettings(String searchId, JsonArray projectSettings) {
+	private void saveProjectSettings(JsonArray projectSettings, String path) {
 		Document document = DocumentFactory.getDocBuilder().newDocument();
 		
 		// root element
@@ -125,7 +168,7 @@ public class RemoteSearch {
 		}
 		
 		try {
-			Utils.saveDocument(document, "data/" + searchId + "/project.xml");
+			Utils.saveDocument(document, path);
 		} catch (TransformerFactoryConfigurationError
 				| TransformerException | IOException e1) {
 			// TODO Auto-generated catch block
@@ -133,7 +176,7 @@ public class RemoteSearch {
 		}
 	}
 	
-	private void saveSearchSettings(String searchId, JsonArray searchSettings) {
+	private void saveSearchSettings(JsonArray searchSettings, String path, String outputPath) {
 		Document document = DocumentFactory.getDocBuilder().newDocument();
 		
 		// root element
@@ -151,16 +194,38 @@ public class RemoteSearch {
 		}
 		// output path
 		Element outputPathEl = document.createElement("outputpath");
-		outputPathEl.setTextContent("data/" + searchId + "/output/output.csv");
+		outputPathEl.setTextContent(outputPath);
 		documentRootEl.appendChild(outputPathEl);
 		
 		try {
-			Utils.saveDocument(document, "data/" + searchId + "/search.xml");
+			Utils.saveDocument(document, path);
 		} catch (TransformerFactoryConfigurationError
 				| TransformerException | IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+	}
+	
+	// based on http://stackoverflow.com/a/14168097
+	private void redirectIO(final InputStream src) {
+		final RemoteSearch self = this;
+	    new Thread(new Runnable() {
+	        public void run() {
+	            Scanner sc = new Scanner(src);
+	            while (sc.hasNextLine()) {
+	            	String line = sc.nextLine();
+					System.out.println ("Output: " + line);
+					self.sendOutputLine(line);
+	            }
+	            sc.close();
+	        }
+	    }).start();
+	}
+	
+	private void sendSearchState(String searchState) {
+        JsonObjectBuilder detail = Json.createObjectBuilder()
+        		.add("state", searchState);
+		this.sendMessage("searchState", detail);
 	}
 	
 	private void sendOutputLine(String outputLine) {

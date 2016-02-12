@@ -9,7 +9,7 @@ public final class JavaProcess {
 
     private JavaProcess() {}        
 
-    public static Process exec(Class klass, String args) throws IOException, InterruptedException {
+    public static Process exec(Class klass, String args, File workingDirectory) throws IOException, InterruptedException {
         String javaHome = System.getProperty("java.home");
         String javaBin = javaHome +
                 File.separator + "bin" +
@@ -19,6 +19,7 @@ public final class JavaProcess {
 
         ProcessBuilder builder = new ProcessBuilder(
                 javaBin, "-cp", classpath, className, args);
+        builder.directory(workingDirectory);
         
         //System.out.println(javaBin + " " + "-cp" + " " + classpath + " " + className);
 

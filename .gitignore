@@ -9,3 +9,5 @@ target/maven-status
 /data/output
 
 data/settings.xml
+
+data/remote

@@ -46,10 +46,10 @@ public class CommandLineUI extends UI {
 		options.addOption("ey", "endyear", true, "Set article publishing year end range");
 		options.addOption("fo", "fastoutput", false, "Display only the number of results for each database");
 		options.addOption("o", "outputpath", true, "Set CSV output path");
-		
+
 		options.addOption("c", "configure", false, "Create or update settings file");
 		
-		options.addOption("co", "connect", false, "Connect to the remote webapp (host:port)");
+		options.addOption("co", "connect", true, "Connect to the remote webapp (host:port)");
 		
 		options.addOption("h", "help", false, "Show this help");
 		
@@ -96,7 +96,6 @@ public class CommandLineUI extends UI {
 	
 	@Override
 	public void execute() {
-		
 		CommandLineParser parser = new DefaultParser();
 		CommandLine cmd;
 		try {

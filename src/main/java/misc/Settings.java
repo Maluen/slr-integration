@@ -32,14 +32,7 @@ public class Settings {
 		this.settingsDescriptionMap.put("springerApiKey", "Springer Link API Key");
 		
 		// load settings on init
-		if (this.doFileExists()) {
-			try {
-				this.loadFromFile();
-			} catch (SAXException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		this.changeFilePath(this.settingsFilePath);
 	}
 	
 	public static Settings getInstance() {
@@ -48,6 +41,19 @@ public class Settings {
 		}
 		
 		return Settings.instance;
+	}
+	
+	public void changeFilePath(String settingsFilePath) {
+		this.settingsFilePath = settingsFilePath;
+		// load settings on init
+		if (this.doFileExists()) {
+			try {
+				this.loadFromFile();
+			} catch (SAXException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public boolean has(String settingsName) {
