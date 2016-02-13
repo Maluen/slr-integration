@@ -1,12 +1,11 @@
 package search;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.URI;
+import java.util.Calendar;
 import java.util.Scanner;
 
 import javax.json.Json;
@@ -112,7 +111,7 @@ public class RemoteSearch {
 				System.out.println(StringUtils.join(args, " "));
 				final Process process = JavaProcess.exec(Main.class, StringUtils.join(args, " "), new File(workingDirectory));
 				
-				this.sendSearchState("running");
+				this.sendSearchStatus("running");
 				
 				/*InputStream stdout = process.getInputStream ();
 				BufferedReader reader = new BufferedReader (new InputStreamReader(stdout));
@@ -131,9 +130,9 @@ public class RemoteSearch {
 				System.out.println("Remote process exited: " + status);
 				
 				if (status == 0) {
-					this.sendSearchState("success");
+					this.sendSearchStatus("success");
 				} else {
-					this.sendSearchState("failure");
+					this.sendSearchStatus("failure");
 				}
 			} catch (IOException | InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -222,10 +221,10 @@ public class RemoteSearch {
 	    }).start();
 	}
 	
-	private void sendSearchState(String searchState) {
+	private void sendSearchStatus(String searchStatus) {
         JsonObjectBuilder detail = Json.createObjectBuilder()
-        		.add("state", searchState);
-		this.sendMessage("searchState", detail);
+        		.add("status", searchStatus);
+		this.sendMessage("searchStatus", detail);
 	}
 	
 	private void sendOutputLine(String outputLine) {
@@ -250,6 +249,7 @@ public class RemoteSearch {
                        .add("type", "machine")
                        .add("topic", topic)
                        .add("detail", detail)
+                       .add("timestamp", Calendar.getInstance().getTimeInMillis())
                    .build()
                    .toString();
     }
