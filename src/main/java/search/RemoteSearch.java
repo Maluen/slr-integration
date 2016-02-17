@@ -111,6 +111,15 @@ public class RemoteSearch {
 				System.out.println(StringUtils.join(args, " "));
 				final Process process = JavaProcess.exec(Main.class, StringUtils.join(args, " "), new File(workingDirectory));
 				
+				// exit child process on parent exit
+				// (won't work in case of OS kills, etc.)
+				Thread closeChildThread = new Thread() {
+				    public void run() {
+				    	process.destroy();
+				    }
+				};
+				Runtime.getRuntime().addShutdownHook(closeChildThread);
+				
 				this.sendSearchStatus("running");
 				
 				/*InputStream stdout = process.getInputStream ();
