@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.net.URI;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 import javax.json.Json;
@@ -30,6 +32,8 @@ import parsers.xml.DocumentFactory;
 public class RemoteSearch {
 	
 	private WebSocketClient clientEndPoint;
+	
+	Map<String, Process> searchProcessMap = new HashMap<String, Process>();
 	
 	public void start(String url, String machineId, String machineName, String machinePassword) throws Exception {
 		System.out.println("Connecting to " + url);
@@ -72,13 +76,13 @@ public class RemoteSearch {
 
 			Boolean resume = detail.getBoolean("resume");
 			
-			String searchId = search.getString("id");
+			final String searchId = search.getString("id");
 			
 			String workingDirectory = "data/remote/" + searchId;
 
 			String projectSettingsPath = workingDirectory + "/data/settings.xml";
 			String searchSettingsPath = workingDirectory + "/data/search.xml";
-			String outputPath = workingDirectory + "/data/output/output.csv";
+			final String outputPath = workingDirectory + "/data/output/output.csv";
 			
 			JsonArray projectSettings = project.getJsonArray("settings");
 			JsonArray searchSettings = search.getJsonArray("settings");
@@ -111,11 +115,14 @@ public class RemoteSearch {
 				System.out.println(StringUtils.join(args, " "));
 				final Process process = JavaProcess.exec(Main.class, StringUtils.join(args, " "), new File(workingDirectory));
 				
+				this.searchProcessMap.put(searchId, process);
+				
 				// exit child process on parent exit
 				// (won't work in case of OS kills, etc.)
+				final RemoteSearch self = this;
 				Thread closeChildThread = new Thread() {
 				    public void run() {
-				    	process.destroy();
+				    	self.stopSearch(searchId);
 				    }
 				};
 				Runtime.getRuntime().addShutdownHook(closeChildThread);
@@ -134,19 +141,44 @@ public class RemoteSearch {
 			    this.redirectIO(process.getInputStream());
 			    this.redirectIO(process.getErrorStream());
 				
-		        process.waitFor();
-		        int status = process.exitValue();
-				System.out.println("Remote process exited: " + status);
-				
-				if (status == 0) {
-					this.sendSearchStatus("success");
-				} else {
-					this.sendSearchStatus("failure");
-				}
+				(new Thread() {
+				    public void run() {
+				    	try {
+							process.waitFor();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+				    	
+				        int status = process.exitValue();
+						System.out.println("Remote process exited: " + status);
+						
+						if (status == 0) {
+							self.sendSearchStatus("success");
+
+							File resultCSVFile = new File(outputPath);
+							if (resultCSVFile.exists()) {
+								try {
+									String resultCSV = FileUtils.readFileToString(new File(outputPath));
+									self.sendSearchResult(resultCSV);
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+							}
+						} else {
+							self.sendSearchStatus("failure");
+						}
+				    }
+				}).start();
+
 			} catch (IOException | InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		} else if (topic.equals("stopSearch")) {
+			String searchId = detail.getString("searchId");
+			this.stopSearch(searchId);
 		}
 	}
 	
@@ -230,6 +262,37 @@ public class RemoteSearch {
 	    }).start();
 	}
 	
+	private void stopSearch(String searchId) {
+		System.out.println("Stopping search...");
+		
+		if (!this.searchProcessMap.containsKey(searchId)) {
+			System.out.println("No matching process for the specified search.");
+			return;
+		}
+		
+		Process process = this.searchProcessMap.get(searchId);
+
+		process.destroy();
+
+		// streams need to be closed or threads will remain open
+		// and the process won't ever close properly.
+    	try {
+			process.getInputStream().close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	try {
+	    	process.getOutputStream().close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	try {
+	    	process.getErrorStream().close(); 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private void sendSearchStatus(String searchStatus) {
         JsonObjectBuilder detail = Json.createObjectBuilder()
         		.add("status", searchStatus);
@@ -242,7 +305,12 @@ public class RemoteSearch {
 		this.sendMessage("outputLine", detail);
 	}
 	
-	
+	private void sendSearchResult(String csv) {
+        JsonObjectBuilder detail = Json.createObjectBuilder()
+        		.add("csv", csv);
+		this.sendMessage("searchResult", detail);
+	}
+
 	private void sendMessage(String topic, JsonObjectBuilder detail) {
 		this.clientEndPoint.sendMessage(this.createMessage(topic, detail));
 	}
