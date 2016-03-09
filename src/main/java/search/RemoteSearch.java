@@ -63,7 +63,9 @@ public class RemoteSearch {
 	
 	private void handleMessage(String topic, JsonObject detail) {
 		if (topic.equals("loginError")) {
-			System.out.println("Authentication failed: " + detail.getString("message"));			
+			System.out.println("Authentication failed: " + detail.getString("message"));
+			System.exit(1);
+			return;
 			
 		} else if (topic.equals("loginSuccess")) {
 			System.out.println("Authentication successful.");
@@ -82,13 +84,15 @@ public class RemoteSearch {
 
 			String projectSettingsPath = workingDirectory + "/data/settings.xml";
 			String searchSettingsPath = workingDirectory + "/data/search.xml";
-			final String outputPath = workingDirectory + "/data/output/output.csv";
+			
+			final String internalOutputPath = "data/output/output.csv"; // relative path as needed inside the process (where working path is already set)
+			final String outputPath = workingDirectory + "/" + internalOutputPath;
 			
 			JsonArray projectSettings = project.getJsonArray("settings");
 			JsonArray searchSettings = search.getJsonArray("settings");
 			
 			this.saveProjectSettings(projectSettings, projectSettingsPath);
-			this.saveSearchSettings(searchSettings, searchSettingsPath, outputPath);
+			this.saveSearchSettings(searchSettings, searchSettingsPath, internalOutputPath);
 			
 			// replace engines
 			try {
@@ -110,7 +114,8 @@ public class RemoteSearch {
 				// new search
 				String[] args = new String[] {
 					!resume ? "-n" : "",
-					//"-h"
+					//"-h",
+					//"-c"
 				};
 				System.out.println(StringUtils.join(args, " "));
 				final Process process = JavaProcess.exec(Main.class, StringUtils.join(args, " "), new File(workingDirectory));
@@ -169,6 +174,8 @@ public class RemoteSearch {
 						} else {
 							self.sendSearchStatus("failure");
 						}
+						
+						return;
 				    }
 				}).start();
 
@@ -216,7 +223,7 @@ public class RemoteSearch {
 		}
 	}
 	
-	private void saveSearchSettings(JsonArray searchSettings, String path, String outputPath) {
+	private void saveSearchSettings(JsonArray searchSettings, String path, String internalOutputPath) {
 		Document document = DocumentFactory.getDocBuilder().newDocument();
 		
 		// root element
@@ -234,7 +241,7 @@ public class RemoteSearch {
 		}
 		// output path
 		Element outputPathEl = document.createElement("outputpath");
-		outputPathEl.setTextContent(outputPath);
+		outputPathEl.setTextContent(internalOutputPath);
 		documentRootEl.appendChild(outputPathEl);
 		
 		try {
@@ -291,6 +298,8 @@ public class RemoteSearch {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+    	
+    	System.out.println("Stopped.");
 	}
 	
 	private void sendSearchStatus(String searchStatus) {

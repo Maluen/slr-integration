@@ -56,6 +56,7 @@ public class WebSocketClient {
      */
     @OnClose
     public void onClose(Session userSession, CloseReason reason) {
+    	System.out.println("Websocket: disconnected.");
         this.userSession = null;
     }
  

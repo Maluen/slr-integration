@@ -127,28 +127,27 @@ public class CommandLineUI extends UI {
 			String machineName;
 			String machinePassword;
 
-			/*
 			url = cmd.getOptionValue("connect");
 			if (url == null || url.isEmpty()) {
-				System.out.println("Missing connect hostname.");
+				System.out.println("Missing connect url.");
 				System.exit(1);
 				return;
 			}
 
 			Scanner scanner = new Scanner(System.in);
-			System.out.print("Machine name: ");
+			System.out.print("Machine id: ");
 			machineId = scanner.nextLine();
 			System.out.print("Machine name: ");
 			machineName = scanner.nextLine();
 			System.out.print("Machine password: ");
 			machinePassword = scanner.nextLine();
-			scanner.close();*/
+			scanner.close();
 			
 			// DEBUG
-			machineId = "56bc5291afc769d42517fc55";
-			machineName = "debug";
-			machinePassword = "always";
-			url = "ws://localhost:7667";
+			//machineId = "56bc5291afc769d42517fc55";
+			//machineName = "debug";
+			//machinePassword = "always";
+			//url = "ws://localhost:7667";
 
 			RemoteSearch remoteSearch = new RemoteSearch();
 			try {
