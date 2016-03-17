@@ -144,14 +144,16 @@ public class CommandLineUI extends UI {
 			scanner.close();
 			
 			// DEBUG
-			//machineId = "56bc5291afc769d42517fc55";
-			//machineName = "debug";
-			//machinePassword = "always";
-			//url = "ws://localhost:7667";
+			/*
+			machineId = "56e0267a17c575782f895088";
+			machineName = "test2";
+			machinePassword = "test";
+			url = "ws://localhost:7667";
+			*/
 
-			RemoteSearch remoteSearch = new RemoteSearch();
+			RemoteSearch remoteSearch = new RemoteSearch(url, machineId, machineName, machinePassword);
 			try {
-				remoteSearch.start(url, machineId, machineName, machinePassword);
+				remoteSearch.start();
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(1);
