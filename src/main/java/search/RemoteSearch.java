@@ -272,6 +272,7 @@ public class RemoteSearch {
 						}
 						
 						Runtime.getRuntime().removeShutdownHook(closeChildThread);
+						self.searchProcessMap.remove(searchId);
 				    }
 				});
 				processThread.start();
@@ -369,7 +370,7 @@ public class RemoteSearch {
 			return;
 		}
 		
-		Process process = this.searchProcessMap.remove(searchId);
+		Process process = this.searchProcessMap.get(searchId);
 
 		process.destroy();
 
