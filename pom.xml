@@ -147,7 +147,7 @@
 		              <resources>          
 		                <resource>
 		                  <directory>${basedir}/data</directory>
-		                  <filtering>true</filtering>
+		                  <filtering>false</filtering>
 		                </resource>
 		              </resources>              
 		            </configuration>            
